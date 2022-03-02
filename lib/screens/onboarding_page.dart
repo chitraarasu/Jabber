@@ -1,3 +1,4 @@
+import 'package:chatting_application/screens/phone_number.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
@@ -40,17 +41,17 @@ class OnBoardingPage extends StatelessWidget {
                 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
             footer: ButtonWidget(
               text: 'Start Reading',
-              onClicked: () => goToHome(context),
+              onClicked: () => goToPhoneNumberScreen(context),
             ),
             image: buildImage('assets/animations/robot-bot-3d.json'),
             decoration: getPageDecoration(),
           ),
         ],
         done: const Text('Next', style: TextStyle(fontWeight: FontWeight.w600)),
-        onDone: () => goToHome(context),
+        onDone: () => goToPhoneNumberScreen(context),
         showSkipButton: true,
         skip: const Text('Skip'),
-        onSkip: () => goToHome(context),
+        onSkip: () => goToPhoneNumberScreen(context),
         next: const Icon(Icons.arrow_forward),
         dotsDecorator: getDotDecoration(),
         globalBackgroundColor: Colors.white,
@@ -58,8 +59,8 @@ class OnBoardingPage extends StatelessWidget {
     );
   }
 
-  void goToHome(context) => Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomePage()),
+  void goToPhoneNumberScreen(context) => Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => PhoneNumber()),
       );
 
   Widget buildImage(String path) {
