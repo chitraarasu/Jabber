@@ -1,10 +1,10 @@
 import 'package:chatting_application/screens/phone_number.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
 
 import '../widget/button_widget.dart';
-import 'home_page.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
@@ -59,9 +59,7 @@ class OnBoardingPage extends StatelessWidget {
     );
   }
 
-  void goToPhoneNumberScreen(context) => Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => PhoneNumber()),
-      );
+  void goToPhoneNumberScreen(context) => Get.to(() => const PhoneNumber());
 
   Widget buildImage(String path) {
     return Center(

@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.1
   lottie: ^1.2.2
   country_pickers: ^2.0.0
+  rive: ^0.8.1
 
 dev_dependencies:
   flutter_test:
