@@ -1,45 +1,52 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
 import 'package:rive/rive.dart';
 
-class PhoneNumber extends StatefulWidget {
-  const PhoneNumber({Key? key}) : super(key: key);
+import '../controller/controller.dart';
+
+class PhoneNumberAndOtp extends StatefulWidget {
+  const PhoneNumberAndOtp({Key? key}) : super(key: key);
 
   @override
-  State<PhoneNumber> createState() => _PhoneNumberState();
+  State<PhoneNumberAndOtp> createState() => _PhoneNumberAndOtpState();
 }
 
-class _PhoneNumberState extends State<PhoneNumber> {
-  String animationType = "idle";
-
+class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   final phoneNumberController = TextEditingController();
-  final phoneNumberFocusNode = FocusNode();
+  RiveAnimationController? _controller;
+  RiveAnimationController? _controller1;
+  RiveAnimationController? _controller2;
+  bool _isPlaying = false;
+  bool _isPlaying1 = false;
+  bool _isPlaying2 = false;
 
-  // @override
-  // void initState() {
-  // phoneNumberFocusNode.addListener(() {
-  //   if (phoneNumberFocusNode.hasFocus) {
-  //     setState(() {
-  //       animationType = "test";
-  //     });
-  //   } else {
-  //     setState(() {
-  //       animationType = "idle";
-  //     });
-  //   }
-  // });
-  //
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _controller = OneShotAnimation(
+      'Look_down_right',
+      autoplay: false,
+      onStop: () => setState(() => _isPlaying = false),
+      onStart: () => setState(() => _isPlaying = true),
+    );
+    _controller1 = OneShotAnimation(
+      'success',
+      autoplay: false,
+      onStop: () => setState(() => _isPlaying1 = false),
+      onStart: () => setState(() => _isPlaying1 = true),
+    );
+    _controller2 = OneShotAnimation(
+      'fail',
+      autoplay: false,
+      onStop: () => setState(() => _isPlaying2 = false),
+      onStart: () => setState(() => _isPlaying2 = true),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    Country _selectedDialogCountry =
-        CountryPickerUtils.getCountryByPhoneCode('91');
-
     var mainScreen = false;
 
     Widget _buildDialogItem(Country country) {
@@ -67,8 +74,9 @@ class _PhoneNumberState extends State<PhoneNumber> {
             searchInputDecoration: const InputDecoration(hintText: 'Search...'),
             isSearchable: true,
             title: const Text('Select your phone code'),
-            onValuePicked: (Country country) =>
-                setState(() => _selectedDialogCountry = country),
+            onValuePicked: (Country country) {
+              Get.find<Controller>().setCountry(country);
+            },
             itemBuilder: _buildDialogItem,
             priorityList: [
               CountryPickerUtils.getCountryByIsoCode('TR'),
@@ -85,6 +93,14 @@ class _PhoneNumberState extends State<PhoneNumber> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Phone Number",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Get.back();
@@ -105,9 +121,8 @@ class _PhoneNumberState extends State<PhoneNumber> {
               height: 275,
               child: RiveAnimation.asset(
                 "assets/animations/teddy.riv",
-                alignment: Alignment.center,
-                fit: BoxFit.contain,
-                animations: [animationType],
+                animations: const ['idle', 'curves'],
+                controllers: [_controller!, _controller1!, _controller2!],
               ),
             ),
             Padding(
@@ -184,8 +199,12 @@ class _PhoneNumberState extends State<PhoneNumber> {
                                         width: 1,
                                       ),
                                     ),
-                                    child: _buildDialogItem(
-                                        _selectedDialogCountry),
+                                    child: GetBuilder<Controller>(
+                                      init: Controller(),
+                                      builder: (chatController) =>
+                                          _buildDialogItem(chatController
+                                              .selectedDialogCountry),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -195,13 +214,18 @@ class _PhoneNumberState extends State<PhoneNumber> {
                               Expanded(
                                 child: TextField(
                                   controller: phoneNumberController,
-                                  focusNode: phoneNumberFocusNode,
+                                  // focusNode: phoneNumberFocusNode,
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.zero,
                                     border: InputBorder.none,
                                     hintText: "Phone number",
                                   ),
                                   keyboardType: TextInputType.number,
+                                  onChanged: (val) {
+                                    _isPlaying
+                                        ? null
+                                        : _controller?.isActive = true;
+                                  },
                                 ),
                               ),
                             ],
@@ -226,15 +250,17 @@ class _PhoneNumberState extends State<PhoneNumber> {
                             ),
                           ),
                           onPressed: () {
-                            if (phoneNumberController.text.length == 10) {
-                              setState(() {
-                                animationType = "success";
-                              });
+                            if (phoneNumberController.text.length < 10 ||
+                                phoneNumberController.text.length > 10) {
+                              _isPlaying2
+                                  ? null
+                                  : _controller2?.isActive = true;
                             } else {
-                              setState(() {
-                                animationType = "fail";
-                              });
+                              _isPlaying1
+                                  ? null
+                                  : _controller1?.isActive = true;
                             }
+                            // setState(() {});
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

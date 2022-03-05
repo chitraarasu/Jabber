@@ -1,4 +1,4 @@
-import 'package:chatting_application/screens/phone_number.dart';
+import 'package:chatting_application/screens/phone_number_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -59,7 +59,10 @@ class OnBoardingPage extends StatelessWidget {
     );
   }
 
-  void goToPhoneNumberScreen(context) => Get.to(() => const PhoneNumber());
+  void goToPhoneNumberScreen(context) => Get.to(
+        () => const PhoneNumberAndOtp(),
+        transition: Transition.rightToLeftWithFade,
+      );
 
   Widget buildImage(String path) {
     return Center(
