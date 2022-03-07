@@ -39,6 +39,8 @@ dependencies:
   lottie: ^1.2.2
   country_pickers: ^2.0.0
   rive: ^0.8.1
+  pin_code_fields: ^7.3.0
+  image_picker: ^0.8.4+10
 
 dev_dependencies:
   flutter_test:
