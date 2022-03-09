@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,17 @@ class Controller extends GetxController {
 
   setCountry(country) {
     _selectedDialogCountry = country;
+    update();
+  }
+
+  File? _storedImage;
+
+  get userProfileImage{
+    return _storedImage;
+  }
+
+  setUserProfileImage(image){
+    _storedImage = image;
     update();
   }
 }
