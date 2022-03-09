@@ -54,7 +54,7 @@ class OnBoardingPage extends StatelessWidget {
         onSkip: () => goToPhoneNumberScreen(context),
         next: const Icon(Icons.arrow_forward),
         dotsDecorator: getDotDecoration(),
-        globalBackgroundColor: Colors.white,
+        globalBackgroundColor: const Color(0xFFd6e2ea),
       ),
     );
   }
@@ -86,6 +86,5 @@ class OnBoardingPage extends StatelessWidget {
         bodyTextStyle: const TextStyle(fontSize: 20),
         footerPadding: const EdgeInsets.all(16).copyWith(bottom: 0),
         imagePadding: const EdgeInsets.all(24),
-        pageColor: Colors.white,
       );
 }

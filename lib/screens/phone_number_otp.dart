@@ -119,7 +119,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
           currentScreen.value == screen.number
               ? "Phone Number"
               : "Verification",
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -467,7 +467,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                             : _controller1?.isActive = true;
                                         Get.to(
                                             () =>
-                                                const UserProfileInputScreen(),
+                                                UserProfileInputScreen(),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       }

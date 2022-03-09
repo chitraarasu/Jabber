@@ -1,21 +1,14 @@
 import 'dart:io';
 
+import 'package:chatting_application/controller/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UserProfileInputScreen extends StatefulWidget {
-  const UserProfileInputScreen({Key? key}) : super(key: key);
-
-  @override
-  State<UserProfileInputScreen> createState() => _UserProfileInputScreenState();
-}
-
-class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
+class UserProfileInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    File? _storedImage;
-    var imageFile;
+    PickedFile? imageFile;
     Future _takePicture() async {
       imageFile = await ImagePicker.platform.pickImage(
         source: ImageSource.gallery,
@@ -24,9 +17,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
       if (imageFile == null) {
         return;
       }
-      setState(() {
-        _storedImage = File(imageFile.path);
-      });
+      Get.find<Controller>().setUserProfileImage(File(imageFile!.path),);
     }
 
     return Scaffold(
@@ -75,20 +66,23 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                   ),
                   Stack(
                     children: [
-                      CircleAvatar(
-                        radius: 65,
-                        backgroundColor: const Color(0xFFd6e2ea),
-                        child: _storedImage != null
-                            ? Image.file(
-                                _storedImage!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              )
-                            : const Icon(
-                                Icons.camera_alt_rounded,
-                                size: 65,
-                                color: Colors.blueGrey,
-                              ),
+                      GetBuilder<Controller>(
+                  init: Controller(),
+                        builder: (getController) =>  CircleAvatar(
+                          radius: 65,
+                          backgroundColor: const Color(0xFFd6e2ea),
+                          child: getController.userProfileImage != null
+                              ? Image.file(
+                            getController.userProfileImage,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                )
+                              : const Icon(
+                                  Icons.camera_alt_rounded,
+                                  size: 65,
+                                  color: Colors.blueGrey,
+                                ),
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
