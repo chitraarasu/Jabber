@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:chatting_application/controller/controller.dart';
+import 'package:chatting_application/screens/chat_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'home.dart';
 
 class UserProfileInputScreen extends StatelessWidget {
   @override
@@ -17,7 +20,9 @@ class UserProfileInputScreen extends StatelessWidget {
       if (imageFile == null) {
         return;
       }
-      Get.find<Controller>().setUserProfileImage(File(imageFile!.path),);
+      Get.find<Controller>().setUserProfileImage(
+        File(imageFile!.path),
+      );
     }
 
     return Scaffold(
@@ -67,18 +72,20 @@ class UserProfileInputScreen extends StatelessWidget {
                   Stack(
                     children: [
                       GetBuilder<Controller>(
-                  init: Controller(),
-                        builder: (getController) =>  CircleAvatar(
+                        init: Controller(),
+                        builder: (getController) => CircleAvatar(
                           radius: 65,
                           backgroundColor: const Color(0xFFd6e2ea),
+                          backgroundImage:
+                              getController.userProfileImage != null
+                                  ? FileImage(
+                                      getController.userProfileImage,
+                                    )
+                                  : null,
                           child: getController.userProfileImage != null
-                              ? Image.file(
-                            getController.userProfileImage,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                )
+                              ? null
                               : const Icon(
-                                  Icons.camera_alt_rounded,
+                                  Icons.add_a_photo_rounded,
                                   size: 65,
                                   color: Colors.blueGrey,
                                 ),
@@ -135,7 +142,12 @@ class UserProfileInputScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.offAll(
+                      () => const Home(),
+                      transition: Transition.rightToLeftWithFade,
+                    );
+                  },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Text("Next"),
