@@ -17,16 +17,19 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFfcfcfc),
+      backgroundColor: const Color(0xFFfcfcfc),
       body: GetBuilder<Controller>(
         builder: (controller) => controller.body,
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF006aff),
-        child: const Icon(Icons.edit),
+      floatingActionButton: Visibility(
+        visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+        child: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: const Color(0xFF006aff),
+          child: const Icon(Icons.edit),
+        ),
       ),
     );
   }
@@ -36,7 +39,7 @@ class _HomeState extends State<Home> {
       builder: (controller) => BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 7.5,
-        child: Container(
+        child: SizedBox(
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

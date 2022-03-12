@@ -56,7 +56,18 @@ class UserProfileInputScreen extends StatelessWidget {
               Column(
                 children: [
                   const SizedBox(
-                    height: 20,
+                    height: 10,
+                  ),
+                  const Text(
+                    "Step 03/03",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xFFb8bbc4),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   const Text(
                     "Please provide your name and an optional profile photo",
