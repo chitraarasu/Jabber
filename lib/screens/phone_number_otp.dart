@@ -121,7 +121,6 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
               : "Verification",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
           ),
         ),
         leading: IconButton(
@@ -130,11 +129,10 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
           ),
         ),
       ),
-      backgroundColor: const Color(0xFFd6e2ea),
+      backgroundColor: Colors.deepOrange,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +226,8 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                                 border: Border.all(
-                                                  color: Color(0xFFb8bbc4),
+                                                  color:
+                                                      const Color(0xFFb8bbc4),
                                                   width: 1,
                                                 ),
                                               ),
@@ -389,6 +388,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       borderRadius: BorderRadius.circular(5),
                                       fieldHeight: 50,
                                       fieldWidth: 40,
+                                      inactiveColor: Colors.orange,
                                       inactiveFillColor: Colors.orange,
                                       activeFillColor: Colors.white,
                                       selectedColor: const Color(0xFFd6e2ea),
@@ -405,7 +405,6 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                     },
                                     onChanged: (value) {},
                                     beforeTextPaste: (text) {
-                                      print("Allowing to paste $text");
                                       return true;
                                     },
                                     appContext: context,
@@ -465,9 +464,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                         _isPlaying1
                                             ? null
                                             : _controller1?.isActive = true;
-                                        Get.to(
-                                            () =>
-                                                UserProfileInputScreen(),
+                                        Get.to(() => UserProfileInputScreen(),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       }

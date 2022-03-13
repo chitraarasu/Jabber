@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:chatting_application/screens/calls.dart';
 import 'package:chatting_application/screens/chat_list.dart';
+import 'package:chatting_application/screens/contacts.dart';
+import 'package:chatting_application/screens/settings.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
@@ -8,7 +11,16 @@ import 'package:get/get.dart';
 class Controller extends GetxController {
   var _index = 0;
 
-  var body = const ChatList();
+  final _screens = [
+    const ChatList(),
+    const Calls(),
+    const Contacts(),
+    const Settings(),
+  ];
+
+  get body {
+    return _screens[_index];
+  }
 
   get index {
     return _index;
@@ -18,7 +30,6 @@ class Controller extends GetxController {
     switch (index) {
       case 0:
         _index = index;
-        body = const ChatList();
         break;
       case 1:
         _index = index;
