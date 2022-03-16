@@ -12,7 +12,7 @@ class Controller extends GetxController {
   var _index = 0;
 
   final _screens = [
-    const ChatList(),
+    ChatList(),
     const Calls(),
     const Contacts(),
     const Settings(),

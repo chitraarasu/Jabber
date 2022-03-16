@@ -140,7 +140,7 @@ class UserProfileInputScreen extends StatelessWidget {
                                     width: 2,
                                     color: Colors.white,
                                   )),
-                              child: TextField(
+                              child: const TextField(
                                 maxLines: 1,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(12.5),

@@ -1,4 +1,5 @@
 import 'package:chatting_application/screens/user_profile_input_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:country_pickers/country.dart';
@@ -30,6 +31,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   bool _isPlaying = false;
   bool _isPlaying1 = false;
   bool _isPlaying2 = false;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  var verificationId;
 
   @override
   void dispose() {
@@ -65,6 +69,22 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   }
 
   var currentScreen = screen.number.obs;
+
+  void signInWithPhoneAuthCredentials(
+      PhoneAuthCredential phoneAuthCredential) async {
+    try {
+      final authCredentials =
+          await _auth.signInWithCredential(phoneAuthCredential);
+
+      if (authCredentials.user != null) {
+        Get.to(() => UserProfileInputScreen(),
+            transition: Transition.rightToLeftWithFade);
+      }
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("${error.message}")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,304 +196,339 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                       const SizedBox(
                         height: 10,
                       ),
-                      currentScreen.value == screen.number
-                          ? Column(
-                              children: [
-                                const Text(
-                                  "Your phone number",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const Text(
-                                  "We'll send you a code to your phone number",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Color(0xFFb8bbc4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 25,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 15.0,
-                                    horizontal: 20,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      border: Border.all(
-                                        color: const Color(0xFFb8bbc4),
-                                        width: 1,
-                                      ),
+                      Obx(
+                        () => currentScreen.value == screen.number
+                            ? Column(
+                                children: [
+                                  const Text(
+                                    "Your phone number",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
                                     ),
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: _openCountryPickerDialog,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const Text(
+                                    "We'll send you a code to your phone number",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Color(0xFFb8bbc4),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 15.0,
+                                      horizontal: 20,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                          color: const Color(0xFFb8bbc4),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: _openCountryPickerDialog,
+                                            child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(10.0),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                                border: Border.all(
-                                                  color:
-                                                      const Color(0xFFb8bbc4),
-                                                  width: 1,
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  border: Border.all(
+                                                    color:
+                                                        const Color(0xFFb8bbc4),
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: GetBuilder<Controller>(
+                                                  init: Controller(),
+                                                  builder: (chatController) =>
+                                                      _buildDialogItem(
+                                                          chatController
+                                                              .selectedDialogCountry),
                                                 ),
                                               ),
-                                              child: GetBuilder<Controller>(
-                                                init: Controller(),
-                                                builder: (chatController) =>
-                                                    _buildDialogItem(chatController
-                                                        .selectedDialogCountry),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Expanded(
+                                            child: TextField(
+                                              controller: phoneNumberController,
+                                              // focusNode: phoneNumberFocusNode,
+                                              decoration: const InputDecoration(
+                                                contentPadding: EdgeInsets.zero,
+                                                border: InputBorder.none,
+                                                hintText: "Phone number",
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: phoneNumberController,
-                                            // focusNode: phoneNumberFocusNode,
-                                            decoration: const InputDecoration(
-                                              contentPadding: EdgeInsets.zero,
-                                              border: InputBorder.none,
-                                              hintText: "Phone number",
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            onChanged: (val) {
-                                              _isPlaying
-                                                  ? null
-                                                  : _controller?.isActive =
-                                                      true;
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 20,
-                                    horizontal: 70,
-                                  ),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(20.0)),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.blue),
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(35.0),
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      FocusScope.of(context).unfocus();
-                                      if (phoneNumberController.text.length <
-                                              10 ||
-                                          phoneNumberController.text.length >
-                                              10) {
-                                        _isPlaying2
-                                            ? null
-                                            : _controller2?.isActive = true;
-                                      } else {
-                                        _isPlaying1
-                                            ? null
-                                            : _controller1?.isActive = true;
-                                        currentScreen.value = screen.otp;
-                                      }
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Text(
-                                          "Send code",
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Icon(Icons.send_rounded),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Column(
-                              children: [
-                                const Text(
-                                  "Verifying your number",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                GetBuilder<Controller>(
-                                  builder: (getController) => Center(
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Enter the otp sent to ',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Color(0xFFb8bbc4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '+${getController.selectedDialogCountry.phoneCode} ${phoneNumberController.text.substring(0, 5)} ${phoneNumberController.text.substring(5)}.',
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onChanged: (val) {
+                                                _isPlaying
+                                                    ? null
+                                                    : _controller?.isActive =
+                                                        true;
+                                              },
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.back();
-                                  },
-                                  child: const Text(
-                                    'Wrong number?',
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20,
+                                      horizontal: 70,
+                                    ),
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.all(20.0)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.blue),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(35.0),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        FocusScope.of(context).unfocus();
+                                        if (phoneNumberController.text.length <
+                                                10 ||
+                                            phoneNumberController.text.length >
+                                                10) {
+                                          _isPlaying2
+                                              ? null
+                                              : _controller2?.isActive = true;
+                                        } else {
+                                          _isPlaying1
+                                              ? null
+                                              : _controller1?.isActive = true;
+                                          final controller =
+                                              Get.put(Controller());
+                                          final phno =
+                                              "+${controller.selectedDialogCountry.phoneCode}${phoneNumberController.text}";
+                                          await _auth.verifyPhoneNumber(
+                                            phoneNumber: phno,
+                                            verificationCompleted:
+                                                (verificationCompleted) async {},
+                                            verificationFailed:
+                                                (verificationFailed) async {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "${verificationFailed.message}")));
+                                            },
+                                            codeSent: (verificationToken,
+                                                resendToken) async {
+                                              currentScreen.value = screen.otp;
+                                              verificationId =
+                                                  verificationToken;
+                                              print(verificationId);
+                                              print("otp sent");
+                                            },
+                                            codeAutoRetrievalTimeout:
+                                                (codeAutoRetrievalTimeout) async {},
+                                          );
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: const [
+                                          Text(
+                                            "Send code",
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                            ),
+                                          ),
+                                          Icon(Icons.send_rounded),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  const Text(
+                                    "Verifying your number",
                                     style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: PinCodeTextField(
-                                    length: 6,
-                                    obscureText: true,
-                                    animationType: AnimationType.fade,
-                                    pinTheme: PinTheme(
-                                      shape: PinCodeFieldShape.box,
-                                      borderRadius: BorderRadius.circular(5),
-                                      fieldHeight: 50,
-                                      fieldWidth: 40,
-                                      inactiveColor: Colors.orange,
-                                      inactiveFillColor: Colors.orange,
-                                      activeFillColor: Colors.white,
-                                      selectedColor: const Color(0xFFd6e2ea),
-                                      selectedFillColor:
-                                          const Color(0xFFd6e2ea),
-                                    ),
-                                    animationDuration:
-                                        Duration(milliseconds: 300),
-                                    enableActiveFill: true,
-                                    // errorAnimationController: errorController,
-                                    controller: otpTextEditingController,
-                                    onCompleted: (v) {
-                                      print(otpTextEditingController.text);
-                                    },
-                                    onChanged: (value) {},
-                                    beforeTextPaste: (text) {
-                                      return true;
-                                    },
-                                    appContext: context,
+                                  const SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    children: [
-                                      const TextSpan(
-                                        text: 'If you didn\'t get a otp! ',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Color(0xFFb8bbc4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: ' Resend',
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {},
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 40.0,
-                                        vertical: 15,
-                                      )),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.blue),
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(35.0),
+                                  GetBuilder<Controller>(
+                                    builder: (getController) => Center(
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Enter the otp sent to ',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Color(0xFFb8bbc4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  '+${getController.selectedDialogCountry.phoneCode} ${phoneNumberController.text.substring(0, 5)} ${phoneNumberController.text.substring(5)}.',
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      if (otpTextEditingController.text.length <
-                                          6) {
-                                        _isPlaying2
-                                            ? null
-                                            : _controller2?.isActive = true;
-                                      } else {
-                                        _isPlaying1
-                                            ? null
-                                            : _controller1?.isActive = true;
-                                        Get.to(() => UserProfileInputScreen(),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      }
-                                    },
-                                    child: const Text("Verify"),
                                   ),
-                                ),
-                              ],
-                            ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.back();
+                                    },
+                                    child: const Text(
+                                      'Wrong number?',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: PinCodeTextField(
+                                      length: 6,
+                                      obscureText: true,
+                                      animationType: AnimationType.fade,
+                                      pinTheme: PinTheme(
+                                        shape: PinCodeFieldShape.box,
+                                        borderRadius: BorderRadius.circular(5),
+                                        fieldHeight: 50,
+                                        fieldWidth: 40,
+                                        inactiveColor: Colors.orange,
+                                        inactiveFillColor: Colors.orange,
+                                        activeFillColor: Colors.white,
+                                        selectedColor: const Color(0xFFd6e2ea),
+                                        selectedFillColor:
+                                            const Color(0xFFd6e2ea),
+                                      ),
+                                      animationDuration:
+                                          Duration(milliseconds: 300),
+                                      enableActiveFill: true,
+                                      // errorAnimationController: errorController,
+                                      controller: otpTextEditingController,
+                                      onCompleted: (v) {
+                                        print(otpTextEditingController.text);
+                                      },
+                                      onChanged: (value) {},
+                                      beforeTextPaste: (text) {
+                                        return true;
+                                      },
+                                      appContext: context,
+                                    ),
+                                  ),
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'If you didn\'t get a otp! ',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Color(0xFFb8bbc4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' Resend',
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {},
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                          horizontal: 40.0,
+                                          vertical: 15,
+                                        )),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.blue),
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(35.0),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        if (otpTextEditingController
+                                                .text.length <
+                                            6) {
+                                          _isPlaying2
+                                              ? null
+                                              : _controller2?.isActive = true;
+                                        } else {
+                                          _isPlaying1
+                                              ? null
+                                              : _controller1?.isActive = true;
+                                          PhoneAuthCredential
+                                              phoneAuthCredential =
+                                              PhoneAuthProvider.credential(
+                                                  verificationId:
+                                                      verificationId,
+                                                  smsCode:
+                                                      otpTextEditingController
+                                                          .text);
+                                          signInWithPhoneAuthCredentials(
+                                              phoneAuthCredential);
+                                        }
+                                      },
+                                      child: const Text("Verify"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
                     ],
                   ),
                 ),

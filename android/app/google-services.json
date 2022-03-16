@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "687429059252",
+    "project_id": "csp-chatting-app",
+    "storage_bucket": "csp-chatting-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687429059252:android:8f4175d6ac42e213a40de1",
+        "android_client_info": {
+          "package_name": "com.csp.chat.chatting_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687429059252-a3pg7jj6ngtarbcrj5cu39v83vffajol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.csp.chat.chatting_application",
+            "certificate_hash": "6dbf8d8f640af758d32a984943eeed804c64c655"
+          }
+        },
+        {
+          "client_id": "687429059252-4p07ee92c1el6lj94th57rennfhp6kol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4wdXRndap29bYp1UdWnJi27tam9--Xns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687429059252-4p07ee92c1el6lj94th57rennfhp6kol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

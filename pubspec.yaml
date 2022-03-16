@@ -41,6 +41,8 @@ dependencies:
   rive: ^0.8.1
   pin_code_fields: ^7.3.0
   image_picker: ^0.8.4+10
+  firebase_core: ^1.13.1
+  firebase_auth: ^3.3.10
 
 dev_dependencies:
   flutter_test:

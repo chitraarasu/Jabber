@@ -8,8 +8,14 @@ class ChatBar extends StatelessWidget {
   final notify;
   Function onTap;
 
-  ChatBar(this.name, this.lastMessage, this.image, this.time, this.notify,
-      this.onTap);
+  ChatBar(
+    this.name,
+    this.lastMessage,
+    this.image,
+    this.time,
+    this.notify,
+    this.onTap,
+  );
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -30,10 +36,11 @@ class ChatBar extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: Color(0xFFd6e2ea),
+                      radius: 25,
+                      backgroundColor: const Color(0xFFd6e2ea),
                       backgroundImage: NetworkImage(image),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Column(
@@ -41,17 +48,17 @@ class ChatBar extends StatelessWidget {
                       children: [
                         Text(
                           name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         Text(
                           lastMessage,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontWeight: FontWeight.bold,
                           ),
@@ -65,15 +72,15 @@ class ChatBar extends StatelessWidget {
                   children: [
                     Text(
                       time,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xFF006aff),
                       ),

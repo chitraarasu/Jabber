@@ -1,12 +1,14 @@
 import 'package:chatting_application/screens/chat_screen.dart';
+import 'package:chatting_application/screens/onboarding_page.dart';
 import 'package:chatting_application/widget/search.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../widget/chat_bar.dart';
 
 class ChatList extends StatelessWidget {
-  const ChatList({Key? key}) : super(key: key);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,16 @@ class ChatList extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Tab(
-              icon: Image.asset(
-                "assets/images/edit.png",
-                width: 35,
+            child: GestureDetector(
+              onTap: () {
+                _auth.signOut();
+                Get.offAll(const OnBoardingPage(), transition: Transition.fade);
+              },
+              child: Tab(
+                icon: Image.asset(
+                  "assets/images/edit.png",
+                  width: 35,
+                ),
               ),
             ),
           ),
