@@ -11,6 +11,16 @@ import 'package:get/get.dart';
 class Controller extends GetxController {
   var _index = 0;
 
+  var _isLoading = false;
+
+  get isLoading {
+    return _isLoading;
+  }
+
+  setIsLoading(val) {
+    _isLoading = val;
+  }
+
   final _screens = [
     ChatList(),
     const Calls(),

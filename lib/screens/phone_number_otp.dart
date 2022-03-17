@@ -34,7 +34,6 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var verificationId;
-
   @override
   void dispose() {
     phoneNumberController.dispose();
@@ -70,7 +69,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
 
   var currentScreen = screen.number.obs;
 
-  void signInWithPhoneAuthCredentials(
+  Future<void> signInWithPhoneAuthCredentials(
       PhoneAuthCredential phoneAuthCredential) async {
     try {
       final authCredentials =
@@ -81,6 +80,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
             transition: Transition.rightToLeftWithFade);
       }
     } on FirebaseAuthException catch (error) {
+      _isPlaying2 ? null : _controller2?.isActive = true;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("${error.message}")));
     }
@@ -289,78 +289,106 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 20,
-                                      horizontal: 70,
-                                    ),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.all(20.0)),
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.blue),
-                                        shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(35.0),
-                                          ),
-                                        ),
+                                  GetBuilder<Controller>(
+                                    builder: (getController) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 20,
+                                        horizontal: 70,
                                       ),
-                                      onPressed: () async {
-                                        FocusScope.of(context).unfocus();
-                                        if (phoneNumberController.text.length <
-                                                10 ||
-                                            phoneNumberController.text.length >
-                                                10) {
-                                          _isPlaying2
-                                              ? null
-                                              : _controller2?.isActive = true;
-                                        } else {
-                                          _isPlaying1
-                                              ? null
-                                              : _controller1?.isActive = true;
-                                          final controller =
-                                              Get.put(Controller());
-                                          final phno =
-                                              "+${controller.selectedDialogCountry.phoneCode}${phoneNumberController.text}";
-                                          await _auth.verifyPhoneNumber(
-                                            phoneNumber: phno,
-                                            verificationCompleted:
-                                                (verificationCompleted) async {},
-                                            verificationFailed:
-                                                (verificationFailed) async {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "${verificationFailed.message}")));
-                                            },
-                                            codeSent: (verificationToken,
-                                                resendToken) async {
-                                              currentScreen.value = screen.otp;
-                                              verificationId =
-                                                  verificationToken;
-                                              print(verificationId);
-                                              print("otp sent");
-                                            },
-                                            codeAutoRetrievalTimeout:
-                                                (codeAutoRetrievalTimeout) async {},
-                                          );
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          Text(
-                                            "Send code",
-                                            style: TextStyle(
-                                              fontSize: 22,
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.all(20.0)),
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.blue),
+                                          shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(35.0),
                                             ),
                                           ),
-                                          Icon(Icons.send_rounded),
-                                        ],
+                                        ),
+                                        onPressed: () async {
+                                          FocusScope.of(context).unfocus();
+                                          if (!getController.isLoading) {
+                                            getController.setIsLoading(true);
+                                            if (phoneNumberController
+                                                        .text.length <
+                                                    10 ||
+                                                phoneNumberController
+                                                        .text.length >
+                                                    10) {
+                                              _isPlaying2
+                                                  ? null
+                                                  : _controller2?.isActive =
+                                                      true;
+                                              getController.setIsLoading(false);
+                                            } else {
+                                              _isPlaying1
+                                                  ? null
+                                                  : _controller1?.isActive =
+                                                      true;
+                                              final controller =
+                                                  Get.put(Controller());
+                                              final phno =
+                                                  "+${controller.selectedDialogCountry.phoneCode}${phoneNumberController.text}";
+                                              await _auth.verifyPhoneNumber(
+                                                phoneNumber: phno,
+                                                verificationCompleted:
+                                                    (verificationCompleted) async {
+                                                  getController
+                                                      .setIsLoading(false);
+                                                },
+                                                verificationFailed:
+                                                    (verificationFailed) async {
+                                                  _isPlaying2
+                                                      ? null
+                                                      : _controller2?.isActive =
+                                                          true;
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(SnackBar(
+                                                          content: Text(
+                                                              "${verificationFailed.message}")));
+                                                  getController
+                                                      .setIsLoading(false);
+                                                },
+                                                codeSent: (verificationToken,
+                                                    resendToken) async {
+                                                  currentScreen.value =
+                                                      screen.otp;
+                                                  verificationId =
+                                                      verificationToken;
+                                                  getController
+                                                      .setIsLoading(false);
+                                                },
+                                                codeAutoRetrievalTimeout:
+                                                    (codeAutoRetrievalTimeout) async {
+                                                  getController
+                                                      .setIsLoading(false);
+                                                },
+                                              );
+                                            }
+                                          }
+                                        },
+                                        child: getController.isLoading == true
+                                            ? const CircularProgressIndicator(
+                                                color: Colors.white,
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: const [
+                                                  Text(
+                                                    "Send code",
+                                                    style: TextStyle(
+                                                      fontSize: 22,
+                                                    ),
+                                                  ),
+                                                  Icon(Icons.send_rounded),
+                                                ],
+                                              ),
                                       ),
                                     ),
                                   ),
@@ -481,49 +509,61 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                          horizontal: 40.0,
-                                          vertical: 15,
-                                        )),
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.blue),
-                                        shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(35.0),
+                                  GetBuilder<Controller>(
+                                    builder: (getController) => Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.symmetric(
+                                            horizontal: 40.0,
+                                            vertical: 15,
+                                          )),
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.blue),
+                                          shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(35.0),
+                                            ),
                                           ),
                                         ),
+                                        onPressed: () async {
+                                          if (!getController.isLoading) {
+                                            getController.setIsLoading(true);
+                                            if (otpTextEditingController
+                                                    .text.length <
+                                                6) {
+                                              _isPlaying2
+                                                  ? null
+                                                  : _controller2?.isActive =
+                                                      true;
+                                            } else {
+                                              _isPlaying1
+                                                  ? null
+                                                  : _controller1?.isActive =
+                                                      true;
+                                              PhoneAuthCredential
+                                                  phoneAuthCredential =
+                                                  PhoneAuthProvider.credential(
+                                                      verificationId:
+                                                          verificationId,
+                                                      smsCode:
+                                                          otpTextEditingController
+                                                              .text);
+                                              await signInWithPhoneAuthCredentials(
+                                                  phoneAuthCredential);
+                                            }
+                                            getController.setIsLoading(false);
+                                          }
+                                        },
+                                        child: getController.isLoading == true
+                                            ? const CircularProgressIndicator(
+                                                color: Colors.white,
+                                              )
+                                            : const Text("Verify"),
                                       ),
-                                      onPressed: () async {
-                                        if (otpTextEditingController
-                                                .text.length <
-                                            6) {
-                                          _isPlaying2
-                                              ? null
-                                              : _controller2?.isActive = true;
-                                        } else {
-                                          _isPlaying1
-                                              ? null
-                                              : _controller1?.isActive = true;
-                                          PhoneAuthCredential
-                                              phoneAuthCredential =
-                                              PhoneAuthProvider.credential(
-                                                  verificationId:
-                                                      verificationId,
-                                                  smsCode:
-                                                      otpTextEditingController
-                                                          .text);
-                                          signInWithPhoneAuthCredentials(
-                                              phoneAuthCredential);
-                                        }
-                                      },
-                                      child: const Text("Verify"),
                                     ),
                                   ),
                                 ],
