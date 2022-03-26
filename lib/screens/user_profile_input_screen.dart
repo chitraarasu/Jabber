@@ -1,15 +1,35 @@
 import 'dart:io';
 
 import 'package:chatting_application/controller/controller.dart';
-import 'package:chatting_application/screens/chat_list.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'home.dart';
 
-class UserProfileInputScreen extends StatelessWidget {
+class UserProfileInputScreen extends StatefulWidget {
+  @override
+  State<UserProfileInputScreen> createState() => _UserProfileInputScreenState();
+}
+
+class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
+  TextEditingController nameController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  var isLoading = false.obs;
+
+  var getController = Get.put(Controller());
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     PickedFile? imageFile;
@@ -140,9 +160,11 @@ class UserProfileInputScreen extends StatelessWidget {
                                     width: 2,
                                     color: Colors.white,
                                   )),
-                              child: const TextField(
+                              child: TextField(
                                 maxLines: 1,
-                                decoration: InputDecoration(
+                                controller: nameController,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.all(12.5),
                                   hintText: 'Enter your name',
                                   border: InputBorder.none,
@@ -181,15 +203,50 @@ class UserProfileInputScreen extends StatelessWidget {
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(0),
                     ),
-                    onPressed: () {
-                      Get.offAll(
-                        () => const Home(),
-                        transition: Transition.rightToLeftWithFade,
-                      );
+                    onPressed: () async {
+                      try {
+                        if (!isLoading.value) {
+                          if (nameController.text.trim().isNotEmpty) {
+                            isLoading.value = true;
+                            var url;
+                            if (getController.userProfileImage != null) {
+                              final ref = FirebaseStorage.instance
+                                  .ref()
+                                  .child('user_image')
+                                  .child("${_auth.currentUser?.uid}.jpg");
+                              await ref.putFile(getController.userProfileImage);
+                              url = await ref.getDownloadURL();
+                            }
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(_auth.currentUser?.uid)
+                                .set({
+                              'username': nameController.text,
+                              'phoneNumber': _auth.currentUser?.phoneNumber,
+                              'isOnline': true,
+                              'profileUrl': url,
+                              "uid": _auth.currentUser?.uid,
+                            });
+                            isLoading.value = false;
+                            Get.offAll(
+                              () => const Home(),
+                              transition: Transition.rightToLeftWithFade,
+                            );
+                          }
+                        }
+                      } catch (error) {
+                        isLoading.value = false;
+                      }
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text("Next"),
+                    child: Obx(
+                      () => Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: isLoading.value
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text("Next"),
+                      ),
                     ),
                   ),
                 ),
