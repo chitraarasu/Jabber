@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class ChatProfileSheet extends StatelessWidget {
   final name;
   final image;
+  final number;
 
-  ChatProfileSheet(this.name, this.image);
+  ChatProfileSheet(this.name, this.image, this.number);
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -36,6 +37,9 @@ class ChatProfileSheet extends StatelessWidget {
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                Text(
+                  number,
                 ),
               ],
             ),

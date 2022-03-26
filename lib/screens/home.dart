@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../controller/controller.dart';
 import '../widget/customMaterialButton.dart';
+import 'contacts.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -26,7 +27,9 @@ class _HomeState extends State<Home> {
       floatingActionButton: Visibility(
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.to(() => const Contacts());
+          },
           backgroundColor: const Color(0xFF006aff),
           child: const Icon(Icons.edit),
         ),
@@ -56,11 +59,11 @@ class _HomeState extends State<Home> {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CustomMaterialButton(() {
                     controller.setScreen(2);
-                  }, controller.index == 2, Icons.person_rounded, "Contacts"),
+                  }, controller.index == 2, Icons.person_rounded, "Chat Bot"),
                   CustomMaterialButton(() {
                     controller.setScreen(3);
                   }, controller.index == 3, Icons.settings, "Settings"),

@@ -8,6 +8,8 @@ import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
 
+import '../screens/chat_bot.dart';
+
 class Controller extends GetxController {
   var _index = 0;
 
@@ -24,7 +26,7 @@ class Controller extends GetxController {
   final _screens = [
     ChatList(),
     const Calls(),
-    const Contacts(),
+    const ChatBot(),
     const Settings(),
   ];
 

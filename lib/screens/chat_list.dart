@@ -2,7 +2,6 @@ import 'package:chatting_application/screens/chat_screen.dart';
 import 'package:chatting_application/screens/onboarding_page.dart';
 import 'package:chatting_application/widget/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -78,6 +77,7 @@ class ChatList extends StatelessWidget {
                               () => ChatScreen(
                                     "Alice hendry",
                                     "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+                                    "123456789",
                                   ),
                               transition: Transition.rightToLeftWithFade);
                         },

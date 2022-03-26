@@ -7,7 +7,8 @@ import '../widget/chat_profile_sheet.dart';
 class ChatScreen extends StatelessWidget {
   final name;
   final image;
-  ChatScreen(this.name, this.image);
+  final number;
+  ChatScreen(this.name, this.image, this.number);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class ChatScreen extends StatelessWidget {
               builder: (context) {
                 return FractionallySizedBox(
                   heightFactor: 0.70,
-                  child: ChatProfileSheet(name, image),
+                  child: ChatProfileSheet(name, image, number),
                 );
               },
             );
