@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
@@ -6,12 +7,30 @@ import '../widget/chat_bar.dart';
 import 'chat_screen.dart';
 
 class Contacts extends StatelessWidget {
-  const Contacts({Key? key}) : super(key: key);
+  var dbPhoneNumbers = [];
+  var userData = [];
+  var contactPhoneNumbers = [];
+  var contactProfiles = [];
 
   Future getContacts() async {
     if (await FlutterContacts.requestPermission()) {
-      return await FlutterContacts.getContacts(
-          withProperties: true, withPhoto: true);
+      var contact = await FlutterContacts.getContacts(withProperties: true);
+
+      for (var item in contact) {
+        if (item.phones.isNotEmpty && item.phones.length == 1) {
+          if (dbPhoneNumbers.contains(item.phones[0].normalizedNumber)) {
+            contactPhoneNumbers.add(item.phones[0].normalizedNumber);
+          }
+        }
+      }
+
+      for (var item in userData) {
+        if (contactPhoneNumbers.contains(item['phoneNumber'])) {
+          contactProfiles.add(item);
+        }
+      }
+
+      return contact;
     }
   }
 
@@ -50,36 +69,57 @@ class Contacts extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: getContacts(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("users").snapshots(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.data != null) {
+            List docs = snapshot.data.docs;
+            docs.forEach((item) {
+              dbPhoneNumbers.add(item["phoneNumber"]);
+              userData.add(item);
+            });
+          }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: Text("Loading..."),
             );
           } else {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) => ChatBar(
-                  snapshot.data[index].displayName,
-                  snapshot.data[0].phones[0].normalizedNumber,
-                  "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
-                  "12.33 AM",
-                  "3",
-                  () {
-                    Get.to(
-                        () => ChatScreen(
-                              snapshot.data[index].displayName,
-                              "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
-                              snapshot.data[0].phones[0].normalizedNumber,
-                            ),
-                        transition: Transition.fadeIn);
-                  },
-                ),
-              ),
-            );
+            return FutureBuilder(
+                future: getContacts(),
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: Text("Loading..."),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          itemCount: contactProfiles.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ChatBar(
+                              contactProfiles[index]['username'],
+                              contactProfiles[index]['phoneNumber'],
+                              contactProfiles[index]['profileUrl'] ??
+                                  "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+                              "12.33 AM",
+                              "3",
+                              () {
+                                Get.to(
+                                    () => ChatScreen(
+                                          contactProfiles[index]['username'],
+                                          contactProfiles[index]
+                                                  ['profileUrl'] ??
+                                              "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+                                          contactProfiles[index]['phoneNumber'],
+                                        ),
+                                    transition: Transition.fadeIn);
+                              },
+                            );
+                          }),
+                    );
+                  }
+                });
           }
         },
       ),

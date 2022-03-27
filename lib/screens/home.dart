@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
         child: FloatingActionButton(
           onPressed: () {
-            Get.to(() => const Contacts());
+            Get.to(() => Contacts());
           },
           backgroundColor: const Color(0xFF006aff),
           child: const Icon(Icons.edit),

@@ -48,10 +48,12 @@ class ChatScreen extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                name,
-                style: const TextStyle(
-                  color: Colors.black,
+              Expanded(
+                child: Text(
+                  name,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ],
@@ -61,26 +63,26 @@ class ChatScreen extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xFF86898f),
               ),
-              child: Icon(Icons.phone),
+              child: const Icon(Icons.phone),
             ),
           ),
           IconButton(
             onPressed: () {},
             icon: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xFF86898f),
               ),
-              child: Icon(Icons.search),
+              child: const Icon(Icons.search),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
         ],

@@ -33,6 +33,7 @@ class ChatProfileSheet extends StatelessWidget {
                 ),
                 Text(
                   name,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
