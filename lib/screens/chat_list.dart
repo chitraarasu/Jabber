@@ -78,6 +78,7 @@ class ChatList extends StatelessWidget {
                                     "Alice hendry",
                                     "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
                                     "123456789",
+                                    false,
                                   ),
                               transition: Transition.rightToLeftWithFade);
                         },

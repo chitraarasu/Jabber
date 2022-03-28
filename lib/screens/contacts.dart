@@ -60,7 +60,9 @@ class Contacts extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              showSearch(context: context, delegate: MySearchDelegate());
+              showSearch(
+                  context: context,
+                  delegate: MySearchDelegate(contactProfiles));
             },
             icon: const Icon(
               Icons.search,
@@ -92,32 +94,7 @@ class Contacts extends StatelessWidget {
                       child: Text("Loading..."),
                     );
                   } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                          itemCount: contactProfiles.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ChatBar(
-                              contactProfiles[index]['username'],
-                              contactProfiles[index]['phoneNumber'],
-                              contactProfiles[index]['profileUrl'] ??
-                                  "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
-                              "12.33 AM",
-                              "3",
-                              () {
-                                Get.to(
-                                    () => ChatScreen(
-                                          contactProfiles[index]['username'],
-                                          contactProfiles[index]
-                                                  ['profileUrl'] ??
-                                              "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
-                                          contactProfiles[index]['phoneNumber'],
-                                        ),
-                                    transition: Transition.fadeIn);
-                              },
-                            );
-                          }),
-                    );
+                    return ChatListCardCaller(contactProfiles: contactProfiles);
                   }
                 });
           }
@@ -127,9 +104,51 @@ class Contacts extends StatelessWidget {
   }
 }
 
-class MySearchDelegate extends SearchDelegate {
+class ChatListCardCaller extends StatelessWidget {
+  const ChatListCardCaller({
+    Key? key,
+    required this.contactProfiles,
+  }) : super(key: key);
+
+  final List contactProfiles;
+
   @override
-  List<Widget>? buildActions(BuildContext context) => [
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+          itemCount: contactProfiles.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ChatBar(
+              contactProfiles[index]['username'],
+              contactProfiles[index]['phoneNumber'],
+              contactProfiles[index]['profileUrl'] ??
+                  "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+              "12.33 AM",
+              "3",
+              () {
+                Get.to(
+                    () => ChatScreen(
+                          contactProfiles[index]['username'],
+                          contactProfiles[index]['profileUrl'] ??
+                              "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+                          contactProfiles[index]['phoneNumber'],
+                          true,
+                        ),
+                    transition: Transition.fadeIn);
+              },
+            );
+          }),
+    );
+  }
+}
+
+class MySearchDelegate extends SearchDelegate {
+  List resultContact;
+  MySearchDelegate(this.resultContact);
+
+  @override
+  List<Widget> buildActions(BuildContext context) => [
         IconButton(
           icon: const Icon(
             Icons.clear,
@@ -146,7 +165,7 @@ class MySearchDelegate extends SearchDelegate {
       ];
 
   @override
-  Widget? buildLeading(BuildContext context) => IconButton(
+  Widget buildLeading(BuildContext context) => IconButton(
         icon: const Icon(
           Icons.arrow_back_rounded,
           color: Colors.black,
@@ -158,5 +177,18 @@ class MySearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) => Container();
 
   @override
-  Widget buildSuggestions(BuildContext context) => Container();
+  Widget buildSuggestions(BuildContext context) {
+    var listToShow;
+    if (query.isNotEmpty) {
+      listToShow = resultContact.where((e) {
+        final title = e['username'].toLowerCase();
+        final input = query.toLowerCase();
+        return title.contains(input);
+      }).toList();
+    } else {
+      listToShow = resultContact;
+    }
+
+    return ChatListCardCaller(contactProfiles: listToShow);
+  }
 }
