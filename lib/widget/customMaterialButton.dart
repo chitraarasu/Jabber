@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomMaterialButton extends StatelessWidget {
@@ -14,20 +15,37 @@ class CustomMaterialButton extends StatelessWidget {
       onPressed: () {
         onTap();
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          Icon(
-            icon,
-            color: condition ? const Color(0xFF006aff) : Colors.grey,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: condition ? const Color(0xFF006aff) : Colors.grey,
+              ),
+              Text(
+                name,
+                style: TextStyle(
+                  color: condition ? const Color(0xFF006aff) : Colors.grey,
+                  fontWeight: condition ? FontWeight.bold : null,
+                ),
+              ),
+            ],
           ),
-          Text(
-            name,
-            style: TextStyle(
-              color: condition ? const Color(0xFF006aff) : Colors.grey,
-              fontWeight: condition ? FontWeight.bold : null,
-            ),
-          ),
+          if (condition)
+            Positioned(
+              top: -11,
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF006aff),
+                ),
+                width: 16,
+                height: 16,
+              ),
+            )
         ],
       ),
     );

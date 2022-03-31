@@ -28,13 +28,13 @@ class ChatProfileSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 75 / 2 + 40,
                 ),
                 Text(
                   name,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
                   ),
@@ -49,8 +49,16 @@ class ChatProfileSheet extends StatelessWidget {
         Positioned(
           top: -75 / 2 - 40,
           child: CircleAvatar(
+            backgroundColor: const Color(0xFFd6e2ea),
             radius: 75,
-            backgroundImage: NetworkImage(image),
+            backgroundImage: image == null ? null : NetworkImage(image),
+            child: image == null
+                ? const Icon(
+                    Icons.person_rounded,
+                    color: Colors.grey,
+                    size: 100,
+                  )
+                : null,
           ),
         ),
       ],

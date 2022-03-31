@@ -1,97 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:intl/intl.dart';
-
 import '../widget/chat_profile_sheet.dart';
+import '../widget/message_bubble.dart';
 
 class ChatScreen extends StatelessWidget {
   final name;
   final image;
   final number;
+  final receiverId;
+  final channelId;
   final isFromContact;
-  ChatScreen(this.name, this.image, this.number, this.isFromContact);
+  ChatScreen(this.name, this.receiverId, this.image, this.number,
+      this.isFromContact, this.channelId);
 
   @override
   Widget build(BuildContext context) {
-    List<Message> messages = [
-      Message(
-        "Hi",
-        DateTime.now().subtract(const Duration(minutes: 1)),
-        false,
-      ),
-      Message(
-        "hello",
-        DateTime.now().subtract(const Duration(minutes: 1)),
-        true,
-      ),
-      Message(
-        "How r u?",
-        DateTime.now().subtract(const Duration(minutes: 1)),
-        false,
-      ),
-      Message(
-        "good",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 1)),
-        true,
-      ),
-      Message(
-        "what about u?",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        false,
-      ),
-      Message(
-        "hmm, good",
-        DateTime.now().subtract(const Duration(minutes: 1)),
-        true,
-      ),
-      Message(
-        "Its been so long",
-        DateTime.now().subtract(const Duration(minutes: 1)),
-        true,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        false,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        true,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        false,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        true,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        false,
-      ),
-      Message(
-        "Lorem ipsum",
-        DateTime.now().subtract(const Duration(minutes: 1, days: 2)),
-        true,
-      ),
-    ];
-
+    print(channelId);
     Future<bool> _onWillPop() async {
       Get.back();
       isFromContact ? Get.back() : null;
       return false;
     }
 
+    var _enteredMessage = ''.obs;
+    TextEditingController _controller = TextEditingController();
+
+    void _sendMessage() async {
+      print("got CLick");
+      _controller.clear();
+      FocusScope.of(context).unfocus();
+      final user = FirebaseAuth.instance.currentUser!;
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      FirebaseFirestore.instance
+          .collection('messages')
+          .doc(channelId)
+          .collection("channelChat")
+          .add({
+        'message': _enteredMessage.value,
+        'createdTime': Timestamp.now(),
+        'senderId': user.uid,
+        'senderName': userData['username'],
+        'receiverId': receiverId,
+        'receiverName': name,
+      });
+    }
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: 70,
           backgroundColor: Colors.white,
@@ -125,7 +88,15 @@ class ChatScreen extends StatelessWidget {
                 Hero(
                   tag: name,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(image),
+                    backgroundColor: const Color(0xFFd6e2ea),
+                    backgroundImage: image == null ? null : NetworkImage(image),
+                    child: image == null
+                        ? const Icon(
+                            Icons.person_rounded,
+                            color: Colors.grey,
+                            size: 30,
+                          )
+                        : null,
                   ),
                 ),
                 const SizedBox(
@@ -178,58 +149,136 @@ class ChatScreen extends StatelessWidget {
         body: Column(
           children: [
             Expanded(
-              child: GroupedListView<Message, DateTime>(
-                reverse: true,
-                order: GroupedListOrder.DESC,
-                useStickyGroupSeparators: true,
-                floatingHeader: true,
-                padding: const EdgeInsets.all(8),
-                elements: messages,
-                groupBy: (message) => DateTime(
-                  message.date.year,
-                  message.date.month,
-                  message.date.day,
-                ),
-                groupHeaderBuilder: (Message message) => SizedBox(
-                  height: 40,
-                  child: Center(
-                    child: Card(
-                      color: Colors.lightBlueAccent,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          DateFormat.yMMMd().format(message.date),
-                          style: const TextStyle(color: Colors.white),
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('messages')
+                    .doc(channelId)
+                    .collection('channelChat')
+                    .orderBy(
+                      'createdTime',
+                      descending: true,
+                    )
+                    .snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    List docs = snapshot.data.docs;
+                    print(docs);
+                    final currentUser = FirebaseAuth.instance.currentUser?.uid;
+                    return ListView.builder(
+                      reverse: true,
+                      itemCount: docs.length,
+                      itemBuilder: (ctx, index) => MessageBubble(
+                        docs[index]['message'],
+                        docs[index]['senderId'] == currentUser,
+                        docs[index]['senderName'],
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, left: 8.0, bottom: 8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFf7f7f7),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(25.0),
+                          ),
+                        ),
+                        child: SizedBox(
+                          height: 45.0,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              FloatingActionButton.small(
+                                heroTag: const Text("btn1"),
+                                elevation: 0,
+                                disabledElevation: 0,
+                                hoverElevation: 0,
+                                highlightElevation: 0,
+                                focusElevation: 0,
+                                onPressed: () {},
+                                backgroundColor: Colors.transparent,
+                                child: const Icon(
+                                  Icons.insert_emoticon,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _controller,
+                                  maxLines: 1,
+                                  onChanged: (value) {
+                                    _enteredMessage.value = value;
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Type your message here",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              FloatingActionButton.small(
+                                heroTag: const Text("btn2"),
+                                elevation: 0,
+                                disabledElevation: 0,
+                                hoverElevation: 0,
+                                highlightElevation: 0,
+                                focusElevation: 0,
+                                onPressed: () {},
+                                backgroundColor: Colors.transparent,
+                                child: const Icon(
+                                  Icons.camera_alt_rounded,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                itemBuilder: (context, Message message) => Align(
-                  alignment: message.isSendByMe
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Card(
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(message.text),
+                  Obx(
+                    () => FloatingActionButton.small(
+                      heroTag: const Text("btn3"),
+                      elevation: 0,
+                      disabledElevation: 0,
+                      hoverElevation: 0,
+                      highlightElevation: 0,
+                      focusElevation: 0,
+                      onPressed: _enteredMessage.trim().isEmpty
+                          ? null
+                          : () {
+                              _sendMessage();
+                            },
+                      backgroundColor: Colors.deepOrange,
+                      child: const Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Container(
-              color: Colors.grey.shade300,
-              child: TextField(
-                onSubmitted: (text) {
-                  final message = Message(text, DateTime.now(), true);
-                  messages.add(message);
-                },
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(12),
-                  hintText: "Type your message here",
-                ),
+                ],
               ),
             ),
           ],
@@ -237,12 +286,4 @@ class ChatScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class Message {
-  final text;
-  final date;
-  final isSendByMe;
-
-  Message(this.text, this.date, this.isSendByMe);
 }

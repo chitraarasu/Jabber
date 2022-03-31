@@ -41,7 +41,15 @@ class ChatBar extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 25,
                           backgroundColor: const Color(0xFFd6e2ea),
-                          backgroundImage: NetworkImage(image),
+                          backgroundImage:
+                              image == null ? null : NetworkImage(image),
+                          child: image == null
+                              ? const Icon(
+                                  Icons.person_rounded,
+                                  color: Colors.grey,
+                                  size: 30,
+                                )
+                              : null,
                         ),
                       ),
                       const SizedBox(

@@ -29,7 +29,6 @@ class Contacts extends StatelessWidget {
           contactProfiles.add(item);
         }
       }
-
       return contact;
     }
   }
@@ -122,18 +121,18 @@ class ChatListCardCaller extends StatelessWidget {
             return ChatBar(
               contactProfiles[index]['username'],
               contactProfiles[index]['phoneNumber'],
-              contactProfiles[index]['profileUrl'] ??
-                  "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+              contactProfiles[index]['profileUrl'],
               "12.33 AM",
               "3",
               () {
                 Get.to(
                     () => ChatScreen(
                           contactProfiles[index]['username'],
-                          contactProfiles[index]['profileUrl'] ??
-                              "https://chitraarasu-portfolio.herokuapp.com/assets/Passport.webp",
+                          contactProfiles[index]["uid"],
+                          contactProfiles[index]['profileUrl'],
                           contactProfiles[index]['phoneNumber'],
                           true,
+                          "XlJ8HONgkSjjBmVMgl7d",
                         ),
                     transition: Transition.fadeIn);
               },
