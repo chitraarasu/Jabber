@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:chatting_application/screens/calls.dart';
 import 'package:chatting_application/screens/chat_list.dart';
-import 'package:chatting_application/screens/contacts.dart';
+import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:chatting_application/screens/settings.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
@@ -69,13 +69,23 @@ class Controller extends GetxController {
   }
 
   File? _storedImage;
+  File? _storedChannelImage;
 
   get userProfileImage {
     return _storedImage;
   }
 
+  get channelProfileImage {
+    return _storedChannelImage;
+  }
+
   setUserProfileImage(image) {
     _storedImage = image;
+    update();
+  }
+
+  setChannelProfileImage(image) {
+    _storedChannelImage = image;
     update();
   }
 }

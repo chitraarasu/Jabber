@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChatBar extends StatelessWidget {
+  final id;
   final name;
   final lastMessage;
   final image;
@@ -9,6 +10,7 @@ class ChatBar extends StatelessWidget {
   Function onTap;
 
   ChatBar(
+    this.id,
     this.name,
     this.lastMessage,
     this.image,

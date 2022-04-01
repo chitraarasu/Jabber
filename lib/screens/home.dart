@@ -1,9 +1,9 @@
+import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/controller.dart';
 import '../widget/customMaterialButton.dart';
-import 'contacts.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
         child: FloatingActionButton(
           onPressed: () {
-            Get.to(() => Contacts());
+            Get.to(() => const CreateNewChannelOrJoinChannel());
           },
           backgroundColor: const Color(0xFF006aff),
           child: const Icon(Icons.edit),

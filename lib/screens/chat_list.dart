@@ -58,7 +58,7 @@ class ChatList extends StatelessWidget {
                 stream: FirebaseFirestore.instance
                     .collection("users")
                     .doc(_auth.currentUser?.uid)
-                    .collection("myChat")
+                    .collection("userChannels")
                     .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -73,23 +73,22 @@ class ChatList extends StatelessWidget {
                     if (docs.isEmpty) {
                       return const EmptyScreen();
                     } else {
+                      print(docs[0]["channelId"]);
                       return ListView.builder(
                           itemCount: docs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ChatBar(
-                              docs[index]["receiverName"],
-                              docs[index]["recentTextMessage"],
-                              docs[index]["profileUrl"],
+                              docs[index]["channelId"],
+                              docs[index]["channelName"],
+                              docs[index]["recentMessage"],
+                              docs[index]["channelProfile"],
                               docs[index]["time"],
                               "3",
                               () {
                                 Get.to(
                                     () => ChatScreen(
-                                          docs[index]["receiverName"],
-                                          docs[index]["receiverId"],
-                                          docs[index]["profileUrl"],
-                                          docs[index]["receiverPhoneNumber"],
-                                          false,
+                                          docs[index]["channelName"],
+                                          docs[index]["channelProfile"],
                                           docs[index]['channelId'],
                                         ),
                                     transition: Transition.rightToLeftWithFade);
