@@ -20,17 +20,20 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    var prevData;
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc("${FirebaseAuth.instance.currentUser}")
-        .get()
-        .then((data) {
-      prevData = data.data();
+    Future.delayed(Duration.zero, () async {
+      var preProfileData;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get()
+          .then((value) {
+        preProfileData = value.data();
+      });
+      if (preProfileData == null) {
+        FirebaseAuth.instance.signOut();
+        Get.offAll(const OnBoardingPage(), transition: Transition.fade);
+      }
     });
-    if (prevData == null) {
-      FirebaseAuth.instance.signOut();
-    }
     super.initState();
   }
 

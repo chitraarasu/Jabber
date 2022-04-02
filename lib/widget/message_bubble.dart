@@ -5,7 +5,8 @@ class MessageBubble extends StatelessWidget {
   final message;
   final isMe;
   final username;
-  MessageBubble(this.message, this.isMe, this.username);
+  final time;
+  MessageBubble(this.message, this.isMe, this.username, this.time);
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,7 @@ class MessageBubble extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      "10 am",
+                      time,
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 10,

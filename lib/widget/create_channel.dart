@@ -33,10 +33,10 @@ class CreateChannel extends StatelessWidget {
 
     var maximumPeoples = 2.obs;
 
-    TextEditingController maxMemberController =
-        TextEditingController(text: '${maximumPeoples.value}');
-
-    var screenWidth = MediaQuery.of(context).size.width * 0.20;
+    // TextEditingController maxMemberController =
+    //     TextEditingController(text: '${maximumPeoples.value}');
+    //
+    // var screenWidth = MediaQuery.of(context).size.width * 0.20;
 
     var isLoading = false.obs;
     PickedFile? imageFile;
@@ -231,30 +231,24 @@ class CreateChannel extends StatelessWidget {
                       await ref.putFile(getController.channelProfileImage);
                       url = await ref.getDownloadURL();
                     }
+                    var channelData = {
+                      'channelId': randomId,
+                      'channelName': channelNameController.text,
+                      'channelOwnerId': _auth.currentUser?.uid,
+                      'channelProfile': url,
+                      "recentMessage": "",
+                      "time": Timestamp.now(),
+                    };
                     await FirebaseFirestore.instance
                         .collection("users")
                         .doc(_auth.currentUser?.uid)
                         .collection("userChannels")
                         .doc(randomId)
-                        .set({
-                      'channelId': randomId,
-                      'channelName': channelNameController.text,
-                      'channelOwnerId': _auth.currentUser?.uid,
-                      'channelProfile': url,
-                      "recentMessage": "",
-                      "time": "12.00 am",
-                    });
+                        .set(channelData);
                     await FirebaseFirestore.instance
                         .collection("messages")
                         .doc(randomId)
-                        .set({
-                      'channelId': randomId,
-                      'channelName': channelNameController.text,
-                      'channelOwnerId': _auth.currentUser?.uid,
-                      'channelProfile': url,
-                      "recentMessage": "",
-                      "time": "12.00 am",
-                    });
+                        .set(channelData);
                     isLoading.value = false;
                     Get.back();
                   }

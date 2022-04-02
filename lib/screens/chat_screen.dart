@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rive/rive.dart';
 import '../widget/chat_profile_sheet.dart';
 import '../widget/message_bubble.dart';
@@ -20,6 +22,7 @@ class ChatScreen extends StatelessWidget {
 
     void _sendMessage() async {
       _controller.clear();
+
       FocusScope.of(context).unfocus();
       final user = FirebaseAuth.instance.currentUser!;
       final userData = await FirebaseFirestore.instance
@@ -38,7 +41,7 @@ class ChatScreen extends StatelessWidget {
       });
       FirebaseFirestore.instance.collection('messages').doc(channelId).update({
         'recentMessage': _enteredMessage.value,
-        // 'time': Timestamp.now(),
+        'time': Timestamp.now(),
       });
       FirebaseFirestore.instance
           .collection('users')
@@ -47,7 +50,7 @@ class ChatScreen extends StatelessWidget {
           .doc(channelId)
           .update({
         'recentMessage': _enteredMessage.value,
-        // 'time': Timestamp.now(),
+        'time': Timestamp.now(),
       });
     }
 
@@ -117,7 +120,7 @@ class ChatScreen extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF86898f),
+                color: Colors.deepOrange,
               ),
               child: const Icon(Icons.phone),
             ),
@@ -128,7 +131,7 @@ class ChatScreen extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF86898f),
+                color: Colors.deepOrange,
               ),
               child: const Icon(Icons.search),
             ),
@@ -166,17 +169,33 @@ class ChatScreen extends StatelessWidget {
                   print(docs);
                   final currentUser = FirebaseAuth.instance.currentUser?.uid;
                   if (docs.isEmpty) {
-                    return const RiveAnimation.asset(
-                        "assets/animations/message_icon.riv");
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Lottie.asset(
+                              "assets/animations/no_data_found.json"),
+                        ),
+                        const Text("No messages here yet..."),
+                      ],
+                    );
                   } else {
                     return ListView.builder(
                       reverse: true,
                       itemCount: docs.length,
-                      itemBuilder: (ctx, index) => MessageBubble(
-                        docs[index]['message'],
-                        docs[index]['senderId'] == currentUser,
-                        docs[index]['senderName'],
-                      ),
+                      itemBuilder: (ctx, index) {
+                        var time = DateFormat('hh:mm a').format(
+                          Timestamp(docs[index]["createdTime"].seconds,
+                                  docs[index]["createdTime"].nanoseconds)
+                              .toDate(),
+                        );
+                        return MessageBubble(
+                          docs[index]['message'],
+                          docs[index]['senderId'] == currentUser,
+                          docs[index]['senderName'],
+                          time,
+                        );
+                      },
                     );
                   }
                 }
@@ -273,7 +292,7 @@ class ChatScreen extends StatelessWidget {
                         : () {
                             _sendMessage();
                           },
-                    backgroundColor: const Color(0xFF006aff),
+                    backgroundColor: Colors.deepOrange,
                     child: const Icon(
                       Icons.send_rounded,
                       color: Colors.white,

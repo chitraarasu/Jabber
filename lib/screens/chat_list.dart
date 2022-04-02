@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'package:intl/intl.dart';
 
 import '../widget/chat_bar.dart';
 import '../widget/empty_screen.dart';
@@ -16,6 +16,7 @@ class ChatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -29,7 +30,7 @@ class ChatList extends StatelessWidget {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
                 _auth.signOut();
@@ -38,7 +39,7 @@ class ChatList extends StatelessWidget {
               child: Tab(
                 icon: Image.asset(
                   "assets/images/edit.png",
-                  width: 35,
+                  width: 30,
                 ),
               ),
             ),
@@ -59,6 +60,10 @@ class ChatList extends StatelessWidget {
                     .collection("users")
                     .doc(_auth.currentUser?.uid)
                     .collection("userChannels")
+                    .orderBy(
+                      'time',
+                      descending: true,
+                    )
                     .snapshots(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -73,16 +78,20 @@ class ChatList extends StatelessWidget {
                     if (docs.isEmpty) {
                       return const EmptyScreen();
                     } else {
-                      print(docs[0]["channelId"]);
                       return ListView.builder(
                           itemCount: docs.length,
                           itemBuilder: (BuildContext context, int index) {
+                            var time = DateFormat('hh:mm a').format(
+                              Timestamp(docs[index]["time"].seconds,
+                                      docs[index]["time"].nanoseconds)
+                                  .toDate(),
+                            );
                             return ChatBar(
                               docs[index]["channelId"],
                               docs[index]["channelName"],
                               docs[index]["recentMessage"],
                               docs[index]["channelProfile"],
-                              docs[index]["time"],
+                              time,
                               "3",
                               () {
                                 Get.to(

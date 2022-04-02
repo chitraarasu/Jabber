@@ -39,7 +39,7 @@ class ChatProfileSheet extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF006aff),
+                    color: Colors.deepOrange,
                   ),
                 ),
                 const SizedBox(
