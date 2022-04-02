@@ -209,6 +209,17 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                           if (nameController.text.trim().isNotEmpty) {
                             isLoading.value = true;
                             var url;
+                            var preProfileData;
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(_auth.currentUser?.uid)
+                                .get()
+                                .then((value) {
+                              preProfileData = value.data();
+                            });
+                            if (preProfileData != null) {
+                              url = preProfileData['profileUrl'];
+                            }
                             if (getController.userProfileImage != null) {
                               final ref = FirebaseStorage.instance
                                   .ref()

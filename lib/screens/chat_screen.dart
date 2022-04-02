@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rive/rive.dart';
 import '../widget/chat_profile_sheet.dart';
 import '../widget/message_bubble.dart';
 
@@ -74,7 +75,7 @@ class ChatScreen extends StatelessWidget {
               builder: (context) {
                 return FractionallySizedBox(
                   heightFactor: 0.70,
-                  child: ChatProfileSheet(name, image),
+                  child: ChatProfileSheet(name, image, channelId),
                 );
               },
             );
@@ -164,15 +165,20 @@ class ChatScreen extends StatelessWidget {
                   List docs = snapshot.data.docs;
                   print(docs);
                   final currentUser = FirebaseAuth.instance.currentUser?.uid;
-                  return ListView.builder(
-                    reverse: true,
-                    itemCount: docs.length,
-                    itemBuilder: (ctx, index) => MessageBubble(
-                      docs[index]['message'],
-                      docs[index]['senderId'] == currentUser,
-                      docs[index]['senderName'],
-                    ),
-                  );
+                  if (docs.isEmpty) {
+                    return const RiveAnimation.asset(
+                        "assets/animations/message_icon.riv");
+                  } else {
+                    return ListView.builder(
+                      reverse: true,
+                      itemCount: docs.length,
+                      itemBuilder: (ctx, index) => MessageBubble(
+                        docs[index]['message'],
+                        docs[index]['senderId'] == currentUser,
+                        docs[index]['senderName'],
+                      ),
+                    );
+                  }
                 }
               },
             ),
@@ -220,6 +226,8 @@ class ChatScreen extends StatelessWidget {
                             ),
                             Expanded(
                               child: TextField(
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                                 controller: _controller,
                                 maxLines: 1,
                                 onChanged: (value) {
@@ -265,7 +273,7 @@ class ChatScreen extends StatelessWidget {
                         : () {
                             _sendMessage();
                           },
-                    backgroundColor: Colors.deepOrange,
+                    backgroundColor: const Color(0xFF006aff),
                     child: const Icon(
                       Icons.send_rounded,
                       color: Colors.white,

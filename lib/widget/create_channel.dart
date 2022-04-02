@@ -171,6 +171,7 @@ class CreateChannel extends StatelessWidget {
                               ),
                             ),
                             child: TextField(
+                              textCapitalization: TextCapitalization.sentences,
                               maxLines: 1,
                               controller: channelNameController,
                               style: const TextStyle(color: Colors.blueGrey),

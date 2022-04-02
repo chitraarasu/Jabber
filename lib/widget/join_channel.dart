@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class JoinChannel extends StatelessWidget {
+class JoinChannel extends StatefulWidget {
   JoinChannel({
     Key? key,
     required FirebaseAuth auth,
@@ -11,39 +15,133 @@ class JoinChannel extends StatelessWidget {
         super(key: key);
 
   final FirebaseAuth _auth;
+
+  @override
+  State<JoinChannel> createState() => _JoinChannelState();
+}
+
+class _JoinChannelState extends State<JoinChannel> {
   TextEditingController channelId = TextEditingController();
+
+  var isLoading = false.obs;
+
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? _controller;
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      _controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      _controller!.resumeCamera();
+    }
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    _controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+      joinChannel(result?.code);
+    });
+  }
+
+  joinChannel(channelId) async {
+    isLoading.value = true;
+    var isValid = false;
+    var channelList;
+    await FirebaseFirestore.instance.collection("messages").get().then(
+      (data) {
+        channelList = data.docs;
+      },
+    );
+    for (var item in channelList) {
+      if (channelId == item["channelId"]) {
+        isValid = true;
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(widget._auth.currentUser?.uid)
+            .collection("userChannels")
+            .doc(item["channelId"])
+            .set({
+          'channelId': item["channelId"],
+          'channelName': item["channelName"],
+          'channelOwnerId': item["channelOwnerId"],
+          'channelProfile': item["channelProfile"],
+          "recentMessage": item["recentMessage"],
+          "time": "12.00 am",
+        });
+      }
+    }
+    isLoading.value = false;
+    if (isValid) {
+      Get.back();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var isLoading = false.obs;
-
     return Expanded(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10.0),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                children: [
+                  const Text(
+                    "Scan to join channel",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  border: Border.all(
-                    width: 2,
-                    color: Colors.blueGrey,
-                  )),
-              child: TextField(
-                maxLines: 1,
-                controller: channelId,
-                style: const TextStyle(color: Colors.blueGrey),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(12.5),
-                  hintText: 'Enter channel ID',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: Colors.blueGrey,
+                  Expanded(
+                    child: QRView(
+                      key: qrKey,
+                      onQRViewCreated: _onQRViewCreated,
+                      overlay: QrScannerOverlayShape(
+                        overlayColor: Colors.white,
+                        borderLength: 20,
+                        borderWidth: 4,
+                        borderRadius: 15,
+                        borderColor: const Color(0xFF006aff),
+                        cutOutSize: MediaQuery.of(context).size.width * 0.6,
+                      ),
+                    ),
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                      border: Border.all(
+                        width: 2,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                    child: TextField(
+                      maxLines: 1,
+                      controller: channelId,
+                      style: const TextStyle(color: Colors.blueGrey),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(12.5),
+                        hintText: 'Enter channel ID',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -52,35 +150,7 @@ class JoinChannel extends StatelessWidget {
               try {
                 if (!isLoading.value) {
                   if (channelId.text.trim().isNotEmpty) {
-                    isLoading.value = true;
-                    var channelList;
-                    await FirebaseFirestore.instance
-                        .collection("messages")
-                        .get()
-                        .then(
-                      (data) {
-                        channelList = data.docs;
-                      },
-                    );
-                    for (var item in channelList) {
-                      if (channelId.text == item["channelId"]) {
-                        await FirebaseFirestore.instance
-                            .collection("users")
-                            .doc(_auth.currentUser?.uid)
-                            .collection("userChannels")
-                            .doc(item["channelId"])
-                            .set({
-                          'channelId': item["channelId"],
-                          'channelName': item["channelName"],
-                          'channelOwnerId': item["channelOwnerId"],
-                          'channelProfile': item["channelProfile"],
-                          "recentMessage": "hi",
-                          "time": "12.00 am",
-                        });
-                      }
-                    }
-                    isLoading.value = false;
-                    Get.back();
+                    joinChannel(channelId.text);
                   }
                 }
               } catch (error) {

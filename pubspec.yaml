@@ -47,6 +47,8 @@ dependencies:
   firebase_storage: ^10.2.9
   grouped_list: ^4.2.0
   intl: ^0.17.0
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^0.7.0
 
 dev_dependencies:
   flutter_test:

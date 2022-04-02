@@ -1,12 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ChatProfileSheet extends StatelessWidget {
   final name;
   final image;
+  final channelId;
 
-  ChatProfileSheet(this.name, this.image);
+  ChatProfileSheet(this.name, this.image, this.channelId);
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -36,11 +39,58 @@ class ChatProfileSheet extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFF006aff),
                   ),
                 ),
-                // Text(
-                //   number,
-                // ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Invite id",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SelectableText(
+                      channelId,
+                      cursorColor: const Color(0xFF006aff),
+                      showCursor: true,
+                      toolbarOptions: const ToolbarOptions(
+                        copy: true,
+                        selectAll: true,
+                        cut: false,
+                        paste: false,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: channelId));
+                      },
+                      icon: const Icon(
+                        Icons.copy,
+                        size: 20,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 4),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: QrImage(
+                    data: channelId,
+                    version: QrVersions.auto,
+                    size: 150.0,
+                  ),
+                ),
               ],
             ),
           ),

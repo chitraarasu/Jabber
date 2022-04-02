@@ -1,9 +1,12 @@
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/controller.dart';
 import '../widget/customMaterialButton.dart';
+import 'onboarding_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,6 +17,22 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var data = Get.put(Controller());
+
+  @override
+  void initState() {
+    var prevData;
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc("${FirebaseAuth.instance.currentUser}")
+        .get()
+        .then((data) {
+      prevData = data.data();
+    });
+    if (prevData == null) {
+      FirebaseAuth.instance.signOut();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,28 +66,21 @@ class _HomeState extends State<Home> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CustomMaterialButton(() {
-                    controller.setScreen(0);
-                  }, controller.index == 0, Icons.messenger, "Chats"),
-                  CustomMaterialButton(() {
-                    controller.setScreen(1);
-                  }, controller.index == 1, Icons.phone, "Calls"),
-                ],
+              CustomMaterialButton(() {
+                controller.setScreen(0);
+              }, controller.index == 0, Icons.messenger, "Chats"),
+              CustomMaterialButton(() {
+                controller.setScreen(1);
+              }, controller.index == 1, Icons.phone, "Calls"),
+              const SizedBox(
+                width: 5,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CustomMaterialButton(() {
-                    controller.setScreen(2);
-                  }, controller.index == 2, Icons.person_rounded, "Chat Bot"),
-                  CustomMaterialButton(() {
-                    controller.setScreen(3);
-                  }, controller.index == 3, Icons.settings, "Settings"),
-                ],
-              ),
+              CustomMaterialButton(() {
+                controller.setScreen(2);
+              }, controller.index == 2, Icons.person_rounded, "Chat Bot"),
+              CustomMaterialButton(() {
+                controller.setScreen(3);
+              }, controller.index == 3, Icons.settings, "Settings"),
             ],
           ),
         ),

@@ -11,42 +11,44 @@ class CustomMaterialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      onPressed: () {
-        onTap();
-      },
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: condition ? const Color(0xFF006aff) : Colors.grey,
-              ),
-              Text(
-                name,
-                style: TextStyle(
+    return Expanded(
+      child: MaterialButton(
+        onPressed: () {
+          onTap();
+        },
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
                   color: condition ? const Color(0xFF006aff) : Colors.grey,
-                  fontWeight: condition ? FontWeight.bold : null,
                 ),
-              ),
-            ],
-          ),
-          if (condition)
-            Positioned(
-              top: -11,
-              child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFF006aff),
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: condition ? const Color(0xFF006aff) : Colors.grey,
+                    fontWeight: condition ? FontWeight.bold : null,
+                  ),
                 ),
-                width: 16,
-                height: 16,
-              ),
-            )
-        ],
+              ],
+            ),
+            if (condition)
+              Positioned(
+                top: -11,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF006aff),
+                  ),
+                  width: 16,
+                  height: 16,
+                ),
+              )
+          ],
+        ),
       ),
     );
   }
