@@ -71,7 +71,7 @@ class _JoinChannelState extends State<JoinChannel> {
           'channelOwnerId': item["channelOwnerId"],
           'channelProfile': item["channelProfile"],
           "recentMessage": item["recentMessage"],
-          "time": "12.00 am",
+          "time": item["time"],
         });
       }
     }

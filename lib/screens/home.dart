@@ -60,8 +60,10 @@ class _HomeState extends State<Home> {
   }
 
   Widget get bottomNavigationBar {
+    var mediaData = MediaQuery.of(context).size;
     return GetBuilder<Controller>(
       builder: (controller) => BottomAppBar(
+        clipBehavior: Clip.hardEdge,
         shape: const CircularNotchedRectangle(),
         notchMargin: 7.5,
         child: SizedBox(
@@ -74,16 +76,16 @@ class _HomeState extends State<Home> {
               }, controller.index == 0, Icons.messenger, "Chats"),
               CustomMaterialButton(() {
                 controller.setScreen(1);
-              }, controller.index == 1, Icons.phone, "Calls"),
-              const SizedBox(
-                width: 5,
+              }, controller.index == 1, Icons.music_note_rounded, "Music"),
+              SizedBox(
+                width: mediaData.width * .05,
               ),
               CustomMaterialButton(() {
                 controller.setScreen(2);
-              }, controller.index == 2, Icons.person_rounded, "Chat Bot"),
+              }, controller.index == 2, Icons.newspaper_rounded, "News"),
               CustomMaterialButton(() {
                 controller.setScreen(3);
-              }, controller.index == 3, Icons.settings, "Settings"),
+              }, controller.index == 3, Icons.account_box_rounded, "Profile"),
             ],
           ),
         ),

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chatting_application/screens/calls.dart';
+import 'package:chatting_application/screens/music.dart';
 import 'package:chatting_application/screens/chat_list.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:chatting_application/screens/settings.dart';
@@ -9,6 +9,7 @@ import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
 
 import '../screens/chat_bot.dart';
+import '../screens/news.dart';
 
 class Controller extends GetxController {
   var _index = 0;
@@ -25,8 +26,8 @@ class Controller extends GetxController {
 
   final _screens = [
     ChatList(),
-    const Calls(),
-    const ChatBot(),
+    Music(),
+    News(),
     const Settings(),
   ];
 

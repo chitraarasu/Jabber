@@ -79,31 +79,42 @@ class ChatList extends StatelessWidget {
                       return const EmptyScreen();
                     } else {
                       return ListView.builder(
-                          itemCount: docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var time = DateFormat('hh:mm a').format(
-                              Timestamp(docs[index]["time"].seconds,
-                                      docs[index]["time"].nanoseconds)
-                                  .toDate(),
-                            );
-                            return ChatBar(
-                              docs[index]["channelId"],
-                              docs[index]["channelName"],
-                              docs[index]["recentMessage"],
-                              docs[index]["channelProfile"],
-                              time,
-                              "3",
-                              () {
-                                Get.to(
-                                    () => ChatScreen(
-                                          docs[index]["channelName"],
-                                          docs[index]["channelProfile"],
-                                          docs[index]['channelId'],
-                                        ),
-                                    transition: Transition.rightToLeftWithFade);
-                              },
-                            );
-                          });
+                        itemCount: docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var time = DateFormat('hh:mm a').format(
+                            Timestamp(docs[index]["time"].seconds,
+                                    docs[index]["time"].nanoseconds)
+                                .toDate(),
+                          );
+                          return ChatBar(
+                            docs[index]["channelId"],
+                            docs[index]["channelName"],
+                            docs[index]["recentMessage"],
+                            docs[index]["channelProfile"],
+                            time,
+                            "3",
+                            () {
+                              Get.to(
+                                () => ChatScreen(
+                                  docs[index]["channelName"],
+                                  docs[index]["channelProfile"],
+                                  docs[index]['channelId'],
+                                ),
+                                transition: Transition.rightToLeftWithFade,
+                              );
+                            },
+                            () {
+                              final user = FirebaseAuth.instance.currentUser!;
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(user.uid)
+                                  .collection("userChannels")
+                                  .doc(docs[index]['channelId'])
+                                  .delete();
+                            },
+                          );
+                        },
+                      );
                     }
                   }
                 },

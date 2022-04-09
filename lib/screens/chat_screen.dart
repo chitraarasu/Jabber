@@ -114,17 +114,17 @@ class ChatScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.deepOrange,
-              ),
-              child: const Icon(Icons.phone),
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: Container(
+          //     padding: const EdgeInsets.all(4),
+          //     decoration: const BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       color: Colors.deepOrange,
+          //     ),
+          //     child: const Icon(Icons.phone),
+          //   ),
+          // ),
           IconButton(
             onPressed: () {},
             icon: Container(
@@ -248,7 +248,10 @@ class ChatScreen extends StatelessWidget {
                                 textCapitalization:
                                     TextCapitalization.sentences,
                                 controller: _controller,
-                                maxLines: 1,
+                                minLines: 1,
+                                maxLines: 5,
+                                keyboardType: TextInputType.multiline, //
+                                textInputAction: TextInputAction.newline,
                                 onChanged: (value) {
                                   _enteredMessage.value = value;
                                 },
