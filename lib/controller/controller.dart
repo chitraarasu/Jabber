@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:chatting_application/screens/music.dart';
 import 'package:chatting_application/screens/chat_list.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
-import 'package:chatting_application/screens/settings.dart';
+import 'package:chatting_application/screens/profile.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
@@ -28,7 +28,7 @@ class Controller extends GetxController {
     ChatList(),
     Music(),
     News(),
-    const Settings(),
+    Profile(),
   ];
 
   get body {
