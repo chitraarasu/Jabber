@@ -32,10 +32,7 @@ class ChatList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
-              onTap: () {
-                _auth.signOut();
-                Get.offAll(const OnBoardingPage(), transition: Transition.fade);
-              },
+              onTap: () {},
               child: Tab(
                 icon: Image.asset(
                   "assets/images/edit.png",
@@ -86,33 +83,49 @@ class ChatList extends StatelessWidget {
                                     docs[index]["time"].nanoseconds)
                                 .toDate(),
                           );
-                          return ChatBar(
-                            docs[index]["channelId"],
-                            docs[index]["channelName"],
-                            docs[index]["recentMessage"],
-                            docs[index]["channelProfile"],
-                            time,
-                            "3",
-                            () {
-                              Get.to(
-                                () => ChatScreen(
-                                  docs[index]["channelName"],
-                                  docs[index]["channelProfile"],
-                                  docs[index]['channelId'],
-                                ),
-                                transition: Transition.rightToLeftWithFade,
-                              );
-                            },
-                            () {
-                              final user = FirebaseAuth.instance.currentUser!;
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(user.uid)
-                                  .collection("userChannels")
+                          return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("messages")
                                   .doc(docs[index]['channelId'])
-                                  .delete();
-                            },
-                          );
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState !=
+                                    ConnectionState.waiting) {
+                                  var data = snapshot.data;
+                                  print(data); //Todo do work
+                                  return ChatBar(
+                                    docs[index]["channelId"],
+                                    docs[index]["channelName"],
+                                    docs[index]["recentMessage"],
+                                    docs[index]["channelProfile"],
+                                    time,
+                                    "3",
+                                    () {
+                                      Get.to(
+                                        () => ChatScreen(
+                                          docs[index]["channelName"],
+                                          docs[index]["channelProfile"],
+                                          docs[index]['channelId'],
+                                        ),
+                                        transition:
+                                            Transition.rightToLeftWithFade,
+                                      );
+                                    },
+                                    () {
+                                      final user =
+                                          FirebaseAuth.instance.currentUser!;
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(user.uid)
+                                          .collection("userChannels")
+                                          .doc(docs[index]['channelId'])
+                                          .delete();
+                                    },
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              });
                         },
                       );
                     }

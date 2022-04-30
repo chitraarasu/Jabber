@@ -161,6 +161,8 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                     color: Colors.white,
                                   )),
                               child: TextField(
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                                 maxLines: 1,
                                 controller: nameController,
                                 style: const TextStyle(color: Colors.white),

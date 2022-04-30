@@ -24,6 +24,17 @@ class Controller extends GetxController {
     _isLoading = val;
   }
 
+  var _value = 0;
+
+  get value {
+    return _value;
+  }
+
+  setValue(val) {
+    _value = val;
+    update();
+  }
+
   final _screens = [
     ChatList(),
     Music(),

@@ -24,24 +24,31 @@ class OnBoardingPage extends StatelessWidget {
         child: IntroductionScreen(
           pages: [
             PageViewModel(
-              title: 'Lorem Ipsum',
+              title: 'Secure Chat',
               body:
                   'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
               image: buildImage('assets/animations/chatting.json'),
               decoration: getPageDecoration(),
             ),
+            // PageViewModel(
+            //   title: 'Secure Chat',
+            //   body:
+            //       'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+            //   image: buildImage('assets/animations/security.json'),
+            //   decoration: getPageDecoration(),
+            // ),
             PageViewModel(
-              title: 'Secure Chat',
+              title: 'Music',
               body:
                   'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
-              image: buildImage('assets/animations/security.json'),
+              image: buildImage('assets/animations/music.json'),
               decoration: getPageDecoration(),
             ),
             PageViewModel(
-              title: 'Share it',
+              title: 'News',
               body:
                   'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
-              image: buildImage('assets/animations/share.json'),
+              image: buildImage('assets/animations/news.json'),
               decoration: getPageDecoration(),
             ),
             PageViewModel(

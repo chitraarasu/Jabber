@@ -272,7 +272,7 @@ class ChatScreen extends StatelessWidget {
                               onPressed: () {},
                               backgroundColor: Colors.transparent,
                               child: const Icon(
-                                Icons.camera_alt_rounded,
+                                Icons.link_outlined,
                                 color: Colors.grey,
                               ),
                             ),
