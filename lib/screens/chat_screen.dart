@@ -275,9 +275,11 @@ class ChatScreen extends StatelessWidget {
                                     await FilePicker.platform.pickFiles(
                                         // allowMultiple: true,
                                         type: FileType.image);
-                                print(result);
-                                Get.to(() => CustomImageView(),
-                                    transition: Transition.zoom);
+                                if (result != null) {
+                                  Get.to(
+                                      () => CustomImageView(result.files.first),
+                                      transition: Transition.zoom);
+                                }
                               },
                               backgroundColor: Colors.transparent,
                               child: const Icon(

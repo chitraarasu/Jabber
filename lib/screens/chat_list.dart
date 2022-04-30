@@ -99,8 +99,8 @@ class ChatList extends StatelessWidget {
                           //     print(channelResentMessage);
                           //   },
                           // );
-                          return FutureBuilder(
-                            future: FirebaseFirestore.instance
+                          return StreamBuilder(
+                            stream: FirebaseFirestore.instance
                                 .collection('messages')
                                 .doc(docs[index]["channelId"])
                                 .collection('channelChat')
@@ -108,7 +108,7 @@ class ChatList extends StatelessWidget {
                                   'createdTime',
                                   descending: true,
                                 )
-                                .get(),
+                                .snapshots(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<dynamic> snapshot) {
                               if (snapshot.connectionState !=
