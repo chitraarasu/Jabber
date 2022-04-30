@@ -52,6 +52,7 @@ class CreateChannel extends StatelessWidget {
           imageQuality: 50,
         );
       }
+      print(imageFile);
       if (imageFile == null) {
         return;
       }

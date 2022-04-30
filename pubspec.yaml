@@ -50,6 +50,7 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.7.0
   encrypt: ^5.0.1
+  file_picker: ^4.5.1
 
 dev_dependencies:
   flutter_test:

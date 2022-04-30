@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rive/rive.dart';
 import '../widget/chat_profile_sheet.dart';
+import '../widget/image_view.dart';
 import '../widget/message_bubble.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -166,7 +168,6 @@ class ChatScreen extends StatelessWidget {
                   );
                 } else {
                   List docs = snapshot.data.docs;
-                  print(docs);
                   final currentUser = FirebaseAuth.instance.currentUser?.uid;
                   if (docs.isEmpty) {
                     return Column(
@@ -269,7 +270,15 @@ class ChatScreen extends StatelessWidget {
                               hoverElevation: 0,
                               highlightElevation: 0,
                               focusElevation: 0,
-                              onPressed: () {},
+                              onPressed: () async {
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                        // allowMultiple: true,
+                                        type: FileType.image);
+                                print(result);
+                                Get.to(() => CustomImageView(),
+                                    transition: Transition.zoom);
+                              },
                               backgroundColor: Colors.transparent,
                               child: const Icon(
                                 Icons.link_outlined,

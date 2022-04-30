@@ -139,14 +139,17 @@ class ChatBar extends StatelessWidget {
                             const SizedBox(
                               height: 5,
                             ),
-                            Container(
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFF006aff),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(notify),
+                            Opacity(
+                              opacity: 0,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFF006aff),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Text(notify),
+                                ),
                               ),
                             )
                           ],

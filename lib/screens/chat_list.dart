@@ -83,49 +83,69 @@ class ChatList extends StatelessWidget {
                                     docs[index]["time"].nanoseconds)
                                 .toDate(),
                           );
-                          return StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection("messages")
-                                  .doc(docs[index]['channelId'])
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState !=
-                                    ConnectionState.waiting) {
-                                  var data = snapshot.data;
-                                  print(data); //Todo do work
-                                  return ChatBar(
-                                    docs[index]["channelId"],
-                                    docs[index]["channelName"],
-                                    docs[index]["recentMessage"],
-                                    docs[index]["channelProfile"],
-                                    time,
-                                    "3",
-                                    () {
-                                      Get.to(
-                                        () => ChatScreen(
-                                          docs[index]["channelName"],
-                                          docs[index]["channelProfile"],
-                                          docs[index]['channelId'],
-                                        ),
-                                        transition:
-                                            Transition.rightToLeftWithFade,
-                                      );
-                                    },
-                                    () {
-                                      final user =
-                                          FirebaseAuth.instance.currentUser!;
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(user.uid)
-                                          .collection("userChannels")
-                                          .doc(docs[index]['channelId'])
-                                          .delete();
-                                    },
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              });
+                          var channelResentMessage;
+                          // FirebaseFirestore.instance
+                          //     .collection('messages')
+                          //     .doc(docs[index]["channelId"])
+                          //     .collection('channelChat')
+                          //     .orderBy(
+                          //       'createdTime',
+                          //       descending: true,
+                          //     )
+                          //     .get()
+                          //     .then(
+                          //   (data) {
+                          //     channelResentMessage = data.docs.first['message'];
+                          //     print(channelResentMessage);
+                          //   },
+                          // );
+                          return FutureBuilder(
+                            future: FirebaseFirestore.instance
+                                .collection('messages')
+                                .doc(docs[index]["channelId"])
+                                .collection('channelChat')
+                                .orderBy(
+                                  'createdTime',
+                                  descending: true,
+                                )
+                                .get(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<dynamic> snapshot) {
+                              if (snapshot.connectionState !=
+                                  ConnectionState.waiting) {
+                                return ChatBar(
+                                  docs[index]["channelId"],
+                                  docs[index]["channelName"],
+                                  snapshot.data.docs.first['message'],
+                                  docs[index]["channelProfile"],
+                                  time,
+                                  "3",
+                                  () {
+                                    Get.to(
+                                      () => ChatScreen(
+                                        docs[index]["channelName"],
+                                        docs[index]["channelProfile"],
+                                        docs[index]['channelId'],
+                                      ),
+                                      transition:
+                                          Transition.rightToLeftWithFade,
+                                    );
+                                  },
+                                  () {
+                                    final user =
+                                        FirebaseAuth.instance.currentUser!;
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(user.uid)
+                                        .collection("userChannels")
+                                        .doc(docs[index]['channelId'])
+                                        .delete();
+                                  },
+                                );
+                              }
+                              return Container();
+                            },
+                          );
                         },
                       );
                     }
