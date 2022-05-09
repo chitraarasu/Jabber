@@ -43,7 +43,7 @@ class Profile extends StatelessWidget {
                   Navigator.of(context).pop();
                   Get.find<Controller>().setScreen(0);
                   _auth.signOut();
-                  Get.offAll(const PhoneNumberAndOtp(),
+                  Get.offAll(const OnBoardingPage(),
                       transition: Transition.fade);
                 },
               )
