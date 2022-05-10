@@ -37,6 +37,7 @@ class ChatScreen extends StatelessWidget {
           .collection("channelChat")
           .add({
         'message': _enteredMessage.value,
+        'messageType': "text",
         'createdTime': Timestamp.now(),
         'senderId': user.uid,
         'senderName': userData['username'],
@@ -190,12 +191,21 @@ class ChatScreen extends StatelessWidget {
                                   docs[index]["createdTime"].nanoseconds)
                               .toDate(),
                         );
-                        return MessageBubble(
-                          docs[index]['message'],
-                          docs[index]['senderId'] == currentUser,
-                          docs[index]['senderName'],
-                          time,
-                        );
+                        if (docs[index]['messageType'] == "text") {
+                          return MessageBubble(
+                            docs[index]['message'],
+                            docs[index]['senderId'] == currentUser,
+                            docs[index]['senderName'],
+                            time,
+                          );
+                        } else {
+                          return ImageBubble(
+                            docs[index]['message'],
+                            docs[index]['senderId'] == currentUser,
+                            docs[index]['senderName'],
+                            time,
+                          );
+                        }
                       },
                     );
                   }
@@ -277,7 +287,8 @@ class ChatScreen extends StatelessWidget {
                                         type: FileType.image);
                                 if (result != null) {
                                   Get.to(
-                                      () => CustomImageView(result.files.first),
+                                      () => CustomImageView(
+                                          result.files.first, channelId),
                                       transition: Transition.zoom);
                                 }
                               },

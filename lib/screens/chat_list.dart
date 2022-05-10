@@ -116,7 +116,13 @@ class ChatList extends StatelessWidget {
                                 return ChatBar(
                                   docs[index]["channelId"],
                                   docs[index]["channelName"],
-                                  snapshot.data.docs.first['message'],
+                                  snapshot.data.docs.length == 0
+                                      ? ""
+                                      : snapshot.data.docs
+                                                  .first['messageType'] ==
+                                              'image'
+                                          ? 'Image'
+                                          : snapshot.data.docs.first['message'],
                                   docs[index]["channelProfile"],
                                   time,
                                   "3",
