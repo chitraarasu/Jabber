@@ -25,8 +25,8 @@ class ChannelUserList extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,
-              title: const Text(
-                "100 Participants",
+              title: Text(
+                "${snapshot.data.docs.length} Participants",
                 style: TextStyle(color: Colors.black),
               ),
               leading: IconButton(

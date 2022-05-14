@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:chatting_application/screens/edit_profile.dart';
 import 'package:chatting_application/screens/phone_number_otp.dart';
+import 'package:chatting_application/screens/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 
 import '../controller/controller.dart';
+import 'my_groups.dart';
 import 'onboarding_page.dart';
 
 class Profile extends StatelessWidget {
@@ -143,39 +145,39 @@ class Profile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "My Status",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      GetBuilder<Controller>(
-                        init: Controller(),
-                        builder: (getController) => Container(
-                          margin: EdgeInsets.only(top: 10),
-                          height: 45.0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              return TopButton(
-                                index: index,
-                                buttonTitle: buttonList[index],
-                                tagDataMethod: (isSelected) async {
-                                  getController
-                                      .setValue(isSelected ? index : null);
-                                },
-                                value: getController.value,
-                              );
-                            },
-                            itemCount: buttonList.length,
-                          ),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // Text(
+                      //   "My Status",
+                      //   style: TextStyle(
+                      //     fontSize: 20,
+                      //     fontWeight: FontWeight.w400,
+                      //     color: Colors.grey,
+                      //   ),
+                      // ),
+                      // GetBuilder<Controller>(
+                      //   init: Controller(),
+                      //   builder: (getController) => Container(
+                      //     margin: EdgeInsets.only(top: 10),
+                      //     height: 45.0,
+                      //     child: ListView.builder(
+                      //       scrollDirection: Axis.horizontal,
+                      //       itemBuilder: (BuildContext context, int index) {
+                      //         return TopButton(
+                      //           index: index,
+                      //           buttonTitle: buttonList[index],
+                      //           tagDataMethod: (isSelected) async {
+                      //             getController
+                      //                 .setValue(isSelected ? index : null);
+                      //           },
+                      //           value: getController.value,
+                      //         );
+                      //       },
+                      //       itemCount: buttonList.length,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 20,
                       ),
@@ -190,12 +192,19 @@ class Profile extends StatelessWidget {
                       SizedBox(
                         height: 10,
                       ),
+                      CustomTile("Groups", Icons.group_rounded, Colors.green,
+                          () {
+                        Get.to(() => MyGroups(),
+                            transition: Transition.rightToLeftWithFade);
+                      }),
+                      // CustomTile("Block List", Icons.block_rounded,
+                      //     Colors.yellow, () {}),
                       CustomTile(
-                          "Groups", Icons.group_rounded, Colors.green, () {}),
-                      CustomTile("Block List", Icons.block_rounded,
-                          Colors.yellow, () {}),
-                      CustomTile("Settings", Icons.settings_rounded,
-                          Colors.grey, () {}),
+                          "Settings", Icons.settings_rounded, Colors.grey, () {
+                        Get.to(() => CustomSettings(),
+                            transition: Transition.rightToLeftWithFade);
+                      }),
+
                       Row(
                         children: [
                           TextButton(

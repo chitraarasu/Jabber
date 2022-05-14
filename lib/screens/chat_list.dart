@@ -78,27 +78,30 @@ class ChatList extends StatelessWidget {
                       return ListView.builder(
                         itemCount: docs.length,
                         itemBuilder: (BuildContext context, int index) {
+                          print(docs[index]["channelId"]);
+                          var groups = [];
+                          FirebaseFirestore.instance
+                              .collection('messages')
+                              .get()
+                              .then((items) {
+                            for (var item in items.docs) {
+                              groups.add(item['channelId']);
+                            }
+                            if (!groups.contains(docs[index]["channelId"])) {
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .collection("userChannels")
+                                  .doc(docs[index]["channelId"])
+                                  .delete();
+                            }
+                          });
+
                           var time = DateFormat('hh:mm a').format(
                             Timestamp(docs[index]["time"].seconds,
                                     docs[index]["time"].nanoseconds)
                                 .toDate(),
                           );
-                          var channelResentMessage;
-                          // FirebaseFirestore.instance
-                          //     .collection('messages')
-                          //     .doc(docs[index]["channelId"])
-                          //     .collection('channelChat')
-                          //     .orderBy(
-                          //       'createdTime',
-                          //       descending: true,
-                          //     )
-                          //     .get()
-                          //     .then(
-                          //   (data) {
-                          //     channelResentMessage = data.docs.first['message'];
-                          //     print(channelResentMessage);
-                          //   },
-                          // );
                           return StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('messages')

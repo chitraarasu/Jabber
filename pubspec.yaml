@@ -53,6 +53,7 @@ dependencies:
   file_picker: ^4.5.1
   google_maps_flutter: ^2.1.5
   location: ^4.3.0
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:
