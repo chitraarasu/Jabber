@@ -1,5 +1,6 @@
 import 'package:chatting_application/screens/user_profile_input_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:country_pickers/country.dart';
@@ -456,6 +457,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                     child: PinCodeTextField(
                                       length: 6,
                                       obscureText: true,
+                                      keyboardType: TextInputType.number,
                                       animationType: AnimationType.fade,
                                       pinTheme: PinTheme(
                                         shape: PinCodeFieldShape.box,

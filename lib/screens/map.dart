@@ -91,7 +91,7 @@ class _MapState extends State<Map> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              } else {
+              } else if (snapshot.hasData) {
                 return GoogleMap(
                   initialCameraPosition: CameraPosition(
                     target:
@@ -99,6 +99,11 @@ class _MapState extends State<Map> {
                     zoom: 6,
                   ),
                   markers: markerss.map((e) => e).toSet(),
+                );
+              } else {
+                return Center(
+                  child:
+                      Text('Allow location permission for better performance.'),
                 );
               }
             },
