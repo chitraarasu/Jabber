@@ -51,6 +51,8 @@ dependencies:
   qr_code_scanner: ^0.7.0
   encrypt: ^5.0.1
   file_picker: ^4.5.1
+  google_maps_flutter: ^2.1.5
+  location: ^4.3.0
 
 dev_dependencies:
   flutter_test:

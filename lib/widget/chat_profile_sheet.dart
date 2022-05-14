@@ -1,7 +1,10 @@
 import 'dart:ui';
 
+import 'package:chatting_application/screens/map.dart';
+import 'package:chatting_application/screens/user_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ChatProfileSheet extends StatelessWidget {
@@ -39,11 +42,55 @@ class ChatProfileSheet extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepOrange,
+                    color: Colors.orange,
                   ),
                 ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CustomCircleButton(
+                      Icons.list_alt_rounded,
+                      Colors.blue,
+                      const Color(0xFFebf4ff),
+                      () {
+                        Get.to(
+                          () => ChannelUserList(
+                            channelId: channelId,
+                          ),
+                          transition: Transition.noTransition,
+                        );
+                      },
+                    ),
+                    CustomCircleButton(
+                      Icons.location_on,
+                      Colors.pinkAccent,
+                      const Color(0xFFf9edff),
+                      () {
+                        Get.to(
+                          () => Map(channelId),
+                          transition: Transition.noTransition,
+                        );
+                      },
+                    ),
+                    CustomCircleButton(
+                      Icons.edit,
+                      Colors.purple,
+                      const Color(0xFFffebf8),
+                      () {},
+                    ),
+                    CustomCircleButton(
+                      Icons.exit_to_app,
+                      Colors.orange,
+                      const Color(0xFFfff1eb),
+                      () {},
+                    ),
+                  ],
+                ),
                 const SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
                 const Text(
                   "Invite id",
@@ -111,6 +158,31 @@ class ChatProfileSheet extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CustomCircleButton extends StatelessWidget {
+  final icon;
+  final color;
+  final bgColor;
+  final onTap;
+
+  CustomCircleButton(this.icon, this.color, this.bgColor, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onTap();
+      },
+      child: CircleAvatar(
+        child: Icon(
+          icon,
+          color: color,
+        ),
+        backgroundColor: bgColor,
+      ),
     );
   }
 }

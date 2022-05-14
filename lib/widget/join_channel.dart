@@ -73,6 +73,22 @@ class _JoinChannelState extends State<JoinChannel> {
           "recentMessage": item["recentMessage"],
           "time": item["time"],
         });
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget._auth.currentUser?.uid)
+            .get()
+            .then((data) async {
+          await FirebaseFirestore.instance
+              .collection("messages")
+              .doc(channelId)
+              .collection("channelMembers")
+              .doc(widget._auth.currentUser?.uid)
+              .set({
+            'userId': widget._auth.currentUser?.uid,
+            'userName': data['username'],
+            'userPhoneNumber': data['phoneNumber'],
+          });
+        });
       }
     }
     isLoading.value = false;
