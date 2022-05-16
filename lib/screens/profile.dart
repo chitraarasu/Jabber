@@ -1,12 +1,10 @@
 import 'dart:ui';
 
 import 'package:chatting_application/screens/edit_profile.dart';
-import 'package:chatting_application/screens/phone_number_otp.dart';
 import 'package:chatting_application/screens/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 
 import '../controller/controller.dart';
@@ -205,18 +203,18 @@ class Profile extends StatelessWidget {
                             transition: Transition.rightToLeftWithFade);
                       }),
 
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Switch to Other Account",
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 18),
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     TextButton(
+                      //       onPressed: () {},
+                      //       child: Text(
+                      //         "Switch to Other Account",
+                      //         style:
+                      //             TextStyle(color: Colors.blue, fontSize: 18),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       Row(
                         children: [
                           TextButton(

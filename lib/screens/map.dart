@@ -25,13 +25,21 @@ class _MapState extends State<Map> {
     try {
       final locData = await Location().getLocation();
       await FirebaseFirestore.instance
-          .collection("messages")
-          .doc(widget.channelId)
-          .collection('channelMembers')
+          .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        'lat': locData.latitude,
-        'lon': locData.longitude,
+          .get()
+          .then((value) async {
+        var data = value.data();
+        await FirebaseFirestore.instance
+            .collection("messages")
+            .doc(widget.channelId)
+            .collection('channelMembers')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({
+          'userName': data!['username'],
+          'lat': locData.latitude,
+          'lon': locData.longitude,
+        });
       });
 
       await FirebaseFirestore.instance
@@ -44,7 +52,7 @@ class _MapState extends State<Map> {
           addMarker({
             'lat': item['lat'],
             'lon': item['lon'],
-            'name': item['userName'],
+            'name': "${item['userName']} (${item['userPhoneNumber']})",
             'uid': item['userId'],
           });
         }
