@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ enum buttonType {
   gallery,
 }
 
-class CreateChannel extends StatelessWidget {
+class CreateChannel extends StatefulWidget {
   const CreateChannel({
     Key? key,
     required FirebaseAuth auth,
@@ -26,6 +27,24 @@ class CreateChannel extends StatelessWidget {
 
   final FirebaseAuth _auth;
   final Controller getController;
+
+  @override
+  State<CreateChannel> createState() => _CreateChannelState();
+}
+
+class _CreateChannelState extends State<CreateChannel> {
+  FocusNode focusNode = FocusNode();
+  var isEmojiVisible = false.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        isEmojiVisible.value == false;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,227 +80,281 @@ class CreateChannel extends StatelessWidget {
       );
     }
 
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Column(
-                  children: [
-                    GetBuilder<Controller>(
-                      init: Controller(),
-                      builder: (getController) => CircleAvatar(
-                        backgroundColor: Colors.blueGrey,
-                        radius: 67,
-                        child: CircleAvatar(
-                          radius: 65,
-                          backgroundColor: Colors.white,
-                          backgroundImage:
-                              getController.channelProfileImage != null
-                                  ? FileImage(
-                                      getController.channelProfileImage,
-                                    )
-                                  : null,
-                          child: getController.channelProfileImage != null
-                              ? null
-                              : const Icon(
-                                  Icons.add_a_photo_rounded,
-                                  size: 65,
-                                  color: Colors.blueGrey,
-                                ),
+    return WillPopScope(
+      onWillPop: () {
+        if (isEmojiVisible.value) {
+          isEmojiVisible.value = false;
+        } else {
+          Navigator.pop(context);
+        }
+        return Future.value(false);
+      },
+      child: Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Column(
+                    children: [
+                      GetBuilder<Controller>(
+                        init: Controller(),
+                        builder: (getController) => CircleAvatar(
+                          backgroundColor: Colors.blueGrey,
+                          radius: 67,
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                                getController.channelProfileImage != null
+                                    ? FileImage(
+                                        getController.channelProfileImage,
+                                      )
+                                    : null,
+                            child: getController.channelProfileImage != null
+                                ? null
+                                : const Icon(
+                                    Icons.add_a_photo_rounded,
+                                    size: 65,
+                                    color: Colors.blueGrey,
+                                  ),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextButton.icon(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                const Color(0xFF006aff),
-                              ),
-                              padding: MaterialStateProperty.all(
-                                const EdgeInsets.all(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              _takePicture(buttonType.gallery);
-                            },
-                            label: const Text(
-                              "Select image",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            icon: const Icon(
-                              Icons.upload_sharp,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                color: Color(0xFF006aff),
-                                width: 2.5,
-                              ),
-                              padding: const EdgeInsets.all(6.5),
-                            ),
-                            onPressed: () {
-                              _takePicture(buttonType.camera);
-                            },
-                            label: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Pick image",
-                                style: TextStyle(
-                                  color: Color(0xFF006aff),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextButton.icon(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xFF006aff),
+                                ),
+                                padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(10),
                                 ),
                               ),
-                            ),
-                            icon: const Icon(
-                              Icons.camera_outlined,
-                              color: Color(0xFF006aff),
+                              onPressed: () {
+                                _takePicture(buttonType.gallery);
+                              },
+                              label: const Text(
+                                "Select image",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: const Icon(
+                                Icons.upload_sharp,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10.0),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: Color(0xFF006aff),
+                                  width: 2.5,
+                                ),
+                                padding: const EdgeInsets.all(6.5),
                               ),
-                              border: Border.all(
-                                width: 2,
-                                color: Colors.blueGrey,
+                              onPressed: () {
+                                _takePicture(buttonType.camera);
+                              },
+                              label: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Pick image",
+                                  style: TextStyle(
+                                    color: Color(0xFF006aff),
+                                  ),
+                                ),
+                              ),
+                              icon: const Icon(
+                                Icons.camera_outlined,
+                                color: Color(0xFF006aff),
                               ),
                             ),
-                            child: TextField(
-                              textCapitalization: TextCapitalization.sentences,
-                              maxLines: 1,
-                              controller: channelNameController,
-                              style: const TextStyle(color: Colors.blueGrey),
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.all(12.5),
-                                hintText: 'Enter channel name',
-                                border: InputBorder.none,
-                                hintStyle: TextStyle(
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                                border: Border.all(
+                                  width: 2,
                                   color: Colors.blueGrey,
                                 ),
                               ),
+                              child: TextField(
+                                focusNode: focusNode,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                maxLines: 1,
+                                controller: channelNameController,
+                                style: const TextStyle(color: Colors.blueGrey),
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.all(12.5),
+                                  hintText: 'Enter channel name',
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: Colors.blueGrey,
+                          const SizedBox(
+                            width: 10,
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.insert_emoticon,
-                              size: 40,
-                              color: Colors.white,
+                          GestureDetector(
+                            onTap: () {
+                              isEmojiVisible.value = !isEmojiVisible.value;
+                              focusNode.unfocus();
+                              focusNode.canRequestFocus = true;
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: Colors.blueGrey,
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.insert_emoticon,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: () async {
-              try {
-                if (!isLoading.value) {
-                  if (channelNameController.text.trim().isNotEmpty) {
-                    var randomDoc = FirebaseFirestore.instance
-                        .collection("users")
-                        .doc('${_auth.currentUser?.uid}')
-                        .collection('userChannels')
-                        .doc();
-                    var randomId = randomDoc.id;
-                    isLoading.value = true;
-                    var url;
-                    if (getController.channelProfileImage != null) {
-                      final ref = FirebaseStorage.instance
-                          .ref()
-                          .child('channel_image')
-                          .child("$randomId-${channelNameController.text}.jpg");
-                      await ref.putFile(getController.channelProfileImage);
-                      url = await ref.getDownloadURL();
+            InkWell(
+              onTap: () async {
+                try {
+                  if (!isLoading.value) {
+                    if (channelNameController.text.trim().isNotEmpty) {
+                      var randomDoc = FirebaseFirestore.instance
+                          .collection("users")
+                          .doc('${widget._auth.currentUser?.uid}')
+                          .collection('userChannels')
+                          .doc();
+                      var randomId = randomDoc.id;
+                      isLoading.value = true;
+                      var url;
+                      if (widget.getController.channelProfileImage != null) {
+                        final ref = FirebaseStorage.instance
+                            .ref()
+                            .child('channel_image')
+                            .child(
+                                "$randomId-${channelNameController.text}.jpg");
+                        await ref
+                            .putFile(widget.getController.channelProfileImage);
+                        url = await ref.getDownloadURL();
+                      }
+                      var channelData = {
+                        'channelId': randomId,
+                        'channelName': channelNameController.text,
+                        'channelOwnerId': widget._auth.currentUser?.uid,
+                        'channelProfile': url,
+                        "recentMessage": "",
+                        "time": Timestamp.now(),
+                      };
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(widget._auth.currentUser?.uid)
+                          .collection("userChannels")
+                          .doc(randomId)
+                          .set(channelData);
+                      await FirebaseFirestore.instance
+                          .collection("messages")
+                          .doc(randomId)
+                          .set(channelData);
+                      isLoading.value = false;
+                      Get.back();
                     }
-                    var channelData = {
-                      'channelId': randomId,
-                      'channelName': channelNameController.text,
-                      'channelOwnerId': _auth.currentUser?.uid,
-                      'channelProfile': url,
-                      "recentMessage": "",
-                      "time": Timestamp.now(),
-                    };
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(_auth.currentUser?.uid)
-                        .collection("userChannels")
-                        .doc(randomId)
-                        .set(channelData);
-                    await FirebaseFirestore.instance
-                        .collection("messages")
-                        .doc(randomId)
-                        .set(channelData);
-                    isLoading.value = false;
-                    Get.back();
                   }
+                } catch (error) {
+                  isLoading.value = false;
                 }
-              } catch (error) {
-                isLoading.value = false;
-              }
-            },
-            child: Container(
-              height: 55,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xFF006aff),
-              ),
-              child: Center(
-                child: Obx(
-                  () => isLoading.value
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : const Text(
-                          "Create",
-                          style: TextStyle(
+              },
+              child: Container(
+                height: 55,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF006aff),
+                ),
+                child: Center(
+                  child: Obx(
+                    () => isLoading.value
+                        ? const CircularProgressIndicator(
                             color: Colors.white,
-                            fontSize: 30,
+                          )
+                        : const Text(
+                            "Create",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Obx(
+              () => Offstage(
+                offstage: !isEmojiVisible.value,
+                child: SizedBox(
+                  height: 250,
+                  child: EmojiPicker(
+                    onEmojiSelected: (category, emoji) {
+                      channelNameController.text =
+                          channelNameController.text + emoji.emoji;
+                    },
+                    onBackspacePressed: () {},
+                    config: const Config(
+                        columns: 7,
+                        verticalSpacing: 0,
+                        horizontalSpacing: 0,
+                        initCategory: Category.SMILEYS,
+                        bgColor: Color(0xFFF2F2F2),
+                        indicatorColor: Colors.blue,
+                        iconColor: Colors.grey,
+                        iconColorSelected: Colors.blue,
+                        progressIndicatorColor: Colors.blue,
+                        showRecentsTab: true,
+                        recentsLimit: 28,
+                        noRecentsText: "No Recents",
+                        noRecentsStyle:
+                            TextStyle(fontSize: 20, color: Colors.black26),
+                        tabIndicatorAnimDuration: kTabScrollDuration,
+                        categoryIcons: CategoryIcons(),
+                        buttonMode: ButtonMode.MATERIAL),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

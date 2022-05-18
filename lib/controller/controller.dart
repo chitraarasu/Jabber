@@ -13,6 +13,7 @@ import '../screens/news.dart';
 
 class Controller extends GetxController {
   var _index = 0;
+  var isEmojiVisible = false;
 
   var _isLoading = false;
 
