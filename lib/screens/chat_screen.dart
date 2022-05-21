@@ -1,4 +1,7 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:chatting_application/model/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,10 +10,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:rive/rive.dart';
+import '../main.dart';
 import '../widget/chat_profile_sheet.dart';
 import '../widget/image_view.dart';
 import '../widget/message_bubble.dart';
+
+void printHello() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    NotificationApi.showNotification(
+      title: 'None',
+      body: 'Working bad',
+      payload: 'Working bad',
+    );
+  } else {
+    NotificationApi.showNotification(
+      title: 'Done',
+      body: 'Working good',
+      payload: 'Working fine',
+    );
+  }
+}
 
 class ChatScreen extends StatefulWidget {
   final name;
@@ -25,16 +45,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
-
-  @override
-  void initState() {
-    super.initState();
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        isEmojiVisible.value == false;
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +87,16 @@ class _ChatScreenState extends State<ChatScreen> {
         'recentMessage': _enteredMessage.value,
         'time': Timestamp.now(),
       });
+    }
+
+    Future<void> handleClick(String value) async {
+      switch (value) {
+        case 'Schedule message':
+          const int helloAlarmID = 0;
+          await AndroidAlarmManager.periodic(
+              const Duration(seconds: 5), helloAlarmID, printHello);
+          break;
+      }
     }
 
     return WillPopScope(
@@ -162,16 +182,22 @@ class _ChatScreenState extends State<ChatScreen> {
             //     child: const Icon(Icons.phone),
             //   ),
             // ),
-            IconButton(
-              onPressed: () {},
-              icon: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.deepOrange,
-                ),
-                child: const Icon(Icons.search),
+            PopupMenuButton<String>(
+              icon: Icon(
+                Icons.adaptive.more,
+                color: Colors.black,
               ),
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {
+                  'Schedule message',
+                }.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
             ),
             const SizedBox(
               width: 10,

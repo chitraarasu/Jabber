@@ -19,6 +19,42 @@ class ChatProfileSheet extends StatelessWidget {
   ChatProfileSheet(this.name, this.image, this.channelId);
   @override
   Widget build(BuildContext context) {
+    _displayDialog(BuildContext context) async {
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Do you want to leave this group?'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onPressed: () {
+                    final user = FirebaseAuth.instance.currentUser!;
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.uid)
+                        .collection("userChannels")
+                        .doc(channelId)
+                        .delete();
+                    Get.back();
+                    Get.back();
+                    Get.back();
+                  },
+                )
+              ],
+            );
+          });
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -92,15 +128,7 @@ class ChatProfileSheet extends StatelessWidget {
                         Colors.orange,
                         const Color(0xFFfff1eb),
                         () {
-                          final user = FirebaseAuth.instance.currentUser!;
-                          FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.uid)
-                              .collection("userChannels")
-                              .doc(channelId)
-                              .delete();
-                          Get.back();
-                          Get.back();
+                          _displayDialog(context);
                         },
                       ),
                     ],
