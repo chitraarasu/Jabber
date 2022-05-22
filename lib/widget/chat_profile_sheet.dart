@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:chatting_application/screens/map.dart';
 import 'package:chatting_application/screens/user_list_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +21,7 @@ class ChatProfileSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _displayDialog(BuildContext context) async {
-      return showDialog(
+      return showModal(
           context: context,
           builder: (context) {
             return AlertDialog(

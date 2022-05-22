@@ -1,5 +1,6 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:chatting_application/model/notification.dart';
+import 'package:chatting_application/screens/schedule_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -92,9 +93,11 @@ class _ChatScreenState extends State<ChatScreen> {
     Future<void> handleClick(String value) async {
       switch (value) {
         case 'Schedule message':
-          const int helloAlarmID = 0;
-          await AndroidAlarmManager.periodic(
-              const Duration(seconds: 5), helloAlarmID, printHello);
+          Get.to(() => ScheduleMessage(),
+              transition: Transition.rightToLeftWithFade);
+          // const int helloAlarmID = 0;
+          // await AndroidAlarmManager.periodic(
+          //     const Duration(seconds: 5), helloAlarmID, printHello);
           break;
       }
     }

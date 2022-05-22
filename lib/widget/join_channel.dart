@@ -105,7 +105,8 @@ class _JoinChannelState extends State<JoinChannel> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Container(
+      color: Colors.white,
       child: Column(
         children: [
           Expanded(

@@ -35,10 +35,18 @@ class CreateChannel extends StatefulWidget {
 class _CreateChannelState extends State<CreateChannel> {
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
+  var randomDoc;
 
+  var randomId;
   @override
   void initState() {
     super.initState();
+    randomDoc = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('userChannels')
+        .doc();
+    randomId = randomDoc.id;
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         isEmojiVisible.value == false;
@@ -89,7 +97,8 @@ class _CreateChannelState extends State<CreateChannel> {
         }
         return Future.value(false);
       },
-      child: Expanded(
+      child: Container(
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -253,12 +262,6 @@ class _CreateChannelState extends State<CreateChannel> {
                 try {
                   if (!isLoading.value) {
                     if (channelNameController.text.trim().isNotEmpty) {
-                      var randomDoc = FirebaseFirestore.instance
-                          .collection("users")
-                          .doc('${widget._auth.currentUser?.uid}')
-                          .collection('userChannels')
-                          .doc();
-                      var randomId = randomDoc.id;
                       isLoading.value = true;
                       var url;
                       if (widget.getController.channelProfileImage != null) {
@@ -280,13 +283,29 @@ class _CreateChannelState extends State<CreateChannel> {
                         "time": Timestamp.now(),
                       };
                       await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(widget._auth.currentUser?.uid)
-                          .collection("userChannels")
+                          .collection("messages")
                           .doc(randomId)
                           .set(channelData);
                       await FirebaseFirestore.instance
-                          .collection("messages")
+                          .collection('users')
+                          .doc(widget._auth.currentUser?.uid)
+                          .get()
+                          .then((data) async {
+                        await FirebaseFirestore.instance
+                            .collection("messages")
+                            .doc(randomId)
+                            .collection("channelMembers")
+                            .doc(widget._auth.currentUser?.uid)
+                            .set({
+                          'userId': widget._auth.currentUser?.uid,
+                          'userName': data['username'],
+                          'userPhoneNumber': data['phoneNumber'],
+                        });
+                      });
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(widget._auth.currentUser?.uid)
+                          .collection("userChannels")
                           .doc(randomId)
                           .set(channelData);
                       isLoading.value = false;

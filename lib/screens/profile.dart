@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:chatting_application/screens/edit_profile.dart';
 import 'package:chatting_application/screens/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../controller/controller.dart';
@@ -24,7 +26,7 @@ class Profile extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   _displayDialog(BuildContext context) async {
-    return showDialog(
+    return showModal(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -77,8 +79,10 @@ class Profile extends StatelessWidget {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const SpinKitFadingCircle(
+              color: Color(0xFF006aff),
+              size: 45.0,
+              duration: Duration(milliseconds: 1000),
             );
           } else {
             var docs = snapshot.data;

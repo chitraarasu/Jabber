@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -74,18 +75,46 @@ class CreateNewChannelOrJoinChannel extends StatelessWidget {
               ),
             ),
           ),
-          Obx(() {
-            if (currentScreen.value == screen.join) {
-              return JoinChannel(
-                auth: _auth,
-              );
-            } else {
-              return CreateChannel(
-                auth: _auth,
-                getController: getController,
-              );
-            }
-          })
+          Expanded(
+            child: Obx(
+              () => PageTransitionSwitcher(
+                duration: const Duration(milliseconds: 300),
+                reverse: currentScreen.value != screen.join,
+                transitionBuilder: (
+                  Widget child,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                ) {
+                  return SharedAxisTransition(
+                    child: child,
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.scaled,
+                  );
+                },
+                child: currentScreen.value == screen.join
+                    ? JoinChannel(
+                        auth: _auth,
+                      )
+                    : CreateChannel(
+                        auth: _auth,
+                        getController: getController,
+                      ),
+              ),
+            ),
+          ),
+          // Obx(() {
+          //   if (currentScreen.value == screen.join) {
+          //     return JoinChannel(
+          //       auth: _auth,
+          //     );
+          //   } else {
+          //     return CreateChannel(
+          //       auth: _auth,
+          //       getController: getController,
+          //     );
+          //   }
+          // })
         ],
       ),
     );

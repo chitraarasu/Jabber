@@ -12,7 +12,7 @@ class Contributors extends StatelessWidget {
       Uri.parse(
           'https://api.github.com/repos/chitraarasu/chatting_application_flutter/contributors'),
       headers: {
-        'Authorization': 'Token',
+        'Authorization': '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',
       },
     );
     var decodedResponse = json.decode(response.body);
@@ -47,6 +47,7 @@ class Contributors extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
+            print(snapshot.data);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(

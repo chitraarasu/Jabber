@@ -4,6 +4,7 @@ import 'package:chatting_application/widget/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -65,8 +66,10 @@ class ChatList extends StatelessWidget {
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return const SpinKitFadingCircle(
+                      color: Color(0xFF006aff),
+                      size: 45.0,
+                      duration: Duration(milliseconds: 900),
                     );
                   } else if (!snapshot.hasData || snapshot.hasError) {
                     return const EmptyScreen();
@@ -78,7 +81,6 @@ class ChatList extends StatelessWidget {
                       return ListView.builder(
                         itemCount: docs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          print(docs[index]["channelId"]);
                           var groups = [];
                           FirebaseFirestore.instance
                               .collection('messages')

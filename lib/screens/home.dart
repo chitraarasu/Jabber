@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var data = Get.put(Controller());
-
+  final _fabDimension = 56.0;
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
@@ -41,19 +42,63 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFfcfcfc),
+      // body: GetBuilder<Controller>(
+      //   builder: (controller) => controller.body,
+      // ),
       body: GetBuilder<Controller>(
-        builder: (controller) => controller.body,
+        builder: (controller) => PageTransitionSwitcher(
+          transitionBuilder: (
+            Widget child,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: controller.body,
+        ),
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
-        child: FloatingActionButton(
-          onPressed: () {
-            Get.to(() => const CreateNewChannelOrJoinChannel());
+        // child: FloatingActionButton(
+        //   onPressed: () {
+        //     Get.to(() => const CreateNewChannelOrJoinChannel());
+        //   },
+        //   backgroundColor: const Color(0xFF006aff),
+        //   child: const Icon(Icons.edit),
+        // ),
+        child: OpenContainer(
+          transitionType: ContainerTransitionType.fade,
+          openBuilder: (BuildContext context, VoidCallback _) {
+            return const CreateNewChannelOrJoinChannel();
           },
-          backgroundColor: const Color(0xFF006aff),
-          child: const Icon(Icons.edit),
+          closedElevation: 6.0,
+          closedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(_fabDimension / 2),
+            ),
+          ),
+          closedColor: Theme.of(context).colorScheme.secondary,
+          closedBuilder: (BuildContext context, VoidCallback openContainer) {
+            return Container(
+              color: const Color(0xFF006aff),
+              child: SizedBox(
+                height: _fabDimension,
+                width: _fabDimension,
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
