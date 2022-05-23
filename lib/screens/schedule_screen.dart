@@ -1,17 +1,19 @@
+import 'dart:ui';
+
 import 'package:chatting_application/controller/schedule_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widget/image_view.dart';
 import '../widget/message_bubble.dart';
 
 class ScheduleMessage extends StatefulWidget {
+  final channelId;
+  ScheduleMessage(this.channelId);
   @override
   State<ScheduleMessage> createState() => _ScheduleMessageState();
 }
@@ -87,7 +89,30 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                if (selectedDate == null || selectedTime == null) {
+                  Fluttertoast.showToast(
+                    msg: "Please select date and time.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                } else if (Get.find<SMController>().message.length == 0) {
+                  Fluttertoast.showToast(
+                    msg: "Please add the message.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                } else {
+                  Get.find<SMController>().makeSchedule(
+                      widget.channelId, selectedDate, selectedTime);
+                }
+              },
               icon: const Icon(
                 Icons.done_rounded,
                 color: Colors.blue,
@@ -116,6 +141,16 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                     _selectTime();
                   }, 'assets/animations/clock.json'),
                 ],
+              ),
+              const Center(
+                child: Text(
+                  "Pick a time at least 15 minutes from now.",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Expanded(
                 child: Column(
@@ -202,8 +237,7 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                                           focusNode: focusNode,
                                           minLines: 1,
                                           maxLines: 5,
-                                          keyboardType:
-                                              TextInputType.multiline, //
+                                          keyboardType: TextInputType.multiline,
                                           textInputAction:
                                               TextInputAction.newline,
                                           onChanged: (value) {
@@ -264,6 +298,7 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                                       Get.find<SMController>().addMessage(
                                           _enteredMessage.value, "text");
                                       _controller.clear();
+                                      _enteredMessage.value = '';
                                       FocusScope.of(context).unfocus();
                                     },
                               backgroundColor: Colors.deepOrange,

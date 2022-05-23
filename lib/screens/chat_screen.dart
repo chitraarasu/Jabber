@@ -1,4 +1,3 @@
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:chatting_application/model/notification.dart';
 import 'package:chatting_application/screens/schedule_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,23 +14,6 @@ import '../main.dart';
 import '../widget/chat_profile_sheet.dart';
 import '../widget/image_view.dart';
 import '../widget/message_bubble.dart';
-
-void printHello() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.none) {
-    NotificationApi.showNotification(
-      title: 'None',
-      body: 'Working bad',
-      payload: 'Working bad',
-    );
-  } else {
-    NotificationApi.showNotification(
-      title: 'Done',
-      body: 'Working good',
-      payload: 'Working fine',
-    );
-  }
-}
 
 class ChatScreen extends StatefulWidget {
   final name;
@@ -93,11 +75,8 @@ class _ChatScreenState extends State<ChatScreen> {
     Future<void> handleClick(String value) async {
       switch (value) {
         case 'Schedule message':
-          Get.to(() => ScheduleMessage(),
+          Get.to(() => ScheduleMessage(widget.channelId),
               transition: Transition.rightToLeftWithFade);
-          // const int helloAlarmID = 0;
-          // await AndroidAlarmManager.periodic(
-          //     const Duration(seconds: 5), helloAlarmID, printHello);
           break;
       }
     }

@@ -1,11 +1,12 @@
 import 'dart:isolate';
 
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:workmanager/workmanager.dart';
 
+import 'controller/schedule_controller.dart';
 import 'model/notification.dart';
 import 'screens/home.dart';
 import 'screens/onboarding_page.dart';
@@ -13,7 +14,7 @@ import 'screens/onboarding_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await AndroidAlarmManager.initialize();
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
   runApp(MyApp());
 }
 
