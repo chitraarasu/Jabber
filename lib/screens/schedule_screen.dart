@@ -110,7 +110,7 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                   );
                 } else {
                   Get.find<SMController>().makeSchedule(
-                      widget.channelId, selectedDate, selectedTime);
+                      widget.channelId, selectedDate!, selectedTime!);
                 }
               },
               icon: const Icon(
@@ -141,16 +141,6 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                     _selectTime();
                   }, 'assets/animations/clock.json'),
                 ],
-              ),
-              const Center(
-                child: Text(
-                  "Pick a time at least 15 minutes from now.",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
               ),
               Expanded(
                 child: Column(
