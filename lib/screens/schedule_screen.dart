@@ -142,6 +142,9 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                   }, 'assets/animations/clock.json'),
                 ],
               ),
+              const Center(
+                child: Text("You can schedule once per channel."),
+              ),
               Expanded(
                 child: Column(
                   children: [

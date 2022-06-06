@@ -7,7 +7,7 @@
     <!-- For apps with targetSDK=31 (Android 12) -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
    <application
-        android:label="chatting_application"
+        android:label="Chathut"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
        <service

@@ -9,7 +9,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../controller/controller.dart';
 import 'my_groups.dart';
@@ -203,6 +205,23 @@ class Profile extends StatelessWidget {
                     Get.to(() => CustomSettings(),
                         transition: Transition.rightToLeftWithFade);
                   }),
+
+                  CustomTile(
+                    "Clear schedules",
+                    Icons.punch_clock,
+                    Colors.blueGrey,
+                    () {
+                      Workmanager().cancelAll();
+                      Fluttertoast.showToast(
+                        msg: "All schedules cleared!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    },
+                  ),
 
                   // Row(
                   //   children: [

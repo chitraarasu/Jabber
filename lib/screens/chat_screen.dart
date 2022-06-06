@@ -7,9 +7,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:workmanager/workmanager.dart';
 import '../main.dart';
 import '../widget/chat_profile_sheet.dart';
 import '../widget/image_view.dart';
@@ -77,6 +79,17 @@ class _ChatScreenState extends State<ChatScreen> {
         case 'Schedule message':
           Get.to(() => ScheduleMessage(widget.channelId),
               transition: Transition.rightToLeftWithFade);
+          break;
+        case 'Clear schedule':
+          Workmanager().cancelByUniqueName(widget.channelId);
+          Fluttertoast.showToast(
+            msg: "Schedule cleared",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
           break;
       }
     }
@@ -171,9 +184,8 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               onSelected: handleClick,
               itemBuilder: (BuildContext context) {
-                return {
-                  'Schedule message',
-                }.map((String choice) {
+                return {'Schedule message', 'Clear schedule'}
+                    .map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Text(choice),
@@ -226,6 +238,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
                     } else {
                       return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         reverse: true,
                         itemCount: docs.length,
                         itemBuilder: (ctx, index) {

@@ -79,6 +79,7 @@ class ChatList extends StatelessWidget {
                       return const EmptyScreen();
                     } else {
                       return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         itemCount: docs.length,
                         itemBuilder: (BuildContext context, int index) {
                           var groups = [];
