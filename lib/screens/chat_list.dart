@@ -1,5 +1,4 @@
 import 'package:chatting_application/screens/chat_screen.dart';
-import 'package:chatting_application/screens/onboarding_page.dart';
 import 'package:chatting_application/widget/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../widget/chat_bar.dart';
 import '../widget/empty_screen.dart';
+import 'bot.dart';
 
 class ChatList extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,11 +34,13 @@ class ChatList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Get.to(() => Chat());
+              },
               child: Tab(
-                icon: Image.asset(
-                  "assets/images/edit.png",
-                  width: 30,
+                icon: Lottie.asset(
+                  'assets/animations/bot-icon.json',
+                  width: 45,
                 ),
               ),
             ),

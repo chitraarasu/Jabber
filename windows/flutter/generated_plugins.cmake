@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
+  dialogflow_grpc
   url_launcher_windows
 )
 

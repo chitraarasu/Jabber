@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Chatting Application",
+      title: "Jabber",
       theme: ThemeData(primarySwatch: Colors.blue),
       home: _auth.currentUser == null ? const OnBoardingPage() : const Home(),
     );
