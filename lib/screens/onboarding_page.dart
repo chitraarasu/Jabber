@@ -26,7 +26,7 @@ class OnBoardingPage extends StatelessWidget {
             PageViewModel(
               title: 'Secure Chat',
               body:
-                  'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+                  'Protect all your data with the most secure software with asymmetric end-to-end encryption and NO third parties involved.',
               image: buildImage('assets/animations/chatting.json'),
               decoration: getPageDecoration(),
             ),
@@ -40,21 +40,20 @@ class OnBoardingPage extends StatelessWidget {
             PageViewModel(
               title: 'Music',
               body:
-                  'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+                  'Music touches us emotionally, where words alone can’t. Listen to your favourite songs in just a tap.',
               image: buildImage('assets/animations/music.json'),
               decoration: getPageDecoration(),
             ),
             PageViewModel(
               title: 'News',
-              body:
-                  'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+              body: 'Find the top news around you in simple terms.',
               image: buildImage('assets/animations/news.json'),
               decoration: getPageDecoration(),
             ),
             PageViewModel(
               title: 'Chat bot',
               body:
-                  'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+                  'Keep in touch, manage tasks and to-dos, get answers, control your phone.',
               image: buildImage('assets/animations/robot-bot-3d.json'),
               decoration: getPageDecoration(),
             ),

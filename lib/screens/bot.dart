@@ -284,58 +284,58 @@ class _ChatState extends State<Chat> {
                               ),
                             ),
                           ),
-                          FloatingActionButton.small(
-                            heroTag: const Text("btn2"),
-                            elevation: 0,
-                            disabledElevation: 0,
-                            hoverElevation: 0,
-                            highlightElevation: 0,
-                            focusElevation: 0,
-                            onPressed: () async {
-                              if (_textController.text.isEmpty) {
-                                return;
-                              }
-                              handleSubmitted(_textController.text);
-                            },
-                            backgroundColor: Colors.transparent,
-                            child: const Icon(
-                              Icons.send_rounded,
-                              color: Colors.grey,
+                          if (_isRecording)
+                            GestureDetector(
+                              onTap: _isRecording ? stopStream : handleStream,
+                              child: Container(
+                                child: Lottie.asset(
+                                  "assets/animations/stop-recording.json",
+                                ),
+                              ),
+                            )
+                          else
+                            FloatingActionButton.small(
+                              heroTag: const Text("btn2"),
+                              elevation: 0,
+                              disabledElevation: 0,
+                              hoverElevation: 0,
+                              highlightElevation: 0,
+                              focusElevation: 0,
+                              onPressed:
+                                  _isRecording ? stopStream : handleStream,
+                              backgroundColor: Colors.transparent,
+                              child: Icon(
+                                _isRecording ? Icons.stop : Icons.mic,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
               ),
-              if (_isRecording)
-                GestureDetector(
-                  onTap: _isRecording ? stopStream : handleStream,
-                  child: Container(
-                    child: Lottie.asset(
-                      "assets/animations/stop-recording.json",
-                      width: 60,
-                    ),
-                  ),
-                )
-              else
-                FloatingActionButton.small(
-                  heroTag: const Text("btn3"),
-                  elevation: 0,
-                  disabledElevation: 0,
-                  hoverElevation: 0,
-                  highlightElevation: 0,
-                  focusElevation: 0,
-                  onPressed: _isRecording ? stopStream : handleStream,
-                  backgroundColor:
-                      _isRecording ? Colors.transparent : Colors.deepOrange,
-                  child: Icon(
-                    _isRecording ? Icons.stop : Icons.mic,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+              FloatingActionButton.small(
+                heroTag: const Text("btn3"),
+                elevation: 0,
+                disabledElevation: 0,
+                hoverElevation: 0,
+                highlightElevation: 0,
+                focusElevation: 0,
+                onPressed: () async {
+                  if (_textController.text.isEmpty) {
+                    return;
+                  }
+                  handleSubmitted(_textController.text);
+                  stopStream();
+                },
+                backgroundColor: Colors.deepOrange,
+                child: const Icon(
+                  Icons.send_rounded,
+                  color: Colors.white,
                 ),
+              ),
             ],
           ),
         ),
