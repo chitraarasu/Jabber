@@ -23,6 +23,13 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
   var isEmojiVisible = false.obs;
 
   @override
+  void dispose() {
+    nameController.dispose();
+    focusNode.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     focusNode.addListener(() {
@@ -37,12 +44,6 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
   var isLoading = false.obs;
 
   var getController = Get.put(Controller());
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

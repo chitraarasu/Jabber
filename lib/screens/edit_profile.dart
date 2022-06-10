@@ -11,8 +11,11 @@ import 'package:image_picker/image_picker.dart';
 import '../controller/controller.dart';
 
 class EditProfile extends StatelessWidget {
-  final data;
-  EditProfile(this.data);
+  final userName;
+  final url;
+  final number;
+
+  EditProfile(this.userName, this.url, this.number);
 
   final TextEditingController _nameController = TextEditingController();
   // final TextEditingController _emailController = TextEditingController();
@@ -21,7 +24,7 @@ class EditProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _nameController.value = _nameController.value.copyWith(
-      text: data.get('username'),
+      text: userName,
     );
 
     var isLoading = false.obs;
@@ -78,7 +81,7 @@ class EditProfile extends StatelessWidget {
                         .doc(FirebaseAuth.instance.currentUser?.uid)
                         .update({
                       'username': _nameController.text,
-                      'profileUrl': url ?? data.get('profileUrl'),
+                      'profileUrl': url ?? url,
                     });
                     isLoading.value = false;
 
@@ -124,11 +127,9 @@ class EditProfile extends StatelessWidget {
                                     builder: (getController) => CircleAvatar(
                                       radius: 65,
                                       backgroundColor: Color(0xFFedeff0),
-                                      backgroundImage:
-                                          data.get('profileUrl') == null
-                                              ? null
-                                              : NetworkImage(
-                                                  data.get('profileUrl')),
+                                      backgroundImage: url == null
+                                          ? null
+                                          : NetworkImage(url),
                                       child: CircleAvatar(
                                         radius: 65,
                                         backgroundColor: Colors.transparent,
@@ -157,7 +158,7 @@ class EditProfile extends StatelessWidget {
                                 height: 15,
                               ),
                               Text(
-                                data.get('username'),
+                                userName,
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -169,7 +170,7 @@ class EditProfile extends StatelessWidget {
                                 height: 15,
                               ),
                               Text(
-                                data.get('phoneNumber'),
+                                number,
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.grey,

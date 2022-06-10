@@ -26,7 +26,7 @@ class OnBoardingPage extends StatelessWidget {
             PageViewModel(
               title: 'Secure Chat',
               body:
-                  'Protect all your data with the most secure software with asymmetric end-to-end encryption and NO third parties involved.',
+                  'Protect all your data with the most secure software with asymmetric end-to-end encryption and No third parties involved.',
               image: buildImage('assets/animations/chatting.json'),
               decoration: getPageDecoration(),
             ),

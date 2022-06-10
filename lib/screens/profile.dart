@@ -88,6 +88,9 @@ class Profile extends StatelessWidget {
             );
           } else {
             var docs = snapshot.data;
+            var userName = docs.get('username');
+            var url = docs.get('profileUrl');
+            var number = docs.get('phoneNumber');
             return Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
@@ -141,7 +144,7 @@ class Profile extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          Get.to(() => EditProfile(docs),
+                          Get.to(() => EditProfile(userName, url, number),
                               transition: Transition.rightToLeftWithFade);
                         },
                       ),
@@ -299,11 +302,12 @@ class CustomTile extends StatelessWidget {
                 ),
               ],
             ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 25,
-              color: Colors.black,
-            )
+            if (topic != "Clear schedules")
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 25,
+                color: Colors.black,
+              )
           ],
         ),
       ),
