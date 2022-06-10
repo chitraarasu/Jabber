@@ -88,170 +88,169 @@ class Profile extends StatelessWidget {
             );
           } else {
             var docs = snapshot.data;
-            var userName = docs.get('username');
-            var url = docs.get('profileUrl');
-            var number = docs.get('phoneNumber');
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Color(0xFFf4f5f7),
-                            radius: 40,
-                            backgroundImage: docs.get('profileUrl') == null
-                                ? null
-                                : NetworkImage(docs.get('profileUrl')),
-                          ),
-                          SizedBox(
-                            width: 25,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * .3,
-                                child: Text(
-                                  docs.get('username'),
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Text(
-                                docs.get('phoneNumber'),
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          Get.to(() => EditProfile(userName, url, number),
-                              transition: Transition.rightToLeftWithFade);
-                        },
-                      ),
-                    ],
-                  ),
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  // Text(
-                  //   "My Status",
-                  //   style: TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w400,
-                  //     color: Colors.grey,
-                  //   ),
-                  // ),
-                  // GetBuilder<Controller>(
-                  //   init: Controller(),
-                  //   builder: (getController) => Container(
-                  //     margin: EdgeInsets.only(top: 10),
-                  //     height: 45.0,
-                  //     child: ListView.builder(
-                  //       scrollDirection: Axis.horizontal,
-                  //       itemBuilder: (BuildContext context, int index) {
-                  //         return TopButton(
-                  //           index: index,
-                  //           buttonTitle: buttonList[index],
-                  //           tagDataMethod: (isSelected) async {
-                  //             getController
-                  //                 .setValue(isSelected ? index : null);
-                  //           },
-                  //           value: getController.value,
-                  //         );
-                  //       },
-                  //       itemCount: buttonList.length,
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Dashboard",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
+            return SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 5,
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  CustomTile("Groups", Icons.group_rounded, Colors.green, () {
-                    Get.to(() => MyGroups(),
-                        transition: Transition.rightToLeftWithFade);
-                  }),
-                  // CustomTile("Block List", Icons.block_rounded,
-                  //     Colors.yellow, () {}),
-                  CustomTile("Settings", Icons.settings_rounded, Colors.grey,
-                      () {
-                    Get.to(() => CustomSettings(),
-                        transition: Transition.rightToLeftWithFade);
-                  }),
-
-                  CustomTile(
-                    "Clear schedules",
-                    Icons.punch_clock,
-                    Colors.blueGrey,
-                    () {
-                      Workmanager().cancelAll();
-                      Fluttertoast.showToast(
-                        msg: "All schedules cleared!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
-                    },
-                  ),
-
-                  // Row(
-                  //   children: [
-                  //     TextButton(
-                  //       onPressed: () {},
-                  //       child: Text(
-                  //         "Switch to Other Account",
-                  //         style:
-                  //             TextStyle(color: Colors.blue, fontSize: 18),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          _displayDialog(context);
-                        },
-                        child: Text(
-                          "Log Out",
-                          style: TextStyle(color: Colors.red, fontSize: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Color(0xFFf4f5f7),
+                              radius: 40,
+                              backgroundImage: docs.get('profileUrl') == null
+                                  ? null
+                                  : NetworkImage(docs.get('profileUrl')),
+                            ),
+                            SizedBox(
+                              width: 25,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * .3,
+                                  child: Text(
+                                    docs.get('username'),
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                  docs.get('phoneNumber'),
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            Get.to(() => EditProfile(docs),
+                                transition: Transition.rightToLeftWithFade);
+                          },
+                        ),
+                      ],
+                    ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // Text(
+                    //   "My Status",
+                    //   style: TextStyle(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.w400,
+                    //     color: Colors.grey,
+                    //   ),
+                    // ),
+                    // GetBuilder<Controller>(
+                    //   init: Controller(),
+                    //   builder: (getController) => Container(
+                    //     margin: EdgeInsets.only(top: 10),
+                    //     height: 45.0,
+                    //     child: ListView.builder(
+                    //       scrollDirection: Axis.horizontal,
+                    //       itemBuilder: (BuildContext context, int index) {
+                    //         return TopButton(
+                    //           index: index,
+                    //           buttonTitle: buttonList[index],
+                    //           tagDataMethod: (isSelected) async {
+                    //             getController
+                    //                 .setValue(isSelected ? index : null);
+                    //           },
+                    //           value: getController.value,
+                    //         );
+                    //       },
+                    //       itemCount: buttonList.length,
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Dashboard",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomTile("Groups", Icons.group_rounded, Colors.green, () {
+                      Get.to(() => MyGroups(),
+                          transition: Transition.rightToLeftWithFade);
+                    }),
+                    // CustomTile("Block List", Icons.block_rounded,
+                    //     Colors.yellow, () {}),
+                    CustomTile("Settings", Icons.settings_rounded, Colors.grey,
+                        () {
+                      Get.to(() => CustomSettings(),
+                          transition: Transition.rightToLeftWithFade);
+                    }),
+
+                    CustomTile(
+                      "Clear schedules",
+                      Icons.punch_clock,
+                      Colors.blueGrey,
+                      () {
+                        Workmanager().cancelAll();
+                        Fluttertoast.showToast(
+                          msg: "All schedules cleared!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.black,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      },
+                    ),
+
+                    // Row(
+                    //   children: [
+                    //     TextButton(
+                    //       onPressed: () {},
+                    //       child: Text(
+                    //         "Switch to Other Account",
+                    //         style:
+                    //             TextStyle(color: Colors.blue, fontSize: 18),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            _displayDialog(context);
+                          },
+                          child: Text(
+                            "Log Out",
+                            style: TextStyle(color: Colors.red, fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           }
