@@ -37,8 +37,8 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   var verificationId;
   @override
   void dispose() {
-    phoneNumberController.dispose();
-    otpTextEditingController.dispose();
+    // phoneNumberController.dispose();
+    // otpTextEditingController.dispose();
     _controller!.dispose();
     _controller1!.dispose();
     _controller2!.dispose();

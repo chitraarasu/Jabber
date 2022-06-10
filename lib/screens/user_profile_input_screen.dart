@@ -24,7 +24,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
 
   @override
   void dispose() {
-    nameController.dispose();
+    // nameController.dispose();
     focusNode.removeListener(() {});
     super.dispose();
   }
