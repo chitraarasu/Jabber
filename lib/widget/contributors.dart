@@ -12,7 +12,7 @@ class Contributors extends StatelessWidget {
       Uri.parse(
           'https://api.github.com/repos/chitraarasu/chatting_application_flutter/contributors'),
       headers: {
-        'Authorization': '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',
+        'Authorization': '',
       },
     );
     var decodedResponse = json.decode(response.body);
