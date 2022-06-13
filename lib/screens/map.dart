@@ -21,47 +21,44 @@ class _MapState extends State<Map> {
     super.dispose();
   }
 
-  Future _getCurrentUserLocation() async {
-    try {
-      final locData = await Location().getLocation();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .get()
-          .then((value) async {
-        var data = value.data();
-        await FirebaseFirestore.instance
-            .collection("messages")
-            .doc(widget.channelId)
-            .collection('channelMembers')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .update({
-          'userName': data!['username'],
-          'lat': locData.latitude,
-          'lon': locData.longitude,
-        });
-      });
+  var locData;
 
+  Future _getCurrentUserLocation() async {
+    locData = await Location().getLocation();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get()
+        .then((value) async {
+      var data = value.data();
       await FirebaseFirestore.instance
           .collection("messages")
           .doc(widget.channelId)
           .collection('channelMembers')
-          .get()
-          .then((items) {
-        for (var item in items.docs) {
-          addMarker({
-            'lat': item['lat'],
-            'lon': item['lon'],
-            'name': "${item['userName']} (${item['userPhoneNumber']})",
-            'uid': item['userId'],
-          });
-        }
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .update({
+        'userName': data!['username'],
+        'lat': locData.latitude,
+        'lon': locData.longitude,
       });
+    });
 
-      return locData;
-    } catch (e) {
-      return;
-    }
+    await FirebaseFirestore.instance
+        .collection("messages")
+        .doc(widget.channelId)
+        .collection('channelMembers')
+        .get()
+        .then((items) {
+      for (var item in items.docs) {
+        addMarker({
+          'lat': item['lat'],
+          'lon': item['lon'],
+          'name': "${item['userName']} (${item['userPhoneNumber']})",
+          'uid': item['userId'],
+        });
+      }
+    });
+    return true;
   }
 
   List<Marker> markerss = [];
@@ -99,19 +96,13 @@ class _MapState extends State<Map> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (snapshot.hasData) {
+              } else {
                 return GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target:
-                        LatLng(snapshot.data.latitude, snapshot.data.longitude),
+                    target: LatLng(locData.latitude, locData.longitude),
                     zoom: 6,
                   ),
                   markers: markerss.map((e) => e).toSet(),
-                );
-              } else {
-                return Center(
-                  child:
-                      Text('Allow location permission for better performance.'),
                 );
               }
             },
