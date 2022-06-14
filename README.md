@@ -5,20 +5,20 @@ This app runs with any platform such as Linux, windows etc.  It runs on the user
 The chat application we are going to make will be more like a chat room, rather than a peer to peer chat.  So this means that multiple users can connect to the chat server and send their messages.  Every message is broadcasted to every connected chat user.
 
 <p float="left">
-  <img src="output/1.jpg" width="200" height="400" />
-  <img src="output/2.jpg" width="200" height="400" />
-  <img src="output/3.jpg" width="200" height="400" />
-  <img src="output/4.jpg" width="200" height="400" />
-  <img src="output/5.jpg" width="200" height="400" />
-  <img src="output/6.jpg" width="200" height="400" />
-  <img src="output/7.jpg" width="200" height="400" />
-  <img src="output/8.jpg" width="200" height="400" />
-  <img src="output/9.jpg" width="200" height="400" />
-  <img src="output/10.jpg" width="200" height="400" />
-  <img src="output/11.jpg" width="200"  height="400"/>
-  <img src="output/12.jpg" width="200" height="400" />
-    <img src="output/13.jpg" width="200" height="400" />
-  <img src="output/14.jpg" width="200"  height="400"/>
-  <img src="output/15.jpg" width="200" height="400" />
-  <img src="output/16.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/1.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/2.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/3.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/4.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/5.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/6.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/7.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/8.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/9.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/10.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/11.jpg" width="200"  height="400"/>
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/12.jpg" width="200" height="400" />
+    <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/13.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/14.jpg" width="200"  height="400"/>
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/15.jpg" width="200" height="400" />
+  <img src="https://github.com/chitraarasu/Jabber/tree/groupChat/output/16.jpg" width="200" height="400" />
 </p>
