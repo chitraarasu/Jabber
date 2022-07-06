@@ -1,4 +1,4 @@
-# chatting_application
+# Jabber (Chatting application)
 
 Chatting application is an flutter app. Chat refers to the process of communicating, interacting and exchanging message over the Internet.  It involves two or more individuals that communicate through a chat-enabled service or software.  Chat may be delivered through text, audio or vide communication via the Internet.
 This app runs with any platform such as Linux, windows etc.  It runs on the users android device and server applications.  Which runs on any android device on the network. 
