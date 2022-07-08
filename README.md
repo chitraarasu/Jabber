@@ -1,9 +1,8 @@
 # Jabber (Chatting application)
 
-<a id="raw-url" target="_blank" href="https://drive.google.com/file/d/1NKk02JQcZkKCVzNKhj4ne0mrtt76Am2l/view?usp=sharing">Download APK</a>
+<a href="https://www.figma.com/proto/FdZiXa1y3BM0SOGxSC1D5D/Jabber?node-id=0%3A1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=167%3A46&show-proto-sidebar=1">Figma design</a>
 
-
-
+<a href="https://drive.google.com/file/d/1NKk02JQcZkKCVzNKhj4ne0mrtt76Am2l/view?usp=sharing">Download APK</a>
 
 Chatting application is an flutter app. Chat refers to the process of communicating, interacting and exchanging message over the Internet.  It involves two or more individuals that communicate through a chat-enabled service or software.  Chat may be delivered through text, audio or vide communication via the Internet.
 This app runs with any platform such as Linux, windows etc.  It runs on the users android device and server applications.  Which runs on any android device on the network. 
