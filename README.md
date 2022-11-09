@@ -1,4 +1,4 @@
-# Jabber (Chatting application)<a href="https://github.com/chitraarasu/Jabber/blob/master/LICENSE" alt="GitHub license"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" ></a>
+# Jabber (Chatting application).  <a href="https://github.com/chitraarasu/Jabber/blob/master/LICENSE" alt="GitHub license"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" ></a>
 
 <a href="https://www.figma.com/proto/FdZiXa1y3BM0SOGxSC1D5D/Jabber?node-id=0%3A1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=167%3A46&show-proto-sidebar=1">Figma design</a>
 
