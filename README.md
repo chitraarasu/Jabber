@@ -11,7 +11,7 @@ The chat application we are going to make will be more like a chat room, rather 
 <p float="left">
   <img src="https://user-images.githubusercontent.com/75994428/210581236-b68b9ded-820f-4bb0-bec7-a9192ded530a.jpg" width="200" height="400" />
   <img src="https://user-images.githubusercontent.com/75994428/210581240-8677a4bf-f199-41b2-b01f-e4ddcdb341a2.jpg" width="200" height="400" />
-  <img src="https://user-images.githubusercontent.com/75994428/210581243-2dbc8c34-2405-492a-9ae0-ebfd2d45638b.jpgg" width="200" height="400" />
+  <img src="https://user-images.githubusercontent.com/75994428/210581243-2dbc8c34-2405-492a-9ae0-ebfd2d45638b.jpg" width="200" height="400" />
   <img src="https://user-images.githubusercontent.com/75994428/210581247-4354bd27-8f79-40b7-94fa-1092e9fb0a10.jpg" width="200" height="400" />
   <img src="https://user-images.githubusercontent.com/75994428/210581250-f0fbf6b6-8153-415e-b339-0330dff839d8.jpg" width="200" height="400" />
   <img src="https://user-images.githubusercontent.com/75994428/210581254-5517e0b4-308a-4b05-b80f-edaebf98dc43.jpg" width="200" height="400" />
