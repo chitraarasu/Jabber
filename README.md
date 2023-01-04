@@ -9,20 +9,21 @@ This app runs with any platform such as Linux, windows etc.  It runs on the user
 The chat application we are going to make will be more like a chat room, rather than a peer to peer chat.  So this means that multiple users can connect to the chat server and send their messages.  Every message is broadcasted to every connected chat user.
 
 <p float="left">
-  <img src="output/1.jpg" width="200" height="400" />
-  <img src="output/2.jpg" width="200" height="400" />
-  <img src="output/3.jpg" width="200" height="400" />
-  <img src="output/4.jpg" width="200" height="400" />
-  <img src="output/5.jpg" width="200" height="400" />
-  <img src="output/6.jpg" width="200" height="400" />
-  <img src="output/7.jpg" width="200" height="400" />
-  <img src="output/8.jpg" width="200" height="400" />
-  <img src="output/9.jpg" width="200" height="400" />
-  <img src="output/10.jpg" width="200" height="400" />
-  <img src="output/11.jpg" width="200"  height="400"/>
-  <img src="output/12.jpg" width="200" height="400" />
-    <img src="output/13.jpg" width="200" height="400" />
-  <img src="output/14.jpg" width="200"  height="400"/>
-  <img src="output/15.jpg" width="200" height="400" />
-  <img src="output/16.jpg" width="200" height="400" />
+![1](https://user-images.githubusercontent.com/75994428/210581236-b68b9ded-820f-4bb0-bec7-a9192ded530a.jpg)
+![2](https://user-images.githubusercontent.com/75994428/210581240-8677a4bf-f199-41b2-b01f-e4ddcdb341a2.jpg)
+![3](https://user-images.githubusercontent.com/75994428/210581243-2dbc8c34-2405-492a-9ae0-ebfd2d45638b.jpg)
+![4](https://user-images.githubusercontent.com/75994428/210581247-4354bd27-8f79-40b7-94fa-1092e9fb0a10.jpg)
+![5](https://user-images.githubusercontent.com/75994428/210581250-f0fbf6b6-8153-415e-b339-0330dff839d8.jpg)
+![6](https://user-images.githubusercontent.com/75994428/210581254-5517e0b4-308a-4b05-b80f-edaebf98dc43.jpg)
+![7](https://user-images.githubusercontent.com/75994428/210581260-e4df3f47-9754-42ae-83e9-5f9e4adebcd0.jpg)  
+![8](https://user-images.githubusercontent.com/75994428/210581202-f4ed92d6-eb2f-4afd-857b-e28e310ca58b.jpg)
+![9](https://user-images.githubusercontent.com/75994428/210581209-b8163985-c270-4b4d-9543-05c88e79c3b4.jpg)
+![10](https://user-images.githubusercontent.com/75994428/210581215-0c0d394e-e03b-4a51-a011-c40249d81151.jpg)
+![11](https://user-images.githubusercontent.com/75994428/210581220-5840728b-4474-47eb-9e0c-f3db520ff672.jpg)
+![12](https://user-images.githubusercontent.com/75994428/210581224-7c50acac-f41c-48a8-90fb-cc8abe478b5d.jpg)
+![13](https://user-images.githubusercontent.com/75994428/210581226-254000e3-3f4e-4da2-95f4-2cfcc1d11183.jpg)
+![14](https://user-images.githubusercontent.com/75994428/210581229-6b047636-585b-4a6e-bfbe-2ae41118e573.jpg)
+![15](https://user-images.githubusercontent.com/75994428/210581231-1f85ab15-a2aa-4c1f-979e-1514480c43c3.jpg)
+![16](https://user-images.githubusercontent.com/75994428/210581233-369da88f-3977-4f46-a61f-29e0f7d0604d.jpg)
+
 </p>
