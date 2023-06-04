@@ -12,6 +12,10 @@ import 'package:image_picker/image_picker.dart';
 import '../dashboard/home.dart';
 
 class UserProfileInputScreen extends StatefulWidget {
+  final number;
+  final code;
+  UserProfileInputScreen(this.number, this.code);
+
   @override
   State<UserProfileInputScreen> createState() => _UserProfileInputScreenState();
 }
@@ -272,8 +276,8 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                       .doc(_auth.currentUser?.uid)
                                       .set({
                                     'username': nameController.text,
-                                    'phoneNumber':
-                                        _auth.currentUser?.phoneNumber,
+                                    'phoneNumber': widget.number,
+                                    'countryCode': widget.code,
                                     'isOnline': true,
                                     'profileUrl': url,
                                     "uid": _auth.currentUser?.uid,

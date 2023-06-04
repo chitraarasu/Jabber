@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   emoji_picker_flutter
   firebase_core
+  permission_handler_windows
   rive_common
   url_launcher_windows
 )

@@ -72,7 +72,7 @@ class HomeController extends GetxController {
   Country _selectedDialogCountry =
       CountryPickerUtils.getCountryByPhoneCode('91');
 
-  get selectedDialogCountry {
+  Country get selectedDialogCountry {
     return _selectedDialogCountry;
   }
 

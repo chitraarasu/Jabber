@@ -11,6 +11,7 @@ import '../../widget/chat_bar.dart';
 import '../../widget/empty_screen.dart';
 import '../chats/bot.dart';
 import '../chats/chat_screen.dart';
+import '../contacts.dart';
 
 class ChatList extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,7 +33,9 @@ class ChatList extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => Contacts());
+            },
             icon: ImageIcon(
               AssetImage("assets/images/letter.png"),
               size: 30,

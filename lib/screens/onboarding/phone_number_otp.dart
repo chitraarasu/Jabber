@@ -77,7 +77,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
           await _auth.signInWithCredential(phoneAuthCredential);
 
       if (authCredentials.user != null) {
-        Get.to(() => UserProfileInputScreen(),
+        Get.to(
+            () => UserProfileInputScreen(phoneNumberController.text,
+                Get.find<HomeController>().selectedDialogCountry.phoneCode),
             transition: Transition.rightToLeftWithFade);
       }
     } on FirebaseAuthException catch (error) {
