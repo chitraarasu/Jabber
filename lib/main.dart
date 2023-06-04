@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:workmanager/workmanager.dart';
-import 'screens/home.dart';
-import 'screens/onboarding_page.dart';
+import 'controller/binder.dart';
+import 'firebase_options.dart';
+import 'screens/dashboard/home.dart';
+import 'screens/onboarding/onboarding_page.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
@@ -56,7 +58,9 @@ void callbackDispatcher() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
@@ -73,6 +77,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Jabber",
+      initialBinding: Binder(),
       theme: ThemeData(primarySwatch: Colors.blue),
       home: _auth.currentUser == null ? const OnBoardingPage() : const Home(),
     );

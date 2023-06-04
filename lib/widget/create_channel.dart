@@ -26,7 +26,7 @@ class CreateChannel extends StatefulWidget {
         super(key: key);
 
   final FirebaseAuth _auth;
-  final Controller getController;
+  final HomeController getController;
 
   @override
   State<CreateChannel> createState() => _CreateChannelState();
@@ -83,7 +83,7 @@ class _CreateChannelState extends State<CreateChannel> {
       if (imageFile == null) {
         return;
       }
-      Get.find<Controller>().setChannelProfileImage(
+      Get.find<HomeController>().setChannelProfileImage(
         File(imageFile!.path),
       );
     }
@@ -108,8 +108,8 @@ class _CreateChannelState extends State<CreateChannel> {
                   padding: const EdgeInsets.all(25.0),
                   child: Column(
                     children: [
-                      GetBuilder<Controller>(
-                        init: Controller(),
+                      GetBuilder<HomeController>(
+                        init: HomeController(),
                         builder: (getController) => CircleAvatar(
                           backgroundColor: Colors.blueGrey,
                           radius: 67,
@@ -359,12 +359,12 @@ class _CreateChannelState extends State<CreateChannel> {
                         indicatorColor: Colors.blue,
                         iconColor: Colors.grey,
                         iconColorSelected: Colors.blue,
-                        progressIndicatorColor: Colors.blue,
-                        showRecentsTab: true,
+                        // progressIndicatorColor: Colors.blue,
+                        // showRecentsTab: true,
                         recentsLimit: 28,
-                        noRecentsText: "No Recents",
-                        noRecentsStyle:
-                            TextStyle(fontSize: 20, color: Colors.black26),
+                        // noRecentsText: "No Recents",
+                        // noRecentsStyle:
+                        //     TextStyle(fontSize: 20, color: Colors.black26),
                         tabIndicatorAnimDuration: kTabScrollDuration,
                         categoryIcons: CategoryIcons(),
                         buttonMode: ButtonMode.MATERIAL),

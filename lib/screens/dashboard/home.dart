@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/controller.dart';
-import '../widget/customMaterialButton.dart';
-import 'onboarding_page.dart';
+import '../../controller/controller.dart';
+import '../../widget/customMaterialButton.dart';
+import '../onboarding/onboarding_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -17,7 +17,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var data = Get.put(Controller());
   final _fabDimension = 56.0;
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _HomeState extends State<Home> {
       // body: GetBuilder<Controller>(
       //   builder: (controller) => controller.body,
       // ),
-      body: GetBuilder<Controller>(
+      body: GetBuilder<HomeController>(
         builder: (controller) => PageTransitionSwitcher(
           transitionBuilder: (
             Widget child,
@@ -106,7 +105,7 @@ class _HomeState extends State<Home> {
 
   Widget get bottomNavigationBar {
     var mediaData = MediaQuery.of(context).size;
-    return GetBuilder<Controller>(
+    return GetBuilder<HomeController>(
       builder: (controller) => BottomAppBar(
         clipBehavior: Clip.hardEdge,
         shape: const CircularNotchedRectangle(),
@@ -119,15 +118,15 @@ class _HomeState extends State<Home> {
               CustomMaterialButton(() {
                 controller.setScreen(0);
               }, controller.index == 0, Icons.messenger, "Chats"),
-              CustomMaterialButton(() {
-                controller.setScreen(1);
-              }, controller.index == 1, Icons.music_note_rounded, "Music"),
-              SizedBox(
-                width: mediaData.width * .05,
-              ),
-              CustomMaterialButton(() {
-                controller.setScreen(2);
-              }, controller.index == 2, Icons.newspaper_rounded, "News"),
+              // CustomMaterialButton(() {
+              //   controller.setScreen(1);
+              // }, controller.index == 1, Icons.music_note_rounded, "Music"),
+              // SizedBox(
+              //   width: mediaData.width * .05,
+              // ),
+              // CustomMaterialButton(() {
+              //   controller.setScreen(2);
+              // }, controller.index == 2, Icons.newspaper_rounded, "News"),
               CustomMaterialButton(() {
                 controller.setScreen(3);
               }, controller.index == 3, Icons.account_box_rounded, "Profile"),

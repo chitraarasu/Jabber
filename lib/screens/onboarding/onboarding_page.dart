@@ -1,11 +1,11 @@
-import 'package:chatting_application/screens/phone_number_otp.dart';
+import 'package:chatting_application/screens/onboarding/phone_number_otp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
 
-import '../widget/button_widget.dart';
+import '../../widget/button_widget.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({Key? key}) : super(key: key);

@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
-import 'package:chatting_application/screens/map.dart';
-import 'package:chatting_application/screens/user_list_screen.dart';
+import 'package:chatting_application/screens/chats/map.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rive/rive.dart';
+
+import '../screens/chats/user_list_screen.dart';
 
 class ChatProfileSheet extends StatelessWidget {
   final name;
@@ -99,6 +100,8 @@ class ChatProfileSheet extends StatelessWidget {
                         Colors.blue,
                         const Color(0xFFebf4ff),
                         () {
+                          Get.back();
+
                           Get.to(
                             () => ChannelUserList(
                               channelId: channelId,
@@ -112,6 +115,7 @@ class ChatProfileSheet extends StatelessWidget {
                         Colors.pinkAccent,
                         const Color(0xFFf9edff),
                         () {
+                          Get.back();
                           Get.to(
                             () => Map(channelId),
                             transition: Transition.noTransition,
@@ -144,22 +148,12 @@ class ChatProfileSheet extends StatelessWidget {
                       fontSize: 20,
                     ),
                   ),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SelectableText(
-                        channelId,
-                        cursorColor: const Color(0xFF006aff),
-                        showCursor: true,
-                        toolbarOptions: const ToolbarOptions(
-                          copy: true,
-                          selectAll: true,
-                          cut: false,
-                          paste: false,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           Clipboard.setData(ClipboardData(text: channelId));
                           Fluttertoast.showToast(
                             msg: "Text copied!",
@@ -170,22 +164,51 @@ class ChatProfileSheet extends StatelessWidget {
                             fontSize: 16.0,
                           );
                         },
-                        icon: const Icon(
-                          Icons.copy,
-                          size: 20,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(width: 10),
+                                Text(channelId),
+                                // SelectableText(
+                                //   channelId,
+                                //   cursorColor: const Color(0xFF006aff),
+                                //   showCursor: true,
+                                //   toolbarOptions: const ToolbarOptions(
+                                //     copy: true,
+                                //     selectAll: true,
+                                //     cut: false,
+                                //     paste: false,
+                                //   ),
+                                // ),
+                                SizedBox(width: 10),
+                                const Icon(
+                                  Icons.copy,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                              ],
+                            ),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(width: 4),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: QrImage(
+                    child: QrImageView(
                       data: channelId,
                       version: QrVersions.auto,
                       size: 150.0,

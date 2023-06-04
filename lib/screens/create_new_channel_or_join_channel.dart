@@ -21,8 +21,7 @@ class CreateNewChannelOrJoinChannel extends StatelessWidget {
   Widget build(BuildContext context) {
     var currentScreen = screen.join.obs;
     final FirebaseAuth _auth = FirebaseAuth.instance;
-
-    var getController = Get.put(Controller());
+    HomeController homeController = Get.find();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -98,7 +97,7 @@ class CreateNewChannelOrJoinChannel extends StatelessWidget {
                       )
                     : CreateChannel(
                         auth: _auth,
-                        getController: getController,
+                        getController: homeController,
                       ),
               ),
             ),

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widget/message_bubble.dart';
+import '../../widget/message_bubble.dart';
 
 class ScheduleMessage extends StatefulWidget {
   final channelId;
@@ -326,12 +326,12 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                                 indicatorColor: Colors.blue,
                                 iconColor: Colors.grey,
                                 iconColorSelected: Colors.blue,
-                                progressIndicatorColor: Colors.blue,
-                                showRecentsTab: true,
+                                // progressIndicatorColor: Colors.blue,
+                                // showRecentsTab: true,
                                 recentsLimit: 28,
-                                noRecentsText: "No Recents",
-                                noRecentsStyle: TextStyle(
-                                    fontSize: 20, color: Colors.black26),
+                                // noRecentsText: "No Recents",
+                                // noRecentsStyle: TextStyle(
+                                //     fontSize: 20, color: Colors.black26),
                                 tabIndicatorAnimDuration: kTabScrollDuration,
                                 categoryIcons: CategoryIcons(),
                                 buttonMode: ButtonMode.MATERIAL),

@@ -1,4 +1,4 @@
-import 'package:chatting_application/screens/user_profile_input_screen.dart';
+import 'package:chatting_application/screens/onboarding/user_profile_input_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rive/rive.dart';
 
-import '../controller/controller.dart';
+import '../../controller/controller.dart';
 
 enum screen {
   number,
@@ -117,7 +117,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
             isSearchable: true,
             title: const Text('Select your phone code'),
             onValuePicked: (Country country) {
-              Get.find<Controller>().setCountry(country);
+              Get.find<HomeController>().setCountry(country);
             },
             itemBuilder: _buildDialogItem,
             priorityList: [
@@ -254,8 +254,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                     width: 1,
                                                   ),
                                                 ),
-                                                child: GetBuilder<Controller>(
-                                                  init: Controller(),
+                                                child:
+                                                    GetBuilder<HomeController>(
+                                                  init: HomeController(),
                                                   builder: (chatController) =>
                                                       _buildDialogItem(
                                                           chatController
@@ -290,7 +291,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       ),
                                     ),
                                   ),
-                                  GetBuilder<Controller>(
+                                  GetBuilder<HomeController>(
                                     builder: (getController) => Padding(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 20,
@@ -330,10 +331,10 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                   ? null
                                                   : _controller1?.isActive =
                                                       true;
-                                              final controller =
-                                                  Get.put(Controller());
+                                              HomeController homeController =
+                                                  Get.find();
                                               final phno =
-                                                  "+${controller.selectedDialogCountry.phoneCode}${phoneNumberController.text}";
+                                                  "+${homeController.selectedDialogCountry.phoneCode}${phoneNumberController.text}";
                                               await _auth.verifyPhoneNumber(
                                                 phoneNumber: phno,
                                                 verificationCompleted:
@@ -407,7 +408,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  GetBuilder<Controller>(
+                                  GetBuilder<HomeController>(
                                     builder: (getController) => Center(
                                       child: RichText(
                                         textAlign: TextAlign.center,
@@ -511,7 +512,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       ],
                                     ),
                                   ),
-                                  GetBuilder<Controller>(
+                                  GetBuilder<HomeController>(
                                     builder: (getController) => Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: ElevatedButton(

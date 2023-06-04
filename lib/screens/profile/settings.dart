@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../widget/contributors.dart';
+import '../../widget/contributors.dart';
 
 class CustomSettings extends StatelessWidget {
   @override

@@ -102,6 +102,10 @@ class _MapState extends State<Map> {
                     target: LatLng(locData.latitude, locData.longitude),
                     zoom: 6,
                   ),
+                  mapToolbarEnabled: false,
+                  compassEnabled: false,
+                  tiltGesturesEnabled: false,
+                  myLocationButtonEnabled: false,
                   markers: markerss.map((e) => e).toSet(),
                 );
               }

@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:chatting_application/screens/music.dart';
-import 'package:chatting_application/screens/chat_list.dart';
+import 'package:chatting_application/screens/dashboard/music.dart';
+import 'package:chatting_application/screens/dashboard/chat_list.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
-import 'package:chatting_application/screens/profile.dart';
+import 'package:chatting_application/screens/dashboard/profile.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
 
-import '../screens/chat_bot.dart';
-import '../screens/news.dart';
+import '../screens/chats/chat_bot.dart';
+import '../screens/dashboard/news.dart';
 
-class Controller extends GetxController {
+class HomeController extends GetxController {
   var _index = 0;
   var isEmojiVisible = false;
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../controller/controller.dart';
+import '../../controller/controller.dart';
 
 class EditProfile extends StatelessWidget {
   final data;

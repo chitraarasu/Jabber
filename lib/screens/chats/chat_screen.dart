@@ -1,5 +1,6 @@
 import 'package:chatting_application/model/notification.dart';
-import 'package:chatting_application/screens/schedule_screen.dart';
+import 'package:chatting_application/screens/chats/schedule_screen.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -12,10 +13,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:workmanager/workmanager.dart';
-import '../main.dart';
-import '../widget/chat_profile_sheet.dart';
-import '../widget/image_view.dart';
-import '../widget/message_bubble.dart';
+import '../../widget/chat_profile_sheet.dart';
+import '../../widget/image_view.dart';
+import '../../widget/message_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
   final name;
@@ -410,12 +410,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         indicatorColor: Colors.blue,
                         iconColor: Colors.grey,
                         iconColorSelected: Colors.blue,
-                        progressIndicatorColor: Colors.blue,
-                        showRecentsTab: true,
+                        // progressIndicatorColor: Colors.blue,
+                        // showRecentsTab: true,
                         recentsLimit: 28,
-                        noRecentsText: "No Recents",
-                        noRecentsStyle:
-                            TextStyle(fontSize: 20, color: Colors.black26),
+                        // noRecentsText: "No Recents",
+                        // noRecentsStyle:
+                        //     TextStyle(fontSize: 20, color: Colors.black26),
                         tabIndicatorAnimDuration: kTabScrollDuration,
                         categoryIcons: CategoryIcons(),
                         buttonMode: ButtonMode.MATERIAL),

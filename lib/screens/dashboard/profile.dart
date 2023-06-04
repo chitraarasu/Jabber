@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
-import 'package:chatting_application/screens/edit_profile.dart';
-import 'package:chatting_application/screens/settings.dart';
+import 'package:chatting_application/screens/profile/edit_profile.dart';
+import 'package:chatting_application/screens/profile/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,9 +13,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../controller/controller.dart';
-import 'my_groups.dart';
-import 'onboarding_page.dart';
+import '../../controller/controller.dart';
+import '../chats/my_groups.dart';
+import '../onboarding/onboarding_page.dart';
 
 class Profile extends StatelessWidget {
   List buttonList = [
@@ -47,7 +47,7 @@ class Profile extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Get.find<Controller>().setScreen(0);
+                  Get.find<HomeController>().setScreen(0);
                   _auth.signOut();
                   Get.offAll(const OnBoardingPage(),
                       transition: Transition.fade);

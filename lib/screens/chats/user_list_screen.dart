@@ -24,6 +24,7 @@ class ChannelUserList extends StatelessWidget {
         } else if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
+              elevation: 0,
               backgroundColor: Colors.white,
               title: Text(
                 "${snapshot.data.docs.length} Participants",
@@ -47,9 +48,10 @@ class ChannelUserList extends StatelessWidget {
                     horizontal: 10,
                   ),
                   child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(snapshot.data.docs[index]['userName']),
+                    child: ListTile(
+                      title: Text(snapshot.data.docs[index]['userName']),
+                      subtitle:
+                          Text(snapshot.data.docs[index]['userPhoneNumber']),
                     ),
                   ),
                 );

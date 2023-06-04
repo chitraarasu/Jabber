@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'home.dart';
+import '../dashboard/home.dart';
 
 class UserProfileInputScreen extends StatefulWidget {
   @override
@@ -18,6 +18,7 @@ class UserProfileInputScreen extends StatefulWidget {
 
 class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
   TextEditingController nameController = TextEditingController();
+  HomeController homeController = Get.find();
 
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
@@ -43,8 +44,6 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
 
   var isLoading = false.obs;
 
-  var getController = Get.put(Controller());
-
   @override
   Widget build(BuildContext context) {
     PickedFile? imageFile;
@@ -56,7 +55,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
       if (imageFile == null) {
         return;
       }
-      Get.find<Controller>().setUserProfileImage(
+      Get.find<HomeController>().setUserProfileImage(
         File(imageFile!.path),
       );
     }
@@ -138,8 +137,8 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                           ),
                           Stack(
                             children: [
-                              GetBuilder<Controller>(
-                                init: Controller(),
+                              GetBuilder<HomeController>(
+                                init: HomeController(),
                                 builder: (getController) => CircleAvatar(
                                   radius: 65,
                                   backgroundColor: Colors.white,
@@ -259,13 +258,13 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                   if (preProfileData != null) {
                                     url = preProfileData['profileUrl'];
                                   }
-                                  if (getController.userProfileImage != null) {
+                                  if (homeController.userProfileImage != null) {
                                     final ref = FirebaseStorage.instance
                                         .ref()
                                         .child('user_image')
                                         .child("${_auth.currentUser?.uid}.jpg");
                                     await ref.putFile(
-                                        getController.userProfileImage);
+                                        homeController.userProfileImage);
                                     url = await ref.getDownloadURL();
                                   }
                                   await FirebaseFirestore.instance
@@ -325,12 +324,12 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                           indicatorColor: Colors.blue,
                           iconColor: Colors.grey,
                           iconColorSelected: Colors.blue,
-                          progressIndicatorColor: Colors.blue,
-                          showRecentsTab: true,
+                          // progressIndicatorColor: Colors.blue,
+                          // showRecentsTab: true,
                           recentsLimit: 28,
-                          noRecentsText: "No Recents",
-                          noRecentsStyle:
-                              TextStyle(fontSize: 20, color: Colors.black26),
+                          // noRecentsText: "No Recents",
+                          // noRecentsStyle:
+                          //     TextStyle(fontSize: 20, color: Colors.black26),
                           tabIndicatorAnimDuration: kTabScrollDuration,
                           categoryIcons: CategoryIcons(),
                           buttonMode: ButtonMode.MATERIAL),

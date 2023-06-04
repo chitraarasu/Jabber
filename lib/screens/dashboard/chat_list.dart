@@ -1,4 +1,3 @@
-import 'package:chatting_application/screens/chat_screen.dart';
 import 'package:chatting_application/widget/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,9 +7,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
-import '../widget/chat_bar.dart';
-import '../widget/empty_screen.dart';
-import 'bot.dart';
+import '../../widget/chat_bar.dart';
+import '../../widget/empty_screen.dart';
+import '../chats/bot.dart';
+import '../chats/chat_screen.dart';
 
 class ChatList extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -31,20 +31,29 @@ class ChatList extends StatelessWidget {
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15.0),
-            child: GestureDetector(
-              onTap: () {
-                Get.to(() => Chat());
-              },
-              child: Tab(
-                icon: Lottie.asset(
-                  'assets/animations/bot-icon.json',
-                  width: 45,
-                ),
-              ),
+          IconButton(
+            onPressed: () {},
+            icon: ImageIcon(
+              AssetImage("assets/images/letter.png"),
+              size: 30,
+              color: Colors.black,
             ),
           ),
+          SizedBox(width: 10)
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 15.0),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       Get.to(() => Chat());
+          //     },
+          //     child: Tab(
+          //       icon: Lottie.asset(
+          //         'assets/animations/bot-icon.json',
+          //         width: 45,
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       body: Padding(
@@ -108,57 +117,34 @@ class ChatList extends StatelessWidget {
                                     docs[index]["time"].nanoseconds)
                                 .toDate(),
                           );
-                          return StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('messages')
-                                .doc(docs[index]["channelId"])
-                                .collection('channelChat')
-                                .orderBy(
-                                  'createdTime',
-                                  descending: true,
-                                )
-                                .snapshots(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<dynamic> snapshot) {
-                              if (snapshot.connectionState !=
-                                  ConnectionState.waiting) {
-                                return ChatBar(
-                                  docs[index]["channelId"],
+                          return ChatBar(
+                            docs[index]["channelId"],
+                            docs[index]["channelName"],
+                            docs[index]["recentMessage"].toString().contains(
+                                    "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
+                                ? 'Image'
+                                : docs[index]["recentMessage"],
+                            docs[index]["channelProfile"],
+                            time,
+                            "3",
+                            () {
+                              Get.to(
+                                () => ChatScreen(
                                   docs[index]["channelName"],
-                                  snapshot.data.docs.length == 0
-                                      ? ""
-                                      : snapshot.data.docs
-                                                  .first['messageType'] ==
-                                              'image'
-                                          ? 'Image'
-                                          : snapshot.data.docs.first['message'],
                                   docs[index]["channelProfile"],
-                                  time,
-                                  "3",
-                                  () {
-                                    Get.to(
-                                      () => ChatScreen(
-                                        docs[index]["channelName"],
-                                        docs[index]["channelProfile"],
-                                        docs[index]['channelId'],
-                                      ),
-                                      transition:
-                                          Transition.rightToLeftWithFade,
-                                    );
-                                  },
-                                  () {
-                                    final user =
-                                        FirebaseAuth.instance.currentUser!;
-                                    FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(user.uid)
-                                        .collection("userChannels")
-                                        .doc(docs[index]['channelId'])
-                                        .delete();
-                                  },
-                                );
-                              }
-                              return Container();
+                                  docs[index]['channelId'],
+                                ),
+                                transition: Transition.rightToLeftWithFade,
+                              );
+                            },
+                            () {
+                              final user = FirebaseAuth.instance.currentUser!;
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(user.uid)
+                                  .collection("userChannels")
+                                  .doc(docs[index]['channelId'])
+                                  .delete();
                             },
                           );
                         },
