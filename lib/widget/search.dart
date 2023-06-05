@@ -15,9 +15,12 @@ class Search extends StatelessWidget {
         margin: const EdgeInsets.only(left: 16.0, right: 16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             Expanded(
               child: TextField(
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 maxLines: 1,
                 decoration: InputDecoration(
                   hintText: "Search",

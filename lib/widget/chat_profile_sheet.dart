@@ -12,6 +12,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rive/rive.dart';
 
 import '../screens/chats/user_list_screen.dart';
+import '../screens/contacts.dart';
 
 class ChatProfileSheet extends StatelessWidget {
   final name;
@@ -126,7 +127,10 @@ class ChatProfileSheet extends StatelessWidget {
                         Icons.add_box_rounded,
                         Colors.purple,
                         const Color(0xFFffebf8),
-                        () {},
+                        () {
+                          Get.back();
+                          Get.to(() => Contacts());
+                        },
                       ),
                       CustomCircleButton(
                         Icons.exit_to_app,

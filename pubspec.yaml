@@ -69,6 +69,7 @@ dependencies:
 #  dialogflow_grpc: ^0.2.2
 #  rxdart: ^0.27.4
   firebase_core_platform_interface: ^4.8.0
+  dotted_line: ^3.1.0
 
 dev_dependencies:
   flutter_test:

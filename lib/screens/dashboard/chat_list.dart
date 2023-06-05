@@ -33,9 +33,7 @@ class ChatList extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Get.to(() => Contacts());
-            },
+            onPressed: () {},
             icon: ImageIcon(
               AssetImage("assets/images/letter.png"),
               size: 30,
