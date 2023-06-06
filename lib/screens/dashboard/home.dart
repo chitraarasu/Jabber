@@ -101,50 +101,56 @@ class _HomeState extends State<Home> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: OpenContainer(
-                                              transitionType:
-                                                  ContainerTransitionType.fade,
-                                              openBuilder:
-                                                  (BuildContext context,
-                                                      VoidCallback _) {
-                                                if (item["id"] == 0) {
-                                                  return Contacts();
-                                                } else {
-                                                  return const CreateNewChannelOrJoinChannel();
-                                                }
-                                              },
-                                              openElevation: 0,
-                                              closedElevation: 0,
-                                              closedColor: Colors.transparent,
-                                              onClosed: (data) {
-                                                isFavTabVisible.value = false;
-                                              },
-                                              closedBuilder: (BuildContext
-                                                      context,
-                                                  VoidCallback openContainer) {
-                                                return Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Image(
-                                                      image: AssetImage(
-                                                          "assets/images/${item["icon"]}"),
-                                                      width: 45,
-                                                    ),
-                                                    SizedBox(height: 4),
-                                                    Text(
-                                                      item["title"].toString(),
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                            child: SingleChildScrollView(
+                                              child: OpenContainer(
+                                                transitionType:
+                                                    ContainerTransitionType
+                                                        .fade,
+                                                openBuilder:
+                                                    (BuildContext context,
+                                                        VoidCallback _) {
+                                                  if (item["id"] == 0) {
+                                                    return Contacts("chat");
+                                                  } else {
+                                                    return const CreateNewChannelOrJoinChannel();
+                                                  }
+                                                },
+                                                openElevation: 0,
+                                                closedElevation: 0,
+                                                closedColor: Colors.transparent,
+                                                onClosed: (data) {
+                                                  isFavTabVisible.value = false;
+                                                },
+                                                closedBuilder:
+                                                    (BuildContext context,
+                                                        VoidCallback
+                                                            openContainer) {
+                                                  return Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Image(
+                                                        image: AssetImage(
+                                                            "assets/images/${item["icon"]}"),
+                                                        width: 45,
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    )
-                                                  ],
-                                                );
-                                              },
+                                                      SizedBox(height: 4),
+                                                      Text(
+                                                        item["title"]
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              ),
                                             ),
                                           ),
                                           if (item["id"] == 0)

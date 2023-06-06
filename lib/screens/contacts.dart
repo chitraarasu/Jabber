@@ -9,6 +9,10 @@ import '../widget/chat_bar.dart';
 import 'chats/chat_screen.dart';
 
 class Contacts extends StatefulWidget {
+  final from;
+
+  Contacts(this.from);
+
   @override
   State<Contacts> createState() => _ContactsState();
 }
@@ -40,6 +44,8 @@ class _ContactsState extends State<Contacts> {
 
   @override
   Widget build(BuildContext context) {
+    bool isFromGroup = widget.from == "group";
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -53,7 +59,7 @@ class _ContactsState extends State<Contacts> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Select contact",
           style: TextStyle(
             color: Colors.black,
@@ -142,111 +148,116 @@ class ChatListCardCaller extends StatelessWidget {
       child: ListView.builder(
           itemCount: contactProfiles.length,
           itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                // Get.to(
-                //     () => ChatScreen(
-                //           contactProfiles[index]['username'],
-                //           contactProfiles[index]['profileUrl'],
-                //           "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
-                //         ),
-                //     transition: Transition.fadeIn);
-              },
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Hero(
-                                tag: contactProfiles[index]['username'],
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: const Color(0xFFd6e2ea),
-                                  backgroundImage: contactProfiles[index]
-                                              ['profileUrl'] ==
-                                          null
-                                      ? null
-                                      : NetworkImage(
-                                          contactProfiles[index]['profileUrl']),
-                                  child: contactProfiles[index]['profileUrl'] ==
-                                          null
-                                      ? const Icon(
-                                          Icons.person_rounded,
-                                          color: Colors.grey,
-                                          size: 30,
-                                        )
-                                      : null,
+            return Card(
+              child: InkWell(
+                onTap: () {
+                  Get.to(
+                      () => ChatScreen(
+                            contactProfiles[index]['username'],
+                            contactProfiles[index]['profileUrl'],
+                            "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
+                            isForSingleChatList: true,
+                          ),
+                      transition: Transition.fadeIn);
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Hero(
+                                  tag: contactProfiles[index]['username'],
+                                  child: CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: const Color(0xFFd6e2ea),
+                                    backgroundImage: contactProfiles[index]
+                                                ['profileUrl'] ==
+                                            null
+                                        ? null
+                                        : NetworkImage(contactProfiles[index]
+                                            ['profileUrl']),
+                                    child: contactProfiles[index]
+                                                ['profileUrl'] ==
+                                            null
+                                        ? const Icon(
+                                            Icons.person_rounded,
+                                            color: Colors.grey,
+                                            size: 30,
+                                          )
+                                        : null,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        contactProfiles[index]['username'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        "",
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      contactProfiles[index]['username'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                      "",
                                       style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
                                       ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                      "",
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold,
+                                    Opacity(
+                                      opacity: 0,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF006aff),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(""),
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "",
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Opacity(
-                                    opacity: 0,
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xFF006aff),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Text(""),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

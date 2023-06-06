@@ -21,7 +21,9 @@ class ChatScreen extends StatefulWidget {
   final name;
   final image;
   final channelId;
-  ChatScreen(this.name, this.image, this.channelId);
+  final isForSingleChatList;
+  ChatScreen(this.name, this.image, this.channelId,
+      {this.isForSingleChatList = false});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -63,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'recentMessage': _enteredMessage.value,
         'time': Timestamp.now(),
       });
+
       FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -321,6 +324,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                   controller: _controller,
                                   focusNode: focusNode,
                                   minLines: 1,
+                                  onTap: () {
+                                    if (isEmojiVisible.value) {
+                                      isEmojiVisible.value = false;
+                                    }
+                                  },
                                   maxLines: 5,
                                   keyboardType: TextInputType.multiline, //
                                   textInputAction: TextInputAction.newline,

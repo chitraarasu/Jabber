@@ -13,8 +13,23 @@ import '../chats/bot.dart';
 import '../chats/chat_screen.dart';
 import '../contacts.dart';
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
+  @override
+  State<ChatList> createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  var groups = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    groups = [];
+  }
+
+  RxString selectedListType = RxString("private-chat");
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +76,66 @@ class ChatList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15.0),
         child: Column(
           children: [
-            Search(),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Search(),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: Container(
+                    height: 45.0,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFebebec),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(25.0),
+                      ),
+                    ),
+                    child: Row(
+                        children: ["private-chat", "people"]
+                            .map(
+                              (e) => Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    selectedListType.value = e;
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Obx(
+                                      () => AnimatedContainer(
+                                        duration: Duration(seconds: 1),
+                                        decoration: selectedListType.value != e
+                                            ? null
+                                            : BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(25.0),
+                                                ),
+                                                border: Border.all(
+                                                  width: 1.5,
+                                                  color: Color(0x9d575757),
+                                                ),
+                                              ),
+                                        child: Center(
+                                          child: Image(
+                                            width: 30,
+                                            image: AssetImage(
+                                                "assets/images/$e.png"),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList()),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 5,
             ),
@@ -88,6 +162,25 @@ class ChatList extends StatelessWidget {
                     return const EmptyScreen();
                   } else {
                     List docs = snapshot.data.docs;
+                    FirebaseFirestore.instance
+                        .collection('messages')
+                        .get()
+                        .then((items) {
+                      for (var item in items.docs) {
+                        groups.add(item['channelId']);
+                      }
+                      for (var element in docs) {
+                        if (!groups.contains(element["channelId"])) {
+                          FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .collection("userChannels")
+                              .doc(element["channelId"])
+                              .delete();
+                        }
+                      }
+                    });
+
                     if (docs.isEmpty) {
                       return const EmptyScreen();
                     } else {
@@ -95,24 +188,6 @@ class ChatList extends StatelessWidget {
                         physics: const BouncingScrollPhysics(),
                         itemCount: docs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var groups = [];
-                          FirebaseFirestore.instance
-                              .collection('messages')
-                              .get()
-                              .then((items) {
-                            for (var item in items.docs) {
-                              groups.add(item['channelId']);
-                            }
-                            if (!groups.contains(docs[index]["channelId"])) {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .collection("userChannels")
-                                  .doc(docs[index]["channelId"])
-                                  .delete();
-                            }
-                          });
-
                           var time = DateFormat('hh:mm a').format(
                             Timestamp(docs[index]["time"].seconds,
                                     docs[index]["time"].nanoseconds)
