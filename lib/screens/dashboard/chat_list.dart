@@ -31,7 +31,6 @@ class _ChatListState extends State<ChatList> {
     super.initState();
     groups = [];
     if (box.read("selectedTab") != null) {
-      print(box.read("selectedTab"));
       selectedListType.value = box.read("selectedTab");
     }
   }
