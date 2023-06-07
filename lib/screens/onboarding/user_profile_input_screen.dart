@@ -55,6 +55,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
       imageFile = await ImagePicker.platform.pickImage(
         source: ImageSource.gallery,
         maxWidth: 600,
+        imageQuality: 50,
       );
       if (imageFile == null) {
         return;

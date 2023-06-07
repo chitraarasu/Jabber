@@ -31,6 +31,7 @@ class EditProfile extends StatelessWidget {
       var imageFile = await ImagePicker.platform.pickImage(
         source: ImageSource.gallery,
         maxWidth: 600,
+        imageQuality: 50,
       );
       if (imageFile != null) {
         editProfileImage.value = File(imageFile.path);

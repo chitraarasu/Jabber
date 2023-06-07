@@ -24,7 +24,37 @@ class _ChatListState extends State<ChatList> {
   final box = GetStorage();
   var groups = [];
 
+  TextEditingController search = TextEditingController();
+
   RxString selectedListType = RxString("private-chat");
+  Rx<List> dataWithOutFilter = Rx([]);
+  Rx<List> dataWithFilter = Rx([]);
+
+  updateList(String value) {
+    print(value);
+    if (selectedListType.value == "people") {
+      dataWithFilter.value = dataWithOutFilter.value
+          .where(
+            (element) =>
+                element["channelName"].toString().toLowerCase().contains(
+                      value.toLowerCase(),
+                    ),
+          )
+          .toList();
+    } else {
+      dataWithFilter.value = dataWithOutFilter.value
+          .where(
+            (element) => element["userData"]["username"]
+                .toString()
+                .toLowerCase()
+                .contains(
+                  value.toLowerCase(),
+                ),
+          )
+          .toList();
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -84,7 +114,7 @@ class _ChatListState extends State<ChatList> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: Search(),
+                  child: Search(updateList, search),
                 ),
                 SizedBox(
                   width: 5,
@@ -102,32 +132,42 @@ class _ChatListState extends State<ChatList> {
                         children: ["private-chat", "people"]
                             .map(
                               (e) => Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    selectedListType.value = e;
-                                    box.write("selectedTab", e);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Obx(
-                                      () => AnimatedContainer(
-                                        duration: Duration(seconds: 1),
-                                        decoration: selectedListType.value != e
-                                            ? null
-                                            : BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(25.0),
+                                child: Tooltip(
+                                  message: e == "people"
+                                      ? "Groups"
+                                      : "Private Chats",
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      dataWithFilter.value = [];
+                                      dataWithOutFilter.value = [];
+                                      selectedListType.value = e;
+                                      box.write("selectedTab", e);
+                                      search.clear();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Obx(
+                                        () => AnimatedContainer(
+                                          duration: Duration(seconds: 1),
+                                          decoration: selectedListType.value !=
+                                                  e
+                                              ? null
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(25.0),
+                                                  ),
+                                                  border: Border.all(
+                                                    width: 1.5,
+                                                    color: Color(0x9d575757),
+                                                  ),
                                                 ),
-                                                border: Border.all(
-                                                  width: 1.5,
-                                                  color: Color(0x9d575757),
-                                                ),
-                                              ),
-                                        child: Center(
-                                          child: Image(
-                                            width: 30,
-                                            image: AssetImage(
-                                                "assets/images/$e.png"),
+                                          child: Center(
+                                            child: Image(
+                                              width: 30,
+                                              image: AssetImage(
+                                                  "assets/images/$e.png"),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -206,58 +246,73 @@ class _ChatListState extends State<ChatList> {
                                         }
                                       }
                                     }
-                                    return ListView.builder(
-                                      physics: const BouncingScrollPhysics(),
-                                      itemCount: chatData.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        var time = DateFormat('hh:mm a').format(
-                                          Timestamp(
-                                                  chatData[index]["createdTime"]
-                                                      .seconds,
-                                                  chatData[index]["createdTime"]
-                                                      .nanoseconds)
-                                              .toDate(),
-                                        );
-                                        var user = chatData[index]["userData"];
-                                        return ChatBar(
-                                          chatData[index]["chat_id"],
-                                          user["username"],
-                                          chatData[index]["recentMessage"]
-                                                  .toString()
-                                                  .contains(
-                                                      "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
-                                              ? 'Image'
-                                              : chatData[index]
-                                                  ["recentMessage"],
-                                          user["profileUrl"],
-                                          time,
-                                          "",
-                                          () {
-                                            Get.to(
-                                              () => ChatScreen(
-                                                user["username"],
-                                                user["profileUrl"],
-                                                chatData[index]['chat_id'],
-                                                isForSingleChatList: true,
-                                                reciverData: user,
-                                              ),
-                                              transition: Transition
-                                                  .rightToLeftWithFade,
-                                            );
-                                          },
-                                          () {
-                                            // final user =
-                                            //     FirebaseAuth.instance.currentUser!;
-                                            // FirebaseFirestore.instance
-                                            //     .collection('users')
-                                            //     .doc(user.uid)
-                                            //     .collection("userChannels")
-                                            //     .doc(docs[index]['channelId'])
-                                            //     .delete();
-                                          },
-                                        );
-                                      },
+
+                                    dataWithOutFilter.value = chatData;
+                                    dataWithFilter.value = chatData;
+
+                                    return Obx(
+                                      () => ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount: dataWithFilter.value.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          var time =
+                                              DateFormat('hh:mm a').format(
+                                            Timestamp(
+                                                    dataWithFilter
+                                                        .value[index]
+                                                            ["createdTime"]
+                                                        .seconds,
+                                                    dataWithFilter
+                                                        .value[index]
+                                                            ["createdTime"]
+                                                        .nanoseconds)
+                                                .toDate(),
+                                          );
+                                          var user = dataWithFilter.value[index]
+                                              ["userData"];
+                                          return ChatBarWithoutDismiss(
+                                            dataWithFilter.value[index]
+                                                ["chat_id"],
+                                            user["username"],
+                                            dataWithFilter.value[index]
+                                                        ["recentMessage"]
+                                                    .toString()
+                                                    .contains(
+                                                        "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
+                                                ? 'Image'
+                                                : dataWithFilter.value[index]
+                                                    ["recentMessage"],
+                                            user["profileUrl"],
+                                            time,
+                                            "",
+                                            () {
+                                              Get.to(
+                                                () => ChatScreen(
+                                                  user["username"],
+                                                  user["profileUrl"],
+                                                  dataWithFilter.value[index]
+                                                      ['chat_id'],
+                                                  isForSingleChatList: true,
+                                                  reciverData: user,
+                                                ),
+                                                transition: Transition
+                                                    .rightToLeftWithFade,
+                                              );
+                                            },
+                                            () {
+                                              // final user =
+                                              //     FirebaseAuth.instance.currentUser!;
+                                              // FirebaseFirestore.instance
+                                              //     .collection('users')
+                                              //     .doc(user.uid)
+                                              //     .collection("userChannels")
+                                              //     .doc(docs[index]['channelId'])
+                                              //     .delete();
+                                            },
+                                          );
+                                        },
+                                      ),
                                     );
                                   } else {
                                     return const EmptyScreen();
@@ -292,11 +347,18 @@ class _ChatListState extends State<ChatList> {
                           } else if (!snapshot.hasData || snapshot.hasError) {
                             return const EmptyScreen();
                           } else {
-                            List docs = snapshot.data.docs;
+                            List docs = snapshot.data.docs
+                                .map((item) => item.data())
+                                .toList();
+
+                            dataWithOutFilter.value = docs;
+                            dataWithFilter.value = docs;
+
                             FirebaseFirestore.instance
                                 .collection('messages')
                                 .get()
                                 .then((items) {
+                              groups = [];
                               for (var item in items.docs) {
                                 groups.add(item['channelId']);
                               }
@@ -313,53 +375,68 @@ class _ChatListState extends State<ChatList> {
                               }
                             });
 
-                            if (docs.isEmpty) {
+                            if (dataWithFilter.value.isEmpty) {
                               return const EmptyScreen();
                             } else {
-                              return ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: docs.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var time = DateFormat('hh:mm a').format(
-                                    Timestamp(docs[index]["time"].seconds,
-                                            docs[index]["time"].nanoseconds)
-                                        .toDate(),
-                                  );
-                                  return ChatBar(
-                                    docs[index]["channelId"],
-                                    docs[index]["channelName"],
-                                    docs[index]["recentMessage"]
-                                            .toString()
-                                            .contains(
-                                                "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
-                                        ? 'Image'
-                                        : docs[index]["recentMessage"],
-                                    docs[index]["channelProfile"],
-                                    time,
-                                    "3",
-                                    () {
-                                      Get.to(
-                                        () => ChatScreen(
-                                          docs[index]["channelName"],
-                                          docs[index]["channelProfile"],
-                                          docs[index]['channelId'],
-                                        ),
-                                        transition:
-                                            Transition.rightToLeftWithFade,
-                                      );
-                                    },
-                                    () {
-                                      final user =
-                                          FirebaseAuth.instance.currentUser!;
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(user.uid)
-                                          .collection("userChannels")
-                                          .doc(docs[index]['channelId'])
-                                          .delete();
-                                    },
-                                  );
-                                },
+                              return Obx(
+                                () => ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: dataWithFilter.value.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var time = DateFormat('hh:mm a').format(
+                                      Timestamp(
+                                              dataWithFilter
+                                                  .value[index]["time"].seconds,
+                                              dataWithFilter
+                                                  .value[index]["time"]
+                                                  .nanoseconds)
+                                          .toDate(),
+                                    );
+                                    return ChatBar(
+                                      dataWithFilter.value[index]["channelId"],
+                                      dataWithFilter.value[index]
+                                          ["channelName"],
+                                      dataWithFilter.value[index]
+                                                  ["recentMessage"]
+                                              .toString()
+                                              .contains(
+                                                  "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
+                                          ? 'Image'
+                                          : dataWithFilter.value[index]
+                                              ["recentMessage"],
+                                      dataWithFilter.value[index]
+                                          ["channelProfile"],
+                                      time,
+                                      "3",
+                                      () {
+                                        Get.to(
+                                          () => ChatScreen(
+                                            dataWithFilter.value[index]
+                                                ["channelName"],
+                                            dataWithFilter.value[index]
+                                                ["channelProfile"],
+                                            dataWithFilter.value[index]
+                                                ['channelId'],
+                                          ),
+                                          transition:
+                                              Transition.rightToLeftWithFade,
+                                        );
+                                      },
+                                      () {
+                                        final user =
+                                            FirebaseAuth.instance.currentUser!;
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(user.uid)
+                                            .collection("userChannels")
+                                            .doc(dataWithFilter.value[index]
+                                                ['channelId'])
+                                            .delete();
+                                      },
+                                    );
+                                  },
+                                ),
                               );
                             }
                           }
