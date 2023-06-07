@@ -134,7 +134,12 @@ class ChatProfileSheet extends StatelessWidget {
                               const Color(0xFFffebf8),
                               () {
                                 Get.back();
-                                Get.to(() => Contacts("group"));
+                                Get.to(
+                                    () => Contacts(
+                                          "group",
+                                          channelData: channelId,
+                                        ),
+                                    transition: Transition.noTransition);
                               },
                             ),
                             CustomCircleButton(

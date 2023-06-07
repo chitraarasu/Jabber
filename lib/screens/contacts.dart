@@ -1,7 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,8 +12,9 @@ import 'chats/chat_screen.dart';
 
 class Contacts extends StatefulWidget {
   final from;
+  final channelData;
 
-  Contacts(this.from);
+  Contacts(this.from, {this.channelData});
 
   @override
   State<Contacts> createState() => _ContactsState();
@@ -22,11 +25,14 @@ class _ContactsState extends State<Contacts> {
 
   Future? getContactFunction;
 
+  bool isFromGroup = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getContactFunction = getContacts();
+    isFromGroup = widget.from == "group";
   }
 
   Future getContacts() async {
@@ -44,8 +50,6 @@ class _ContactsState extends State<Contacts> {
 
   @override
   Widget build(BuildContext context) {
-    bool isFromGroup = widget.from == "group";
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -71,7 +75,9 @@ class _ContactsState extends State<Contacts> {
           IconButton(
             onPressed: () {
               showSearch(
-                  context: context, delegate: MySearchDelegate(userData));
+                  context: context,
+                  delegate: MySearchDelegate(
+                      userData, isFromGroup, widget.channelData));
             },
             icon: const Icon(
               Icons.search,
@@ -106,18 +112,11 @@ class _ContactsState extends State<Contacts> {
                     child: Text("Loading..."),
                   );
                 } else {
-                  return FutureBuilder(
-                      future: getContacts(),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<dynamic> snap) {
-                        if (snap.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                            child: Text("Loading..."),
-                          );
-                        } else {
-                          return ChatListCardCaller(contactProfiles: userData);
-                        }
-                      });
+                  return ChatListCardCaller(
+                    contactProfiles: userData,
+                    isFromGroup: isFromGroup,
+                    channelData: widget.channelData,
+                  );
                 }
               },
             );
@@ -134,15 +133,21 @@ class _ContactsState extends State<Contacts> {
 }
 
 class ChatListCardCaller extends StatelessWidget {
-  const ChatListCardCaller({
+  ChatListCardCaller({
     Key? key,
     required this.contactProfiles,
+    required this.isFromGroup,
+    required this.channelData,
   }) : super(key: key);
 
+  final channelData;
   final List contactProfiles;
+  final bool isFromGroup;
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
@@ -151,15 +156,90 @@ class ChatListCardCaller extends StatelessWidget {
             return Card(
               child: InkWell(
                 onTap: () {
-                  Get.to(
-                      () => ChatScreen(
-                            contactProfiles[index]['username'],
-                            contactProfiles[index]['profileUrl'],
-                            "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
-                            isForSingleChatList: true,
-                            reciverData: contactProfiles[index],
-                          ),
-                      transition: Transition.fadeIn);
+                  if (isFromGroup) {
+                    showModal(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                                'Are you sure want to invite ${contactProfiles[index]['username']}'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  'Send',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  final userData = await FirebaseFirestore
+                                      .instance
+                                      .collection('users')
+                                      .doc(user.uid)
+                                      .get();
+
+                                  FirebaseFirestore.instance
+                                      .collection('messages')
+                                      .doc(channelData)
+                                      .collection("channelMembers")
+                                      .where(
+                                        "userId",
+                                        isEqualTo: contactProfiles[index]
+                                            ['uid'],
+                                      )
+                                      .get()
+                                      .then((value) {
+                                    if (value.docs.isEmpty) {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(contactProfiles[index]['uid'])
+                                          .collection("invites")
+                                          .doc(channelData)
+                                          .set({
+                                        'channelId': channelData,
+                                        'invitedBy': userData["username"],
+                                        'createdTime': Timestamp.now(),
+                                      });
+                                      Fluttertoast.showToast(
+                                        msg: "Invite has been sent!",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0,
+                                      );
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg: "Already a member of this group!",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0,
+                                      );
+                                    }
+                                  });
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  } else {
+                    Get.to(
+                        () => ChatScreen(
+                              contactProfiles[index]['username'],
+                              contactProfiles[index]['profileUrl'],
+                              "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
+                              isForSingleChatList: true,
+                              reciverData: contactProfiles[index],
+                            ),
+                        transition: Transition.fadeIn);
+                  }
                 },
                 child: Padding(
                   padding:
@@ -269,7 +349,9 @@ class ChatListCardCaller extends StatelessWidget {
 
 class MySearchDelegate extends SearchDelegate {
   List resultContact;
-  MySearchDelegate(this.resultContact);
+  bool isFromGroup;
+  final channelData;
+  MySearchDelegate(this.resultContact, this.isFromGroup, this.channelData);
 
   @override
   List<Widget> buildActions(BuildContext context) => [
@@ -313,6 +395,10 @@ class MySearchDelegate extends SearchDelegate {
       listToShow = resultContact;
     }
 
-    return ChatListCardCaller(contactProfiles: listToShow);
+    return ChatListCardCaller(
+      contactProfiles: listToShow,
+      isFromGroup: isFromGroup,
+      channelData: channelData,
+    );
   }
 }

@@ -104,245 +104,272 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
               ),
             ),
           ),
-          body: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            "Step 03/03",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            "Please provide your name and an optional profile photo",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 22.5,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Stack(
-                            children: [
-                              GetBuilder<HomeController>(
-                                init: HomeController(),
-                                builder: (getController) => CircleAvatar(
-                                  radius: 65,
-                                  backgroundColor: Colors.white,
-                                  backgroundImage:
-                                      getController.userProfileImage != null
-                                          ? FileImage(
-                                              getController.userProfileImage,
-                                            )
-                                          : null,
-                                  child: getController.userProfileImage != null
-                                      ? null
-                                      : const Icon(
-                                          Icons.add_a_photo_rounded,
-                                          size: 65,
-                                          color: Colors.blueGrey,
-                                        ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: FloatingActionButton.small(
-                                  onPressed: () {
-                                    _takePicture();
-                                  },
-                                  child: const Icon(Icons.edit),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Row(
+          body: FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection("users")
+                .doc(_auth.currentUser?.uid)
+                .get(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                );
+              } else {
+                var docs = snapshot.data.data();
+                if (docs != null) {
+                  nameController.text = docs["username"];
+                }
+                return Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
                               children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0),
-                                        ),
-                                        border: Border.all(
-                                          width: 2,
-                                          color: Colors.white,
-                                        )),
-                                    child: TextField(
-                                      focusNode: focusNode,
-                                      textCapitalization:
-                                          TextCapitalization.sentences,
-                                      maxLines: 1,
-                                      controller: nameController,
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.all(12.5),
-                                        hintText: 'Enter your name',
-                                        border: InputBorder.none,
-                                        hintStyle: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  "Step 03/03",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  height: 10,
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    isEmojiVisible.value =
-                                        !isEmojiVisible.value;
-                                    focusNode.unfocus();
-                                    focusNode.canRequestFocus = true;
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: Colors.white,
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.insert_emoticon,
-                                        size: 40,
-                                        color: Colors.blueGrey,
+                                const Text(
+                                  "Please provide your name and an optional profile photo",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22.5,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Stack(
+                                  children: [
+                                    GetBuilder<HomeController>(
+                                      init: HomeController(),
+                                      builder: (getController) => CircleAvatar(
+                                        radius: 65,
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: getController
+                                                    .userProfileImage !=
+                                                null
+                                            ? FileImage(
+                                                getController.userProfileImage,
+                                              )
+                                            : docs == null
+                                                ? null
+                                                : NetworkImage(
+                                                        docs["profileUrl"])
+                                                    as ImageProvider<Object>?,
                                       ),
                                     ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: FloatingActionButton.small(
+                                        onPressed: () {
+                                          _takePicture();
+                                        },
+                                        child: const Icon(Icons.edit),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                Radius.circular(10.0),
+                                              ),
+                                              border: Border.all(
+                                                width: 2,
+                                                color: Colors.white,
+                                              )),
+                                          child: TextField(
+                                            focusNode: focusNode,
+                                            textCapitalization:
+                                                TextCapitalization.sentences,
+                                            maxLines: 1,
+                                            controller: nameController,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                            decoration: const InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.all(12.5),
+                                              hintText: 'Enter your name',
+                                              border: InputBorder.none,
+                                              hintStyle: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          isEmojiVisible.value =
+                                              !isEmojiVisible.value;
+                                          focusNode.unfocus();
+                                          focusNode.canRequestFocus = true;
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            color: Colors.white,
+                                          ),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              Icons.insert_emoticon,
+                                              size: 40,
+                                              color: Colors.blueGrey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(0),
-                          ),
-                          onPressed: () async {
-                            try {
-                              if (!isLoading.value) {
-                                if (nameController.text.trim().isNotEmpty) {
-                                  isLoading.value = true;
-                                  var url;
-                                  var preProfileData;
-                                  await FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(_auth.currentUser?.uid)
-                                      .get()
-                                      .then((value) {
-                                    preProfileData = value.data();
-                                  });
-                                  if (preProfileData != null) {
-                                    url = preProfileData['profileUrl'];
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0),
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    if (!isLoading.value) {
+                                      if (nameController.text
+                                          .trim()
+                                          .isNotEmpty) {
+                                        isLoading.value = true;
+                                        var url;
+                                        var preProfileData;
+                                        await FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(_auth.currentUser?.uid)
+                                            .get()
+                                            .then((value) {
+                                          preProfileData = value.data();
+                                        });
+                                        if (preProfileData != null) {
+                                          url = preProfileData['profileUrl'];
+                                        }
+                                        if (homeController.userProfileImage !=
+                                            null) {
+                                          final ref = FirebaseStorage.instance
+                                              .ref()
+                                              .child('user_image')
+                                              .child(
+                                                  "${_auth.currentUser?.uid}.jpg");
+                                          await ref.putFile(
+                                              homeController.userProfileImage);
+                                          url = await ref.getDownloadURL();
+                                        }
+                                        await FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(_auth.currentUser?.uid)
+                                            .set({
+                                          'username': nameController.text,
+                                          'phoneNumber': widget.number,
+                                          'countryCode': widget.code,
+                                          'isOnline': true,
+                                          'profileUrl': url,
+                                          "uid": _auth.currentUser?.uid,
+                                        });
+                                        isLoading.value = false;
+                                        Get.offAll(
+                                          () => const Home(),
+                                          transition:
+                                              Transition.rightToLeftWithFade,
+                                        );
+                                      }
+                                    }
+                                  } catch (error) {
+                                    isLoading.value = false;
                                   }
-                                  if (homeController.userProfileImage != null) {
-                                    final ref = FirebaseStorage.instance
-                                        .ref()
-                                        .child('user_image')
-                                        .child("${_auth.currentUser?.uid}.jpg");
-                                    await ref.putFile(
-                                        homeController.userProfileImage);
-                                    url = await ref.getDownloadURL();
-                                  }
-                                  await FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(_auth.currentUser?.uid)
-                                      .set({
-                                    'username': nameController.text,
-                                    'phoneNumber': widget.number,
-                                    'countryCode': widget.code,
-                                    'isOnline': true,
-                                    'profileUrl': url,
-                                    "uid": _auth.currentUser?.uid,
-                                  });
-                                  isLoading.value = false;
-                                  Get.offAll(
-                                    () => const Home(),
-                                    transition: Transition.rightToLeftWithFade,
-                                  );
-                                }
-                              }
-                            } catch (error) {
-                              isLoading.value = false;
-                            }
-                          },
-                          child: Obx(
-                            () => Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: isLoading.value
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : const Text("Next"),
+                                },
+                                child: Obx(
+                                  () => Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: isLoading.value
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : const Text("Next"),
+                                  ),
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Obx(
+                      () => Offstage(
+                        offstage: !isEmojiVisible.value,
+                        child: SizedBox(
+                          height: 250,
+                          child: EmojiPicker(
+                            onEmojiSelected: (category, emoji) {
+                              nameController.text =
+                                  nameController.text + emoji.emoji;
+                            },
+                            onBackspacePressed: () {},
+                            config: const Config(
+                                columns: 7,
+                                verticalSpacing: 0,
+                                horizontalSpacing: 0,
+                                initCategory: Category.SMILEYS,
+                                bgColor: Color(0xFFF2F2F2),
+                                indicatorColor: Colors.blue,
+                                iconColor: Colors.grey,
+                                iconColorSelected: Colors.blue,
+                                // progressIndicatorColor: Colors.blue,
+                                // showRecentsTab: true,
+                                recentsLimit: 28,
+                                // noRecentsText: "No Recents",
+                                // noRecentsStyle:
+                                //     TextStyle(fontSize: 20, color: Colors.black26),
+                                tabIndicatorAnimDuration: kTabScrollDuration,
+                                categoryIcons: CategoryIcons(),
+                                buttonMode: ButtonMode.MATERIAL),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Obx(
-                () => Offstage(
-                  offstage: !isEmojiVisible.value,
-                  child: SizedBox(
-                    height: 250,
-                    child: EmojiPicker(
-                      onEmojiSelected: (category, emoji) {
-                        nameController.text = nameController.text + emoji.emoji;
-                      },
-                      onBackspacePressed: () {},
-                      config: const Config(
-                          columns: 7,
-                          verticalSpacing: 0,
-                          horizontalSpacing: 0,
-                          initCategory: Category.SMILEYS,
-                          bgColor: Color(0xFFF2F2F2),
-                          indicatorColor: Colors.blue,
-                          iconColor: Colors.grey,
-                          iconColorSelected: Colors.blue,
-                          // progressIndicatorColor: Colors.blue,
-                          // showRecentsTab: true,
-                          recentsLimit: 28,
-                          // noRecentsText: "No Recents",
-                          // noRecentsStyle:
-                          //     TextStyle(fontSize: 20, color: Colors.black26),
-                          tabIndicatorAnimDuration: kTabScrollDuration,
-                          categoryIcons: CategoryIcons(),
-                          buttonMode: ButtonMode.MATERIAL),
                     ),
-                  ),
-                ),
-              ),
-            ],
+                  ],
+                );
+              }
+            },
           ),
         ),
       ),

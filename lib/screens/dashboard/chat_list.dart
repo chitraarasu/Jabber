@@ -11,6 +11,7 @@ import 'package:lottie/lottie.dart';
 import '../../widget/chat_bar.dart';
 import '../../widget/empty_screen.dart';
 import '../chats/bot.dart';
+import '../chats/channel_request.dart';
 import '../chats/chat_screen.dart';
 import '../contacts.dart';
 
@@ -82,7 +83,9 @@ class _ChatListState extends State<ChatList> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => ChannelRequest());
+            },
             icon: ImageIcon(
               AssetImage("assets/images/letter.png"),
               size: 30,
@@ -240,7 +243,9 @@ class _ChatListState extends State<ChatList> {
                                     for (var user in usersData) {
                                       for (var e in chatData) {
                                         List data = e["chat_members"];
-                                        data.remove(_auth.currentUser?.uid);
+                                        if (data.length > 1) {
+                                          data.remove(_auth.currentUser?.uid);
+                                        }
                                         if (user["uid"] == data.first) {
                                           e["userData"] = user;
                                         }
