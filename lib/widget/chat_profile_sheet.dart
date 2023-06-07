@@ -18,8 +18,10 @@ class ChatProfileSheet extends StatelessWidget {
   final name;
   final image;
   final channelId;
+  final isForSingleChatList;
 
-  ChatProfileSheet(this.name, this.image, this.channelId);
+  ChatProfileSheet(
+      this.name, this.image, this.channelId, this.isForSingleChatList);
   @override
   Widget build(BuildContext context) {
     _displayDialog(BuildContext context) async {
@@ -93,131 +95,137 @@ class ChatProfileSheet extends StatelessWidget {
                   SizedBox(
                     height: 15,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CustomCircleButton(
-                        Icons.list_alt_rounded,
-                        Colors.blue,
-                        const Color(0xFFebf4ff),
-                        () {
-                          Get.back();
+                  if (!isForSingleChatList)
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            CustomCircleButton(
+                              Icons.list_alt_rounded,
+                              Colors.blue,
+                              const Color(0xFFebf4ff),
+                              () {
+                                Get.back();
 
-                          Get.to(
-                            () => ChannelUserList(
-                              channelId: channelId,
+                                Get.to(
+                                  () => ChannelUserList(
+                                    channelId: channelId,
+                                  ),
+                                  transition: Transition.noTransition,
+                                );
+                              },
                             ),
-                            transition: Transition.noTransition,
-                          );
-                        },
-                      ),
-                      CustomCircleButton(
-                        Icons.location_on,
-                        Colors.pinkAccent,
-                        const Color(0xFFf9edff),
-                        () {
-                          Get.back();
-                          Get.to(
-                            () => Map(channelId),
-                            transition: Transition.noTransition,
-                          );
-                        },
-                      ),
-                      CustomCircleButton(
-                        Icons.add_box_rounded,
-                        Colors.purple,
-                        const Color(0xFFffebf8),
-                        () {
-                          Get.back();
-                          Get.to(() => Contacts("group"));
-                        },
-                      ),
-                      CustomCircleButton(
-                        Icons.exit_to_app,
-                        Colors.orange,
-                        const Color(0xFFfff1eb),
-                        () {
-                          _displayDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const Text(
-                    "Invite id",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: channelId));
-                          Fluttertoast.showToast(
-                            msg: "Text copied!",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(width: 10),
-                                Text(channelId),
-                                // SelectableText(
-                                //   channelId,
-                                //   cursorColor: const Color(0xFF006aff),
-                                //   showCursor: true,
-                                //   toolbarOptions: const ToolbarOptions(
-                                //     copy: true,
-                                //     selectAll: true,
-                                //     cut: false,
-                                //     paste: false,
-                                //   ),
-                                // ),
-                                SizedBox(width: 10),
-                                const Icon(
-                                  Icons.copy,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 10),
-                              ],
+                            CustomCircleButton(
+                              Icons.location_on,
+                              Colors.pinkAccent,
+                              const Color(0xFFf9edff),
+                              () {
+                                Get.back();
+                                Get.to(
+                                  () => Map(channelId),
+                                  transition: Transition.noTransition,
+                                );
+                              },
                             ),
+                            CustomCircleButton(
+                              Icons.add_box_rounded,
+                              Colors.purple,
+                              const Color(0xFFffebf8),
+                              () {
+                                Get.back();
+                                Get.to(() => Contacts("group"));
+                              },
+                            ),
+                            CustomCircleButton(
+                              Icons.exit_to_app,
+                              Colors.orange,
+                              const Color(0xFFfff1eb),
+                              () {
+                                _displayDialog(context);
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        const Text(
+                          "Invite id",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 4),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: QrImageView(
-                      data: channelId,
-                      version: QrVersions.auto,
-                      size: 150.0,
-                    ),
-                  ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Clipboard.setData(
+                                    ClipboardData(text: channelId));
+                                Fluttertoast.showToast(
+                                  msg: "Text copied!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: 10),
+                                      Text(channelId),
+                                      // SelectableText(
+                                      //   channelId,
+                                      //   cursorColor: const Color(0xFF006aff),
+                                      //   showCursor: true,
+                                      //   toolbarOptions: const ToolbarOptions(
+                                      //     copy: true,
+                                      //     selectAll: true,
+                                      //     cut: false,
+                                      //     paste: false,
+                                      //   ),
+                                      // ),
+                                      SizedBox(width: 10),
+                                      const Icon(
+                                        Icons.copy,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 10),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 4),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: QrImageView(
+                            data: channelId,
+                            version: QrVersions.auto,
+                            size: 150.0,
+                          ),
+                        ),
+                      ],
+                    )
                 ],
               ),
             ),

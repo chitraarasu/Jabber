@@ -12,7 +12,7 @@ class Search extends StatelessWidget {
       ),
       child: Container(
         height: 45.0,
-        margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+        margin: const EdgeInsets.only(left: 10.0, right: 16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[

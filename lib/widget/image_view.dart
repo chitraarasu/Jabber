@@ -11,7 +11,11 @@ import 'package:get/get.dart';
 class CustomImageView extends StatefulWidget {
   final image;
   final channelId;
-  CustomImageView(this.image, this.channelId);
+  final isForSingleChatList;
+  final reciverData;
+
+  CustomImageView(
+      this.image, this.channelId, this.isForSingleChatList, this.reciverData);
 
   @override
   State<CustomImageView> createState() => _CustomImageViewState();
@@ -48,7 +52,8 @@ class _CustomImageViewState extends State<CustomImageView> {
                 .doc(user.uid)
                 .get();
             FirebaseFirestore.instance
-                .collection('messages')
+                .collection(
+                    widget.isForSingleChatList ? "private_chats" : 'messages')
                 .doc(widget.channelId)
                 .collection("channelChat")
                 .add({
@@ -58,22 +63,37 @@ class _CustomImageViewState extends State<CustomImageView> {
               'senderId': user.uid,
               'senderName': userData['username'],
             });
-            FirebaseFirestore.instance
-                .collection('messages')
-                .doc(widget.channelId)
-                .update({
-              'recentMessage': url,
-              'time': Timestamp.now(),
-            });
-            FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .collection("userChannels")
-                .doc(widget.channelId)
-                .update({
-              'recentMessage': url,
-              'time': Timestamp.now(),
-            });
+            if (widget.isForSingleChatList) {
+              FirebaseFirestore.instance
+                  .collection('private_chats')
+                  .doc(widget.channelId)
+                  .set({
+                'chat_id': widget.channelId,
+                'messageType': "image",
+                'createdTime': Timestamp.now(),
+                'chat_members': [user.uid, widget.reciverData["uid"]],
+                'senderName': userData['username'],
+                'recentMessage': url,
+              });
+            } else {
+              FirebaseFirestore.instance
+                  .collection('messages')
+                  .doc(widget.channelId)
+                  .update({
+                'recentMessage': url,
+                'time': Timestamp.now(),
+              });
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .collection("userChannels")
+                  .doc(widget.channelId)
+                  .update({
+                'recentMessage': url,
+                'time': Timestamp.now(),
+              });
+            }
+
             setState(() {
               uploadTask = null;
             });

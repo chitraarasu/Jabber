@@ -157,6 +157,7 @@ class ChatListCardCaller extends StatelessWidget {
                             contactProfiles[index]['profileUrl'],
                             "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
                             isForSingleChatList: true,
+                            reciverData: contactProfiles[index],
                           ),
                       transition: Transition.fadeIn);
                 },
@@ -214,7 +215,7 @@ class ChatListCardCaller extends StatelessWidget {
                                         height: 5,
                                       ),
                                       Text(
-                                        "",
+                                        contactProfiles[index]['phoneNumber'],
                                         maxLines: 1,
                                         style: const TextStyle(
                                           color: Colors.grey,

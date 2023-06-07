@@ -22,8 +22,9 @@ class ChatScreen extends StatefulWidget {
   final image;
   final channelId;
   final isForSingleChatList;
+  final reciverData;
   ChatScreen(this.name, this.image, this.channelId,
-      {this.isForSingleChatList = false});
+      {this.isForSingleChatList = false, this.reciverData});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -43,38 +44,67 @@ class _ChatScreenState extends State<ChatScreen> {
 
       FocusScope.of(context).unfocus();
       final user = FirebaseAuth.instance.currentUser!;
+
       final userData = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
-      FirebaseFirestore.instance
-          .collection('messages')
-          .doc(widget.channelId)
-          .collection("channelChat")
-          .add({
-        'message': _enteredMessage.value,
-        'messageType': "text",
-        'createdTime': Timestamp.now(),
-        'senderId': user.uid,
-        'senderName': userData['username'],
-      });
-      FirebaseFirestore.instance
-          .collection('messages')
-          .doc(widget.channelId)
-          .update({
-        'recentMessage': _enteredMessage.value,
-        'time': Timestamp.now(),
-      });
 
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection("userChannels")
-          .doc(widget.channelId)
-          .update({
-        'recentMessage': _enteredMessage.value,
-        'time': Timestamp.now(),
-      });
+      if (widget.isForSingleChatList) {
+        FirebaseFirestore.instance
+            .collection('private_chats')
+            .doc(widget.channelId)
+            .collection("channelChat")
+            .add({
+          'message': _enteredMessage.value,
+          'messageType': "text",
+          'createdTime': Timestamp.now(),
+          'senderId': user.uid,
+          'senderName': userData['username'],
+        });
+
+        FirebaseFirestore.instance
+            .collection('private_chats')
+            .doc(widget.channelId)
+            .set({
+          'chat_id': widget.channelId,
+          'messageType': "text",
+          'createdTime': Timestamp.now(),
+          'chat_members': [user.uid, widget.reciverData["uid"]],
+          'senderName': userData['username'],
+          'recentMessage': _enteredMessage.value,
+        });
+      } else {
+        FirebaseFirestore.instance
+            .collection('messages')
+            .doc(widget.channelId)
+            .collection("channelChat")
+            .add({
+          'message': _enteredMessage.value,
+          'messageType': "text",
+          'createdTime': Timestamp.now(),
+          'senderId': user.uid,
+          'senderName': userData['username'],
+        });
+
+        FirebaseFirestore.instance
+            .collection('messages')
+            .doc(widget.channelId)
+            .update({
+          'recentMessage': _enteredMessage.value,
+          'time': Timestamp.now(),
+        });
+
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection("userChannels")
+            .doc(widget.channelId)
+            .update({
+          'recentMessage': _enteredMessage.value,
+          'time': Timestamp.now(),
+        });
+      }
     }
 
     Future<void> handleClick(String value) async {
@@ -129,30 +159,26 @@ class _ChatScreenState extends State<ChatScreen> {
                 backgroundColor: Colors.transparent,
                 builder: (context) {
                   return FractionallySizedBox(
-                    heightFactor: 0.70,
-                    child: ChatProfileSheet(
-                        widget.name, widget.image, widget.channelId),
+                    heightFactor: widget.isForSingleChatList ? 0.5 : 0.70,
+                    child: ChatProfileSheet(widget.name, widget.image,
+                        widget.channelId, widget.isForSingleChatList),
                   );
                 },
               );
             },
             child: Row(
               children: [
-                Hero(
-                  tag: widget.name,
-                  child: CircleAvatar(
-                    backgroundColor: const Color(0xFFd6e2ea),
-                    backgroundImage: widget.image == null
-                        ? null
-                        : NetworkImage(widget.image),
-                    child: widget.image == null
-                        ? const Icon(
-                            Icons.person_rounded,
-                            color: Colors.grey,
-                            size: 30,
-                          )
-                        : null,
-                  ),
+                CircleAvatar(
+                  backgroundColor: const Color(0xFFd6e2ea),
+                  backgroundImage:
+                      widget.image == null ? null : NetworkImage(widget.image),
+                  child: widget.image == null
+                      ? const Icon(
+                          Icons.person_rounded,
+                          color: Colors.grey,
+                          size: 30,
+                        )
+                      : null,
                 ),
                 const SizedBox(
                   width: 10,
@@ -211,7 +237,9 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection('messages')
+                    .collection(widget.isForSingleChatList
+                        ? "private_chats"
+                        : 'messages')
                     .doc(widget.channelId)
                     .collection('channelChat')
                     .orderBy(
@@ -358,7 +386,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                     Get.to(
                                         () => CustomImageView(
                                             result.files.first,
-                                            widget.channelId),
+                                            widget.channelId,
+                                            widget.isForSingleChatList,
+                                            widget.reciverData),
                                         transition: Transition.zoom);
                                   }
                                 },
