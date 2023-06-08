@@ -248,7 +248,6 @@ class ChannelRequest extends StatelessWidget {
                                                       ],
                                                     ),
                                                   ),
-                                                  Spacer(),
                                                   SizedBox(width: 4),
                                                   getCircleIcon(
                                                       Icons.cancel, Colors.red,

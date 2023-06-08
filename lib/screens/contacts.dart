@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../controller/controller.dart';
 import '../widget/chat_bar.dart';
 import 'chats/chat_screen.dart';
 
@@ -122,8 +123,6 @@ class _ContactsState extends State<Contacts> {
                   }
                 }
 
-                print("final data");
-                print(userData);
                 if (userSnp.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: Text("Loading..."),
@@ -164,6 +163,7 @@ class ChatListCardCaller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
+    HomeController homeController = Get.find();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -221,6 +221,17 @@ class ChatListCardCaller extends StatelessWidget {
                                         'invitedBy': userData["username"],
                                         'createdTime': Timestamp.now(),
                                       });
+
+                                      homeController.sendNotification(
+                                        data: {},
+                                        tokens: [
+                                          contactProfiles[index]['token']
+                                        ],
+                                        name: "Invite to join group",
+                                        message:
+                                            "You have received an invite from ${userData['username']}",
+                                      );
+
                                       Fluttertoast.showToast(
                                         msg: "Invite has been sent!",
                                         toastLength: Toast.LENGTH_SHORT,

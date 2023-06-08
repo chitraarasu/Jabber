@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmanager/workmanager.dart';
 import 'controller/binder.dart';
+import 'controller/controller.dart';
 import 'firebase_options.dart';
 import 'screens/dashboard/home.dart';
 import 'screens/onboarding/onboarding_page.dart';
@@ -24,6 +25,7 @@ void callbackDispatcher() {
           .collection('users')
           .doc(inputData!['currentUserId'])
           .get();
+      HomeController homeController = Get.find();
       for (var a = 0; a < inputData['messages'].length; a++) {
         FirebaseFirestore.instance
             .collection('messages')
@@ -51,6 +53,36 @@ void callbackDispatcher() {
             .update({
           'recentMessage': inputData['messages'][a],
           'time': Timestamp.now(),
+        });
+
+        // Notification
+        FirebaseFirestore.instance
+            .collection('messages')
+            .doc(inputData['cid'])
+            .collection("channelMembers")
+            .get()
+            .then((value) {
+          var channelMembers = [];
+          for (var item in value.docs) {
+            channelMembers.add(item.data()["userId"]);
+          }
+          FirebaseFirestore.instance
+              .collection('users')
+              .get()
+              .then((usersData) {
+            var userTokens = [];
+            for (var item in usersData.docs) {
+              if (channelMembers.contains(item.data()["uid"])) {
+                userTokens.add(item.data()["token"]);
+              }
+            }
+            homeController.sendNotification(
+              data: {},
+              tokens: userTokens,
+              name: userData['username'],
+              message: inputData['messages'][a],
+            );
+          });
         });
       }
       return Future.value(true);

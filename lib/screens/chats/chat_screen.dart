@@ -1,3 +1,4 @@
+import 'package:chatting_application/controller/controller.dart';
 import 'package:chatting_application/model/notification.dart';
 import 'package:chatting_application/screens/chats/schedule_screen.dart';
 
@@ -33,6 +34,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
+  HomeController homeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,6 @@ class _ChatScreenState extends State<ChatScreen> {
     void _sendMessage() async {
       _controller.clear();
 
-      FocusScope.of(context).unfocus();
       final user = FirebaseAuth.instance.currentUser!;
 
       final userData = await FirebaseFirestore.instance
@@ -74,6 +75,13 @@ class _ChatScreenState extends State<ChatScreen> {
           'senderName': userData['username'],
           'recentMessage': _enteredMessage.value,
         });
+
+        homeController.sendNotification(
+          data: {},
+          tokens: [widget.reciverData["token"]],
+          name: userData['username'],
+          message: _enteredMessage.value,
+        );
       } else {
         FirebaseFirestore.instance
             .collection('messages')
@@ -103,6 +111,36 @@ class _ChatScreenState extends State<ChatScreen> {
             .update({
           'recentMessage': _enteredMessage.value,
           'time': Timestamp.now(),
+        });
+
+        // Notification
+        FirebaseFirestore.instance
+            .collection('messages')
+            .doc(widget.channelId)
+            .collection("channelMembers")
+            .get()
+            .then((value) {
+          var channelMembers = [];
+          for (var item in value.docs) {
+            channelMembers.add(item.data()["userId"]);
+          }
+          FirebaseFirestore.instance
+              .collection('users')
+              .get()
+              .then((usersData) {
+            var userTokens = [];
+            for (var item in usersData.docs) {
+              if (channelMembers.contains(item.data()["uid"])) {
+                userTokens.add(item.data()["token"]);
+              }
+            }
+            homeController.sendNotification(
+              data: {},
+              tokens: userTokens,
+              name: userData['username'],
+              message: _enteredMessage.value,
+            );
+          });
         });
       }
     }

@@ -104,7 +104,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  sendNotification({data, token, name, message}) async {
+  sendNotification({data, tokens, name, message}) async {
     const url = 'https://fcm.googleapis.com/fcm/send';
     const serverKey =
         'AAAAoA33ArQ:APA91bFMBlRp7CZYp1uIrLdSmLcXqenmqDJsgEt7WHL8Wer4EuUHwfyo93FhNPjOTcXTyUTdXX7IbUSGy3XqVjjkUcbHsXsz2Ak13cWtPcvD2Cam2CBaUIcvtVaOme95aHK3emKenKny';
@@ -115,7 +115,7 @@ class HomeController extends GetxController {
     };
 
     final messagee = {
-      'to': token,
+      'registration_ids': tokens,
       'data': data,
       'notification': {
         "body": message,

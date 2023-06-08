@@ -344,8 +344,7 @@ class _ChatListState extends State<ChatList> {
                                                   isForSingleChatList: true,
                                                   reciverData: user,
                                                 ),
-                                                transition: Transition
-                                                    .rightToLeftWithFade,
+                                                transition: Transition.fadeIn,
                                               );
                                             },
                                             () {
@@ -467,8 +466,7 @@ class _ChatListState extends State<ChatList> {
                                             dataWithFilter.value[index]
                                                 ['channelId'],
                                           ),
-                                          transition:
-                                              Transition.rightToLeftWithFade,
+                                          transition: Transition.fadeIn,
                                         );
                                       },
                                       () {
