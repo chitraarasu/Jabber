@@ -42,14 +42,13 @@ class _ContactsState extends State<Contacts> {
       List contactPhoneNumbers = [];
       for (Contact item in contact) {
         if (item.phones == null) continue;
-        if (item.phones!.first.value == null) continue;
         if (item.phones!.isNotEmpty) {
+          if (item.phones!.first.value == null) continue;
           contactPhoneNumbers.add(
-            item.phones!.first.value!.replaceAll(" ", ''),
+            item.phones!.first.value!.replaceAll(" ", '').replaceAll("-", ''),
           );
         }
       }
-      print(contactPhoneNumbers);
       return contactPhoneNumbers;
     } else {
       throw "Please provide contact permission!";
@@ -110,13 +109,10 @@ class _ContactsState extends State<Contacts> {
                 if (userSnp.data != null) {
                   userData = [];
                   List docs = userSnp.data.docs;
-
                   for (var contactItem in contact) {
                     for (var userItem in docs) {
-                      if (userItem["phoneNumber"]
-                          .toString()
-                          .contains(contactItem)) {
-                        if (docs.isEmpty) continue;
+                      if (contactItem.contains(
+                          userItem.data()["phoneNumber"].toString())) {
                         userData.add(userItem.data());
                       }
                     }
