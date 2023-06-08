@@ -26,8 +26,15 @@ class OnBoardingPage extends StatelessWidget {
             PageViewModel(
               title: 'Secure Chat',
               body:
-                  'Protect all your data with the most secure software with asymmetric end-to-end encryption and No third parties involved.',
+                  'Privacy-focused messaging with end-to-end encryption for secure and confidential conversations',
               image: buildImage('assets/animations/chatting.json'),
+              decoration: getPageDecoration(),
+            ),
+            PageViewModel(
+              title: 'End-To-End Encryption',
+              body:
+                  'Protecting your messages with unbreakable encryption, ensuring only the intended recipients can read them.',
+              image: buildImage('assets/animations/encryption.json'),
               decoration: getPageDecoration(),
             ),
             // PageViewModel(
@@ -37,26 +44,26 @@ class OnBoardingPage extends StatelessWidget {
             //   image: buildImage('assets/animations/security.json'),
             //   decoration: getPageDecoration(),
             // ),
-            PageViewModel(
-              title: 'Music',
-              body:
-                  'Music touches us emotionally, where words alone can’t. Listen to your favourite songs in just a tap.',
-              image: buildImage('assets/animations/music.json'),
-              decoration: getPageDecoration(),
-            ),
-            PageViewModel(
-              title: 'News',
-              body: 'Find the top news around you in simple terms.',
-              image: buildImage('assets/animations/news.json'),
-              decoration: getPageDecoration(),
-            ),
-            PageViewModel(
-              title: 'Chat bot',
-              body:
-                  'Keep in touch, manage tasks and to-dos, get answers, control your phone.',
-              image: buildImage('assets/animations/robot-bot-3d.json'),
-              decoration: getPageDecoration(),
-            ),
+            // PageViewModel(
+            //   title: 'Music',
+            //   body:
+            //       'Music touches us emotionally, where words alone can’t. Listen to your favourite songs in just a tap.',
+            //   image: buildImage('assets/animations/music.json'),
+            //   decoration: getPageDecoration(),
+            // ),
+            // PageViewModel(
+            //   title: 'News',
+            //   body: 'Find the top news around you in simple terms.',
+            //   image: buildImage('assets/animations/news.json'),
+            //   decoration: getPageDecoration(),
+            // ),
+            // PageViewModel(
+            //   title: 'Chat bot',
+            //   body:
+            //       'Keep in touch, manage tasks and to-dos, get answers, control your phone.',
+            //   image: buildImage('assets/animations/robot-bot-3d.json'),
+            //   decoration: getPageDecoration(),
+            // ),
           ],
           done: Container(
             decoration: BoxDecoration(

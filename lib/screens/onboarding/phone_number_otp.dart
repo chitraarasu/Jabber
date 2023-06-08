@@ -26,6 +26,7 @@ class PhoneNumberAndOtp extends StatefulWidget {
 
 class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
   RiveAnimationController? _controller;
   RiveAnimationController? _controller1;
   RiveAnimationController? _controller2;
@@ -45,7 +46,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
     super.dispose();
   }
 
-  late OTPTextEditController controller;
+  // late OTPTextEditController controller;
 
   @override
   void initState() {
@@ -69,18 +70,18 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
       onStart: () => setState(() => _isPlaying2 = true),
     );
 
-    OTPInteractor()
-        .getAppSignature()
-        .then((value) => print('signature - $value'));
-    controller = OTPTextEditController(
-      codeLength: 6,
-      onCodeReceive: (code) => print('Your Application receive code - $code'),
-    )..startListenUserConsent(
-        (code) {
-          final exp = RegExp(r'(\d{6})');
-          return exp.stringMatch(code ?? '') ?? '';
-        },
-      );
+    // OTPInteractor()
+    //     .getAppSignature()
+    //     .then((value) => print('signature - $value'));
+    // controller = OTPTextEditController(
+    //   codeLength: 6,
+    //   onCodeReceive: (code) => print('Your Application receive code - $code'),
+    // )..startListenUserConsent(
+    //     (code) {
+    //       final exp = RegExp(r'(\d{6})');
+    //       return exp.stringMatch(code ?? '') ?? '';
+    //     },
+    //   );
   }
 
   var currentScreen = screen.number.obs;
@@ -493,9 +494,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                           Duration(milliseconds: 300),
                                       enableActiveFill: true,
                                       // errorAnimationController: errorController,
-                                      controller: controller,
+                                      controller: otpController,
                                       onCompleted: (v) {
-                                        print(controller.text);
+                                        print(otpController.text);
                                       },
                                       onChanged: (value) {},
                                       beforeTextPaste: (text) {
@@ -552,7 +553,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                         onPressed: () async {
                                           if (!getController.isLoading) {
                                             getController.setIsLoading(true);
-                                            if (controller.text.length < 6) {
+                                            if (otpController.text.length < 6) {
                                               _isPlaying2
                                                   ? null
                                                   : _controller2?.isActive =
@@ -567,7 +568,8 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                   PhoneAuthProvider.credential(
                                                       verificationId:
                                                           verificationId,
-                                                      smsCode: controller.text);
+                                                      smsCode:
+                                                          otpController.text);
                                               await signInWithPhoneAuthCredentials(
                                                   phoneAuthCredential);
                                             }
