@@ -4,6 +4,7 @@ import 'package:chatting_application/controller/controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -303,10 +304,19 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                               homeController.userProfileImage);
                                           url = await ref.getDownloadURL();
                                         }
+                                        String? token = '';
+                                        try {
+                                          token = await FirebaseMessaging
+                                              .instance
+                                              .getToken();
+                                        } catch (e) {
+                                          print(e);
+                                        }
                                         await FirebaseFirestore.instance
                                             .collection("users")
                                             .doc(_auth.currentUser?.uid)
                                             .set({
+                                          'token': token,
                                           'username': nameController.text,
                                           'phoneNumber': widget.number,
                                           'countryCode': widget.code,

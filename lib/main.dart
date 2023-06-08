@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -76,6 +77,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseMessaging.instance.getToken().then((value) {
+      print("Token -> $value");
+    }).onError((error, stackTrace) {
+      print(error);
+    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   var notification = message.data;
+    //   print(notification);
+    // });
+    // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    //   print('notification');
+    //   var notification = message.data;
+    //   print(notification);
+    // });
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Jabber",

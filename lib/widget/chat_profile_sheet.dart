@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:animations/animations.dart';
 import 'package:chatting_application/screens/chats/map.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,6 +47,12 @@ class ChatProfileSheet extends StatelessWidget {
                         .doc(user.uid)
                         .collection("userChannels")
                         .doc(channelId)
+                        .delete();
+                    FirebaseFirestore.instance
+                        .collection('messages')
+                        .doc(channelId)
+                        .collection("channelMembers")
+                        .doc(user.uid)
                         .delete();
                     Get.back();
                     Get.back();

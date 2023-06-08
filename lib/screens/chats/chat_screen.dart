@@ -206,22 +206,23 @@ class _ChatScreenState extends State<ChatScreen> {
             //     child: const Icon(Icons.phone),
             //   ),
             // ),
-            PopupMenuButton<String>(
-              icon: Icon(
-                Icons.adaptive.more,
-                color: Colors.black,
+            if (!widget.isForSingleChatList)
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.adaptive.more,
+                  color: Colors.black,
+                ),
+                onSelected: handleClick,
+                itemBuilder: (BuildContext context) {
+                  return {'Schedule message', 'Clear schedule'}
+                      .map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
               ),
-              onSelected: handleClick,
-              itemBuilder: (BuildContext context) {
-                return {'Schedule message', 'Clear schedule'}
-                    .map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
             const SizedBox(
               width: 10,
             ),

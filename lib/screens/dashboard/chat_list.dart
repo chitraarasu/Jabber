@@ -267,6 +267,9 @@ class _ChatListState extends State<ChatList> {
                                     .collection("users")
                                     .where('uid', whereIn: receivers)
                                     .get(),
+
+                                /// whereIn has on restriction. Only 10 item can pass on array
+
                                 builder: (BuildContext context,
                                     AsyncSnapshot<dynamic> snp) {
                                   if (snp.connectionState ==
@@ -477,6 +480,13 @@ class _ChatListState extends State<ChatList> {
                                             .collection("userChannels")
                                             .doc(dataWithFilter.value[index]
                                                 ['channelId'])
+                                            .delete();
+                                        FirebaseFirestore.instance
+                                            .collection('messages')
+                                            .doc(dataWithFilter.value[index]
+                                                ['channelId'])
+                                            .collection("channelMembers")
+                                            .doc(user.uid)
                                             .delete();
                                       },
                                     );

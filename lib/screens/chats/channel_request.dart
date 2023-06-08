@@ -145,18 +145,16 @@ class ChannelRequest extends StatelessWidget {
                     );
                   }
                   print(docs);
-                  var channelIds = [];
-                  if (snapshot.data != null) {
-                    for (var item in docs) {
-                      channelIds.add(item["channelId"]);
-                    }
-                  }
+                  // var channelIds = [];
+                  // if (snapshot.data != null) {
+                  //   for (var item in docs) {
+                  //     channelIds.add(item["channelId"]);
+                  //   }
+                  // }
 
                   return FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection("messages")
-                        .where('channelId', whereIn: channelIds)
-                        .get(),
+                    future:
+                        FirebaseFirestore.instance.collection("messages").get(),
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

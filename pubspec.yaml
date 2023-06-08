@@ -72,6 +72,7 @@ dependencies:
   dotted_line: ^3.1.0
   get_storage: ^2.1.1
   otp_autofill: ^2.1.0
+  firebase_messaging: ^14.6.2
 
 
 dev_dependencies:

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chatting_application/screens/dashboard/music.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 
 import '../screens/chats/chat_bot.dart';
 import '../screens/dashboard/news.dart';
+import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   var _index = 0;
@@ -100,5 +102,40 @@ class HomeController extends GetxController {
   setChannelProfileImage(image) {
     _storedChannelImage = image;
     update();
+  }
+
+  sendNotification({data, token, name, message}) async {
+    const url = 'https://fcm.googleapis.com/fcm/send';
+    const serverKey =
+        'AAAAoA33ArQ:APA91bFMBlRp7CZYp1uIrLdSmLcXqenmqDJsgEt7WHL8Wer4EuUHwfyo93FhNPjOTcXTyUTdXX7IbUSGy3XqVjjkUcbHsXsz2Ak13cWtPcvD2Cam2CBaUIcvtVaOme95aHK3emKenKny';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'key=$serverKey',
+    };
+
+    final messagee = {
+      'to': token,
+      'data': data,
+      'notification': {
+        "body": message,
+        "title": name,
+      },
+      'priority': 'high',
+    };
+
+    print(messagee);
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(messagee),
+    );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Error: ${response.body}');
+    }
   }
 }

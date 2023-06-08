@@ -39,9 +39,16 @@ class _ContactsState extends State<Contacts> {
     if (await Permission.contacts.request().isGranted) {
       List<Contact> contact = await ContactsService.getContacts();
       List contactPhoneNumbers = [];
-      for (var item in contact) {
-        contactPhoneNumbers.add(item.phones!.first.value);
+      for (Contact item in contact) {
+        if (item.phones == null) continue;
+        if (item.phones!.first.value == null) continue;
+        if (item.phones!.isNotEmpty) {
+          contactPhoneNumbers.add(
+            item.phones!.first.value!.replaceAll(" ", ''),
+          );
+        }
       }
+      print(contactPhoneNumbers);
       return contactPhoneNumbers;
     } else {
       throw "Please provide contact permission!";
@@ -94,20 +101,30 @@ class _ContactsState extends State<Contacts> {
               child: Text("Loading..."),
             );
           } else if (snapshot.hasData) {
+            List contact = snapshot.data;
             return StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .where('phoneNumber', whereIn: snapshot.data)
-                  .snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.data != null) {
+              stream:
+                  FirebaseFirestore.instance.collection("users").snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> userSnp) {
+                if (userSnp.data != null) {
                   userData = [];
-                  List docs = snapshot.data.docs;
-                  docs.forEach((item) {
-                    userData.add(item);
-                  });
+                  List docs = userSnp.data.docs;
+
+                  for (var contactItem in contact) {
+                    for (var userItem in docs) {
+                      if (userItem["phoneNumber"]
+                          .toString()
+                          .contains(contactItem)) {
+                        if (docs.isEmpty) continue;
+                        userData.add(userItem.data());
+                      }
+                    }
+                  }
                 }
-                if (snapshot.connectionState == ConnectionState.waiting) {
+
+                print("final data");
+                print(userData);
+                if (userSnp.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: Text("Loading..."),
                   );
