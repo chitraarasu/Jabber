@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
+import 'package:otp_autofill/otp_autofill.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rive/rive.dart';
 
@@ -25,7 +26,6 @@ class PhoneNumberAndOtp extends StatefulWidget {
 
 class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController otpTextEditingController = TextEditingController();
   RiveAnimationController? _controller;
   RiveAnimationController? _controller1;
   RiveAnimationController? _controller2;
@@ -44,6 +44,8 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
     _controller2!.dispose();
     super.dispose();
   }
+
+  late OTPTextEditController controller;
 
   @override
   void initState() {
@@ -66,6 +68,19 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
       onStop: () => setState(() => _isPlaying2 = false),
       onStart: () => setState(() => _isPlaying2 = true),
     );
+
+    OTPInteractor()
+        .getAppSignature()
+        .then((value) => print('signature - $value'));
+    controller = OTPTextEditController(
+      codeLength: 6,
+      onCodeReceive: (code) => print('Your Application receive code - $code'),
+    )..startListenUserConsent(
+        (code) {
+          final exp = RegExp(r'(\d{6})');
+          return exp.stringMatch(code ?? '') ?? '';
+        },
+      );
   }
 
   var currentScreen = screen.number.obs;
@@ -478,9 +493,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                           Duration(milliseconds: 300),
                                       enableActiveFill: true,
                                       // errorAnimationController: errorController,
-                                      controller: otpTextEditingController,
+                                      controller: controller,
                                       onCompleted: (v) {
-                                        print(otpTextEditingController.text);
+                                        print(controller.text);
                                       },
                                       onChanged: (value) {},
                                       beforeTextPaste: (text) {
@@ -537,9 +552,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                         onPressed: () async {
                                           if (!getController.isLoading) {
                                             getController.setIsLoading(true);
-                                            if (otpTextEditingController
-                                                    .text.length <
-                                                6) {
+                                            if (controller.text.length < 6) {
                                               _isPlaying2
                                                   ? null
                                                   : _controller2?.isActive =
@@ -554,9 +567,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                   PhoneAuthProvider.credential(
                                                       verificationId:
                                                           verificationId,
-                                                      smsCode:
-                                                          otpTextEditingController
-                                                              .text);
+                                                      smsCode: controller.text);
                                               await signInWithPhoneAuthCredentials(
                                                   phoneAuthCredential);
                                             }

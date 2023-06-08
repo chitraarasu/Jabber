@@ -255,15 +255,56 @@ class ChannelRequest extends StatelessWidget {
                                                   getCircleIcon(
                                                       Icons.cancel, Colors.red,
                                                       () {
-                                                    isLoading.value = true;
-                                                    FirebaseFirestore.instance
-                                                        .collection("users")
-                                                        .doc(authUser.uid)
-                                                        .collection('invites')
-                                                        .doc(docs[index]
-                                                            ["channelId"])
-                                                        .delete();
-                                                    isLoading.value = false;
+                                                    showModal(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Are you sure? Do you want to remove this invite?'),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        'No'),
+                                                                onPressed: () {
+                                                                  Get.back();
+                                                                },
+                                                              ),
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                  'Yes',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .red),
+                                                                ),
+                                                                onPressed: () {
+                                                                  Get.back();
+
+                                                                  isLoading
+                                                                          .value =
+                                                                      true;
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          "users")
+                                                                      .doc(authUser
+                                                                          .uid)
+                                                                      .collection(
+                                                                          'invites')
+                                                                      .doc(docs[
+                                                                              index]
+                                                                          [
+                                                                          "channelId"])
+                                                                      .delete();
+                                                                  isLoading
+                                                                          .value =
+                                                                      false;
+                                                                },
+                                                              )
+                                                            ],
+                                                          );
+                                                        });
                                                   }),
                                                   SizedBox(width: 10),
                                                   getCircleIcon(

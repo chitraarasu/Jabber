@@ -184,13 +184,12 @@ class ChatListCardCaller extends StatelessWidget {
                                       .get();
 
                                   FirebaseFirestore.instance
-                                      .collection('messages')
-                                      .doc(channelData)
-                                      .collection("channelMembers")
+                                      .collection('users')
+                                      .doc(contactProfiles[index]['uid'])
+                                      .collection("userChannels")
                                       .where(
-                                        "userId",
-                                        isEqualTo: contactProfiles[index]
-                                            ['uid'],
+                                        "channelId",
+                                        isEqualTo: channelData,
                                       )
                                       .get()
                                       .then((value) {

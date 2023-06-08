@@ -170,11 +170,20 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                             ? FileImage(
                                                 getController.userProfileImage,
                                               )
-                                            : docs == null
+                                            : docs["profileUrl"] == null
                                                 ? null
                                                 : NetworkImage(
                                                         docs["profileUrl"])
                                                     as ImageProvider<Object>?,
+                                        child: getController.userProfileImage !=
+                                                    null ||
+                                                docs["profileUrl"] != null
+                                            ? null
+                                            : const Icon(
+                                                Icons.add_a_photo_rounded,
+                                                size: 65,
+                                                color: Colors.blueGrey,
+                                              ),
                                       ),
                                     ),
                                     Positioned(

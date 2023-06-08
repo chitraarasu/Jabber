@@ -86,10 +86,48 @@ class _ChatListState extends State<ChatList> {
             onPressed: () {
               Get.to(() => ChannelRequest());
             },
-            icon: ImageIcon(
-              AssetImage("assets/images/letter.png"),
-              size: 30,
-              color: Colors.black,
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ImageIcon(
+                  AssetImage("assets/images/letter.png"),
+                  size: 30,
+                  color: Colors.black,
+                ),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(_auth.currentUser?.uid)
+                      .collection('invites')
+                      .snapshots(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container();
+                    } else {
+                      List docs = snapshot.data.docs
+                          .map((item) => item.data())
+                          .toList();
+                      if (docs.isEmpty) {
+                        return Container();
+                      } else {
+                        return Positioned(
+                            right: -8,
+                            top: -8,
+                            child: CircleAvatar(
+                              radius: 12,
+                              child: Text(
+                                "${docs.length}",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ));
+                      }
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           SizedBox(width: 10)
@@ -141,11 +179,13 @@ class _ChatListState extends State<ChatList> {
                                       : "Private Chats",
                                   child: GestureDetector(
                                     onTap: () {
-                                      dataWithFilter.value = [];
-                                      dataWithOutFilter.value = [];
-                                      selectedListType.value = e;
-                                      box.write("selectedTab", e);
-                                      search.clear();
+                                      if (selectedListType.value != e) {
+                                        dataWithFilter.value = [];
+                                        dataWithOutFilter.value = [];
+                                        selectedListType.value = e;
+                                        box.write("selectedTab", e);
+                                        search.clear();
+                                      }
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(3.0),
