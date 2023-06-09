@@ -29,8 +29,7 @@ class CustomSettings extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Get.to(() => Contributors(),
-                  transition: Transition.rightToLeftWithFade);
+              Get.to(() => Contributors(), transition: Transition.fadeIn);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

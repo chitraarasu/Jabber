@@ -96,7 +96,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
         Get.to(
             () => UserProfileInputScreen(phoneNumberController.text,
                 Get.find<HomeController>().selectedDialogCountry.phoneCode),
-            transition: Transition.rightToLeftWithFade);
+            transition: Transition.fadeIn);
       }
     } on FirebaseAuthException catch (error) {
       _isPlaying2 ? null : _controller2?.isActive = true;
@@ -505,31 +505,31 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       appContext: context,
                                     ),
                                   ),
-                                  RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      children: [
-                                        const TextSpan(
-                                          text: 'If you didn\'t get a otp! ',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Color(0xFFb8bbc4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: ' Resend',
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {},
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  // RichText(
+                                  //   textAlign: TextAlign.center,
+                                  //   text: TextSpan(
+                                  //     children: [
+                                  //       const TextSpan(
+                                  //         text: 'If you didn\'t get a otp! ',
+                                  //         style: TextStyle(
+                                  //           fontSize: 15,
+                                  //           color: Color(0xFFb8bbc4),
+                                  //           fontWeight: FontWeight.bold,
+                                  //         ),
+                                  //       ),
+                                  //       TextSpan(
+                                  //         text: ' Resend',
+                                  //         style: const TextStyle(
+                                  //           fontSize: 15,
+                                  //           color: Colors.blue,
+                                  //           fontWeight: FontWeight.bold,
+                                  //         ),
+                                  //         recognizer: TapGestureRecognizer()
+                                  //           ..onTap = () {},
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   GetBuilder<HomeController>(
                                     builder: (getController) => Padding(
                                       padding: const EdgeInsets.all(20.0),

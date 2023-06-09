@@ -339,8 +339,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                         isLoading.value = false;
                                         Get.offAll(
                                           () => const Home(),
-                                          transition:
-                                              Transition.rightToLeftWithFade,
+                                          transition: Transition.fadeIn,
                                         );
                                       }
                                     }

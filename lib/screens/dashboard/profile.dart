@@ -152,7 +152,7 @@ class Profile extends StatelessWidget {
                             icon: Icon(Icons.edit),
                             onPressed: () {
                               Get.to(() => EditProfile(docs),
-                                  transition: Transition.rightToLeftWithFade);
+                                  transition: Transition.fadeIn);
                             },
                           ),
                         ],
@@ -206,15 +206,14 @@ class Profile extends StatelessWidget {
                       ),
                       CustomTile("Groups", Icons.group_rounded, Colors.green,
                           () {
-                        Get.to(() => MyGroups(),
-                            transition: Transition.rightToLeftWithFade);
+                        Get.to(() => MyGroups(), transition: Transition.fadeIn);
                       }),
                       // CustomTile("Block List", Icons.block_rounded,
                       //     Colors.yellow, () {}),
                       CustomTile(
                           "Settings", Icons.settings_rounded, Colors.grey, () {
                         Get.to(() => CustomSettings(),
-                            transition: Transition.rightToLeftWithFade);
+                            transition: Transition.fadeIn);
                       }),
 
                       CustomTile(

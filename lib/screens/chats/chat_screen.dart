@@ -153,7 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
       switch (value) {
         case 'Schedule message':
           Get.to(() => ScheduleMessage(widget.channelId),
-              transition: Transition.rightToLeftWithFade);
+              transition: Transition.fadeIn);
           break;
         case 'Clear schedule':
           Workmanager().cancelByUniqueName(widget.channelId);

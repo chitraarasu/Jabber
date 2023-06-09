@@ -111,7 +111,7 @@ class OnBoardingPage extends StatelessWidget {
 
   void goToPhoneNumberScreen(context) => Get.to(
         () => const PhoneNumberAndOtp(),
-        transition: Transition.rightToLeftWithFade,
+        transition: Transition.fadeIn,
       );
 
   Widget buildImage(String path) {
