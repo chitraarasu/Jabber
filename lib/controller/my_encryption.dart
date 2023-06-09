@@ -1,7 +1,7 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class MyEncryptionDecryption {
-  //For AES Encryption/Decryption
+  /// For AES Encryption/Decryption
   static final key = encrypt.Key.fromLength(32);
   static final iv = encrypt.IV.fromLength(16);
   static final encrypter = encrypt.Encrypter(encrypt.AES(key));
@@ -21,7 +21,7 @@ class MyEncryptionDecryption {
     return decrypted;
   }
 
-  // For Fernet Encryption/Decryption
+  /// For Fernet Encryption/Decryption
   static final keyFernet =
       encrypt.Key.fromUtf8('TechWithVPIsBestTechWithVPIsBest');
   // if you need to use the ttl feature, you'll need to use APIs in the algorithm itself
@@ -39,7 +39,7 @@ class MyEncryptionDecryption {
     return encrypterFernet.decrypt(text);
   }
 
-  // For Salsa20 Encryption/Decryption
+  /// For Salsa20 Encryption/Decryption
   static final keySalsa20 = encrypt.Key.fromLength(32);
   static final ivSalsa20 = encrypt.IV.fromLength(8);
   static final encrypteSalsa20 = encrypt.Encrypter(encrypt.Salsa20(keySalsa20));

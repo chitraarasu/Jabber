@@ -171,20 +171,27 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                             ? FileImage(
                                                 getController.userProfileImage,
                                               )
-                                            : docs["profileUrl"] == null
-                                                ? null
-                                                : NetworkImage(
-                                                        docs["profileUrl"])
-                                                    as ImageProvider<Object>?,
-                                        child: getController.userProfileImage !=
-                                                    null ||
-                                                docs["profileUrl"] != null
-                                            ? null
-                                            : const Icon(
-                                                Icons.add_a_photo_rounded,
-                                                size: 65,
-                                                color: Colors.blueGrey,
-                                              ),
+                                            : docs != null
+                                                ? docs["profileUrl"] == null
+                                                    ? null
+                                                    : NetworkImage(
+                                                            docs["profileUrl"])
+                                                        as ImageProvider<
+                                                            Object>?
+                                                : null,
+                                        // child: getController.userProfileImage !=
+                                        //         null
+                                        //     ? null
+                                        //     : docs != null
+                                        //         ? docs["profileUrl"] != null
+                                        //             ? null
+                                        //             : const Icon(
+                                        //                 Icons
+                                        //                     .add_a_photo_rounded,
+                                        //                 size: 65,
+                                        //                 color: Colors.blueGrey,
+                                        //               )
+                                        //         : null,
                                       ),
                                     ),
                                     Positioned(
@@ -223,6 +230,11 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                                 TextCapitalization.sentences,
                                             maxLines: 1,
                                             controller: nameController,
+                                            onTap: () {
+                                              if (isEmojiVisible.value) {
+                                                isEmojiVisible.value = false;
+                                              }
+                                            },
                                             style: const TextStyle(
                                                 color: Colors.white),
                                             decoration: const InputDecoration(

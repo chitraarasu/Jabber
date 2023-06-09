@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:chatting_application/controller/my_encryption.dart';
 import 'package:chatting_application/widget/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -130,7 +135,28 @@ class _ChatListState extends State<ChatList> {
               ],
             ),
           ),
-          SizedBox(width: 10)
+          SizedBox(width: 10),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 15.0),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       Encrypted encData =
+          //           MyEncryptionDecryption.encryptSalsa20("Hello hi");
+          //       print(encData.base64);
+          //       List<int> data = encData.bytes.toList();
+          //       print(data);
+          //       print(encData);
+          //
+          //       print(MyEncryptionDecryption.decryptSalsa20(
+          //           Encrypted.from64(encData.base64)));
+          //     },
+          //     child: Icon(
+          //       Icons.enhanced_encryption,
+          //       color: Colors.red,
+          //     ),
+          //   ),
+          // ),
+
           // Padding(
           //   padding: const EdgeInsets.only(right: 15.0),
           //   child: GestureDetector(

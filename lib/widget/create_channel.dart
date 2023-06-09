@@ -5,7 +5,6 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -178,14 +177,14 @@ class _CreateChannelState extends State<CreateChannel> {
                               label: const Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  "Pick image",
+                                  "Capture",
                                   style: TextStyle(
                                     color: Color(0xFF006aff),
                                   ),
                                 ),
                               ),
                               icon: const Icon(
-                                Icons.camera_outlined,
+                                Icons.camera_alt_rounded,
                                 color: Color(0xFF006aff),
                               ),
                             ),
@@ -213,6 +212,11 @@ class _CreateChannelState extends State<CreateChannel> {
                                 textCapitalization:
                                     TextCapitalization.sentences,
                                 maxLines: 1,
+                                onTap: () {
+                                  if (isEmojiVisible.value) {
+                                    isEmojiVisible.value = false;
+                                  }
+                                },
                                 controller: channelNameController,
                                 style: const TextStyle(color: Colors.blueGrey),
                                 decoration: const InputDecoration(

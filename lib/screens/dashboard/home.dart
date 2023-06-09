@@ -6,6 +6,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../controller/controller.dart';
 import '../../utils/contact_group_clip.dart';
@@ -38,6 +39,22 @@ class _HomeState extends State<Home> {
       }
     });
     super.initState();
+    requestNotificationPermissions();
+  }
+
+  HomeController homeController = Get.find();
+
+  Future<void> requestNotificationPermissions() async {
+    final PermissionStatus status = await Permission.notification.request();
+    if (status.isGranted) {
+      // Notification permissions granted
+    } else if (status.isDenied) {
+      // Notification permissions denied
+    } else if (status.isPermanentlyDenied) {
+      // Notification permissions permanently denied, open app settings
+      await openAppSettings();
+    }
+    await homeController.getContacts();
   }
 
   RxBool isFavTabVisible = RxBool(false);
@@ -75,102 +92,111 @@ class _HomeState extends State<Home> {
                 child: controller.body,
               ),
             ),
-            Obx(
-              () => AnimatedPositioned(
-                bottom: isFavTabVisible.value ? 0 : -40,
-                duration: Duration(milliseconds: 250),
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: _fabDimension / 2 + 10),
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 250),
-                    height: isFavTabVisible.value ? 110 : 0,
-                    width: isFavTabVisible.value ? width * .55 : 0,
-                    child: AnimatedOpacity(
+            Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+              child: Obx(
+                () => AnimatedPositioned(
+                  bottom: isFavTabVisible.value ? 0 : -40,
+                  duration: Duration(milliseconds: 250),
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: _fabDimension / 2 + 10),
+                    child: AnimatedContainer(
                       duration: Duration(milliseconds: 250),
-                      opacity: isFavTabVisible.value ? 1 : 0,
-                      child: CustomPaint(
-                        size: Size(
-                            width, (width * 0.7142857142857143).toDouble()),
-                        painter: RPSCustomPainter(),
-                        child: Row(
-                            children: [
-                          {"id": 0, "title": "Contact", "icon": "contacts.png"},
-                          {"id": 1, "title": "Group", "icon": "people.png"}
-                        ]
-                                .map((item) => Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: SingleChildScrollView(
-                                              child: OpenContainer(
-                                                transitionType:
-                                                    ContainerTransitionType
-                                                        .fade,
-                                                openBuilder:
-                                                    (BuildContext context,
-                                                        VoidCallback _) {
-                                                  if (item["id"] == 0) {
-                                                    return Contacts("chat");
-                                                  } else {
-                                                    return const CreateNewChannelOrJoinChannel();
-                                                  }
-                                                },
-                                                openElevation: 0,
-                                                closedElevation: 0,
-                                                closedColor: Colors.transparent,
-                                                onClosed: (data) {
-                                                  isFavTabVisible.value = false;
-                                                },
-                                                closedBuilder:
-                                                    (BuildContext context,
-                                                        VoidCallback
-                                                            openContainer) {
-                                                  return Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Image(
-                                                        image: AssetImage(
-                                                            "assets/images/${item["icon"]}"),
-                                                        width: 45,
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Text(
-                                                        item["title"]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                      height: isFavTabVisible.value ? 110 : 0,
+                      width: isFavTabVisible.value ? width * .55 : 0,
+                      child: AnimatedOpacity(
+                        duration: Duration(milliseconds: 250),
+                        opacity: isFavTabVisible.value ? 1 : 0,
+                        child: CustomPaint(
+                          size: Size(
+                              width, (width * 0.7142857142857143).toDouble()),
+                          painter: RPSCustomPainter(),
+                          child: Row(
+                              children: [
+                            {
+                              "id": 0,
+                              "title": "Contact",
+                              "icon": "contacts.png"
+                            },
+                            {"id": 1, "title": "Group", "icon": "people.png"}
+                          ]
+                                  .map((item) => Expanded(
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: OpenContainer(
+                                                  transitionType:
+                                                      ContainerTransitionType
+                                                          .fade,
+                                                  openBuilder:
+                                                      (BuildContext context,
+                                                          VoidCallback _) {
+                                                    if (item["id"] == 0) {
+                                                      return Contacts("chat");
+                                                    } else {
+                                                      return const CreateNewChannelOrJoinChannel();
+                                                    }
+                                                  },
+                                                  openElevation: 0,
+                                                  closedElevation: 0,
+                                                  closedColor:
+                                                      Colors.transparent,
+                                                  onClosed: (data) {
+                                                    isFavTabVisible.value =
+                                                        false;
+                                                  },
+                                                  closedBuilder:
+                                                      (BuildContext context,
+                                                          VoidCallback
+                                                              openContainer) {
+                                                    return Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image(
+                                                          image: AssetImage(
+                                                              "assets/images/${item["icon"]}"),
+                                                          width: 45,
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      )
-                                                    ],
-                                                  );
-                                                },
+                                                        SizedBox(height: 4),
+                                                        Text(
+                                                          item["title"]
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          if (item["id"] == 0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 15),
-                                              child: DottedLine(
-                                                direction: Axis.vertical,
-                                                lineLength: double.infinity,
-                                                lineThickness: 2.0,
-                                                dashLength: 10.0,
-                                                dashColor: Color(0xFF86898f),
-                                                dashGapLength: 6.0,
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                    ))
-                                .toList()),
+                                            if (item["id"] == 0)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15),
+                                                child: DottedLine(
+                                                  direction: Axis.vertical,
+                                                  lineLength: double.infinity,
+                                                  lineThickness: 2.0,
+                                                  dashLength: 10.0,
+                                                  dashColor: Color(0xFF86898f),
+                                                  dashGapLength: 6.0,
+                                                ),
+                                              )
+                                          ],
+                                        ),
+                                      ))
+                                  .toList()),
+                        ),
                       ),
                     ),
                   ),

@@ -23,9 +23,9 @@ class Search extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: TextField(
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
+                // onTapOutside: (event) {
+                //   FocusManager.instance.primaryFocus?.unfocus();
+                // },
                 controller: controller,
                 maxLines: 1,
                 onChanged: onChange,

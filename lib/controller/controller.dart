@@ -5,9 +5,11 @@ import 'package:chatting_application/screens/dashboard/music.dart';
 import 'package:chatting_application/screens/dashboard/chat_list.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:chatting_application/screens/dashboard/profile.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../screens/chats/chat_bot.dart';
 import '../screens/dashboard/news.dart';
@@ -102,6 +104,30 @@ class HomeController extends GetxController {
   setChannelProfileImage(image) {
     _storedChannelImage = image;
     update();
+  }
+
+  List _contactPhoneNumbers = [];
+
+  Future getContacts() async {
+    if (_contactPhoneNumbers.isNotEmpty) {
+      return _contactPhoneNumbers;
+    }
+    if (await Permission.contacts.request().isGranted) {
+      List<Contact> contact = await ContactsService.getContacts();
+      _contactPhoneNumbers = [];
+      for (Contact item in contact) {
+        if (item.phones == null) continue;
+        if (item.phones!.isNotEmpty) {
+          if (item.phones!.first.value == null) continue;
+          _contactPhoneNumbers.add(
+            item.phones!.first.value!.replaceAll(" ", '').replaceAll("-", ''),
+          );
+        }
+      }
+      return _contactPhoneNumbers;
+    } else {
+      throw "Please provide contact permission!";
+    }
   }
 
   sendNotification({data, tokens, name, message}) async {

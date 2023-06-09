@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -23,6 +24,7 @@ class Contacts extends StatefulWidget {
 
 class _ContactsState extends State<Contacts> {
   List userData = [];
+  HomeController homeController = Get.find();
 
   Future? getContactFunction;
 
@@ -32,27 +34,8 @@ class _ContactsState extends State<Contacts> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getContactFunction = getContacts();
+    getContactFunction = homeController.getContacts();
     isFromGroup = widget.from == "group";
-  }
-
-  Future getContacts() async {
-    if (await Permission.contacts.request().isGranted) {
-      List<Contact> contact = await ContactsService.getContacts();
-      List contactPhoneNumbers = [];
-      for (Contact item in contact) {
-        if (item.phones == null) continue;
-        if (item.phones!.isNotEmpty) {
-          if (item.phones!.first.value == null) continue;
-          contactPhoneNumbers.add(
-            item.phones!.first.value!.replaceAll(" ", '').replaceAll("-", ''),
-          );
-        }
-      }
-      return contactPhoneNumbers;
-    } else {
-      throw "Please provide contact permission!";
-    }
   }
 
   @override
@@ -98,10 +81,26 @@ class _ContactsState extends State<Contacts> {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: Text("Loading..."),
+              child: const SpinKitFadingCircle(
+                color: Color(0xFF006aff),
+                size: 45.0,
+                duration: Duration(milliseconds: 1000),
+              ),
             );
           } else if (snapshot.hasData) {
             List contact = snapshot.data;
+            if (contact.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: Text(
+                    "Hey, it seems like your contact members haven't started using this app yet. Why not ask them to give Jabber a try? Once they join, you'll be able to chat with them effortlessly.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              );
+            }
             return StreamBuilder(
               stream:
                   FirebaseFirestore.instance.collection("users").snapshots(),

@@ -8,6 +8,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ import 'package:workmanager/workmanager.dart';
 import '../../widget/chat_profile_sheet.dart';
 import '../../widget/image_view.dart';
 import '../../widget/message_bubble.dart';
+import 'dart:ui' as ui;
 
 class ChatScreen extends StatefulWidget {
   final name;
@@ -34,13 +36,14 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
+  final RxDouble _textFieldHeight = RxDouble(50);
   HomeController homeController = Get.find();
+
+  var _enteredMessage = ''.obs;
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var _enteredMessage = ''.obs;
-    TextEditingController _controller = TextEditingController();
-
     void _sendMessage() async {
       _controller.clear();
 
@@ -165,6 +168,26 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     }
 
+    String groupMessageDateAndTime(DateTime time) {
+      final todayDate = DateTime.now();
+
+      final today = DateTime(todayDate.year, todayDate.month, todayDate.day);
+      final yesterday =
+          DateTime(todayDate.year, todayDate.month, todayDate.day - 1);
+      String difference = '';
+      final aDate = DateTime(time.year, time.month, time.day);
+
+      if (aDate == today) {
+        difference = "Today";
+      } else if (aDate == yesterday) {
+        difference = "Yesterday";
+      } else {
+        difference = DateFormat.yMMMd().format(time).toString();
+      }
+
+      return difference;
+    }
+
     return WillPopScope(
       onWillPop: () {
         if (isEmojiVisible.value) {
@@ -191,6 +214,8 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           title: GestureDetector(
             onTap: () {
+              FocusScope.of(context).unfocus();
+
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
@@ -267,7 +292,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
+              bottom: Radius.circular(25),
             ),
           ),
         ),
@@ -307,32 +332,84 @@ class _ChatScreenState extends State<ChatScreen> {
                         ],
                       );
                     } else {
-                      return ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        reverse: true,
-                        itemCount: docs.length,
-                        itemBuilder: (ctx, index) {
-                          var time = DateFormat('hh:mm a').format(
-                            Timestamp(docs[index]["createdTime"].seconds,
-                                    docs[index]["createdTime"].nanoseconds)
-                                .toDate(),
-                          );
-                          if (docs[index]['messageType'] == "text") {
-                            return MessageBubble(
-                              docs[index]['message'],
-                              docs[index]['senderId'] == currentUser,
-                              docs[index]['senderName'],
-                              time,
-                            );
-                          } else {
-                            return ImageBubble(
-                              docs[index]['message'],
-                              docs[index]['senderId'] == currentUser,
-                              docs[index]['senderName'],
-                              time,
-                            );
-                          }
+                      return GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
                         },
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          reverse: true,
+                          itemCount: docs.length,
+                          itemBuilder: (ctx, index) {
+                            DateTime dateTime = Timestamp(
+                              docs[index]["createdTime"].seconds,
+                              docs[index]["createdTime"].nanoseconds,
+                            ).toDate();
+
+                            var time = DateFormat('hh:mm a').format(dateTime);
+
+                            bool isSameDate = false;
+                            String? newDate = '';
+
+                            if (index == docs.length - 1) {
+                              newDate =
+                                  groupMessageDateAndTime(dateTime).toString();
+                            } else {
+                              final DateTime currentDate = dateTime;
+                              final DateTime previousDate = Timestamp(
+                                docs[index + 1]["createdTime"].seconds,
+                                docs[index + 1]["createdTime"].nanoseconds,
+                              ).toDate();
+                              isSameDate =
+                                  previousDate.year == currentDate.year &&
+                                      previousDate.month == currentDate.month &&
+                                      previousDate.day == currentDate.day;
+
+                              if (kDebugMode) {
+                                print("$currentDate $previousDate $isSameDate");
+                              }
+
+                              newDate = isSameDate
+                                  ? ''
+                                  : groupMessageDateAndTime(currentDate)
+                                      .toString();
+                            }
+
+                            return Column(
+                              children: [
+                                if (newDate.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      Expanded(child: Divider()),
+                                      SizedBox(width: 10),
+                                      Text(newDate),
+                                      SizedBox(width: 10),
+                                      Expanded(child: Divider()),
+                                    ],
+                                  ),
+                                Builder(
+                                  builder: (BuildContext context) {
+                                    if (docs[index]['messageType'] == "text") {
+                                      return MessageBubble(
+                                        docs[index]['message'],
+                                        docs[index]['senderId'] == currentUser,
+                                        docs[index]['senderName'],
+                                        time,
+                                      );
+                                    } else {
+                                      return ImageBubble(
+                                        docs[index]['message'],
+                                        docs[index]['senderId'] == currentUser,
+                                        docs[index]['senderName'],
+                                        time,
+                                      );
+                                    }
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        ),
                       );
                     }
                   }
@@ -342,26 +419,27 @@ class _ChatScreenState extends State<ChatScreen> {
             Container(
               color: Colors.white,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: 8.0, left: 8.0, bottom: 8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFf7f7f7),
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
+                      child: Obx(
+                        () => Container(
+                          height: _textFieldHeight.value,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFf7f7f7),
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(25.0),
+                            ),
                           ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(25.0),
-                          ),
-                        ),
-                        child: SizedBox(
-                          height: 45.0,
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
                               FloatingActionButton.small(
                                 heroTag: const Text("btn1"),
@@ -373,7 +451,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onPressed: () {
                                   isEmojiVisible.value = !isEmojiVisible.value;
                                   focusNode.unfocus();
-                                  focusNode.canRequestFocus = true;
+                                  // focusNode.canRequestFocus = true;
                                 },
                                 backgroundColor: Colors.transparent,
                                 child: const Icon(
@@ -389,6 +467,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   textCapitalization:
                                       TextCapitalization.sentences,
                                   controller: _controller,
+                                  scrollPhysics: BouncingScrollPhysics(),
                                   focusNode: focusNode,
                                   minLines: 1,
                                   onTap: () {
@@ -398,9 +477,25 @@ class _ChatScreenState extends State<ChatScreen> {
                                   },
                                   maxLines: 5,
                                   keyboardType: TextInputType.multiline, //
+                                  onTapOutside: (point) {
+                                    _textFieldHeight.value = 50.0;
+                                  },
                                   textInputAction: TextInputAction.newline,
                                   onChanged: (value) {
                                     _enteredMessage.value = value;
+
+                                    _textFieldHeight.value =
+                                        _enteredMessage.value.isEmpty
+                                            ? 50.0
+                                            : _enteredMessage.value
+                                                        .split('\n')
+                                                        .length *
+                                                    20.0 +
+                                                30.0;
+                                    if (_textFieldHeight.value > 100) {
+                                      _textFieldHeight.value = 100;
+                                    }
+                                    print(_enteredMessage.value.length);
                                   },
                                   decoration: const InputDecoration(
                                     hintText: "Type your message here",
@@ -444,23 +539,26 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   Obx(
-                    () => FloatingActionButton.small(
-                      heroTag: const Text("btn3"),
-                      elevation: 0,
-                      disabledElevation: 0,
-                      hoverElevation: 0,
-                      highlightElevation: 0,
-                      focusElevation: 0,
-                      onPressed: _enteredMessage.trim().isEmpty
-                          ? null
-                          : () {
-                              _sendMessage();
-                            },
-                      backgroundColor: Colors.deepOrange,
-                      child: const Icon(
-                        Icons.send_rounded,
-                        color: Colors.white,
-                        size: 20,
+                    () => Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: FloatingActionButton.small(
+                        heroTag: const Text("btn3"),
+                        elevation: 0,
+                        disabledElevation: 0,
+                        hoverElevation: 0,
+                        highlightElevation: 0,
+                        focusElevation: 0,
+                        onPressed: _enteredMessage.trim().isEmpty
+                            ? null
+                            : () {
+                                _sendMessage();
+                              },
+                        backgroundColor: Colors.deepOrange,
+                        child: const Icon(
+                          Icons.send_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -482,7 +580,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         columns: 7,
                         verticalSpacing: 0,
                         horizontalSpacing: 0,
-                        initCategory: Category.SMILEYS,
+                        // initCategory: Category.SMILEYS,
                         bgColor: Color(0xFFF2F2F2),
                         indicatorColor: Colors.blue,
                         iconColor: Colors.grey,

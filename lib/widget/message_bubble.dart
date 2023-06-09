@@ -1,6 +1,8 @@
 import 'package:chatting_application/widget/open_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -14,7 +16,17 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 0.65;
     return GestureDetector(
-      onLongPress: () {},
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: message));
+        Fluttertoast.showToast(
+          msg: "Message copied!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      },
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
