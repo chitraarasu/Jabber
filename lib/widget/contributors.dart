@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class Contributors extends StatelessWidget {
-  getContributors() async {
+  Future<List> getContributors() async {
     var response = await http.get(
       Uri.parse(
           'https://api.github.com/repos/chitraarasu/chatting_application_flutter/contributors'),
@@ -41,24 +41,25 @@ class Contributors extends StatelessWidget {
       ),
       body: FutureBuilder(
         future: getContributors(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
             print(snapshot.data);
+            snapshot.data?.removeWhere((element) => element["id"] == 98887175);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data?.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),
                 itemBuilder: (_, index) {
                   return InkWell(
                     onTap: () {
-                      launchUrl(Uri.parse(snapshot.data[index]['html_url']));
+                      launchUrl(Uri.parse(snapshot.data?[index]['html_url']));
                     },
                     child: Card(
                       child: Padding(
@@ -70,13 +71,13 @@ class Contributors extends StatelessWidget {
                               radius: 50,
                               backgroundColor: Colors.grey,
                               backgroundImage:
-                                  snapshot.data[index]['avatar_url'] != null
+                                  snapshot.data?[index]['avatar_url'] != null
                                       ? NetworkImage(
-                                          snapshot.data[index]['avatar_url'])
+                                          snapshot.data?[index]['avatar_url'])
                                       : null,
                             ),
                             Text(
-                              snapshot.data[index]['login'],
+                              snapshot.data?[index]['login'],
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 25,

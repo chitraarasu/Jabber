@@ -1,3 +1,4 @@
+import 'package:chatting_application/controller/my_encryption.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,7 +34,7 @@ void callbackDispatcher() {
             .doc(inputData['cid'])
             .collection("channelChat")
             .add({
-          'message': inputData['messages'][a],
+          'message': encryptData(inputData['messages'][a]),
           'messageType': inputData['type'][a],
           'createdTime': Timestamp.now(),
           'senderId': inputData['currentUserId'],
@@ -43,7 +44,7 @@ void callbackDispatcher() {
             .collection('messages')
             .doc(inputData['cid'])
             .update({
-          'recentMessage': inputData['messages'][a],
+          'recentMessage': encryptData(inputData['messages'][a]),
           'time': Timestamp.now(),
         });
         FirebaseFirestore.instance
@@ -52,7 +53,7 @@ void callbackDispatcher() {
             .collection("userChannels")
             .doc(inputData['cid'])
             .update({
-          'recentMessage': inputData['messages'][a],
+          'recentMessage': encryptData(inputData['messages'][a]),
           'time': Timestamp.now(),
         });
 

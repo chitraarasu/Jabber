@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:workmanager/workmanager.dart';
+import '../../controller/my_encryption.dart';
 import '../../widget/chat_profile_sheet.dart';
 import '../../widget/image_view.dart';
 import '../../widget/message_bubble.dart';
@@ -60,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
             .doc(widget.channelId)
             .collection("channelChat")
             .add({
-          'message': _enteredMessage.value,
+          'message': encryptData(_enteredMessage.value),
           'messageType': "text",
           'createdTime': Timestamp.now(),
           'senderId': user.uid,
@@ -76,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
           'createdTime': Timestamp.now(),
           'chat_members': [user.uid, widget.reciverData["uid"]],
           'senderName': userData['username'],
-          'recentMessage': _enteredMessage.value,
+          'recentMessage': encryptData(_enteredMessage.value),
         });
 
         homeController.sendNotification(
@@ -91,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
             .doc(widget.channelId)
             .collection("channelChat")
             .add({
-          'message': _enteredMessage.value,
+          'message': encryptData(_enteredMessage.value),
           'messageType': "text",
           'createdTime': Timestamp.now(),
           'senderId': user.uid,
@@ -102,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
             .collection('messages')
             .doc(widget.channelId)
             .update({
-          'recentMessage': _enteredMessage.value,
+          'recentMessage': encryptData(_enteredMessage.value),
           'time': Timestamp.now(),
         });
 
@@ -112,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
             .collection("userChannels")
             .doc(widget.channelId)
             .update({
-          'recentMessage': _enteredMessage.value,
+          'recentMessage': encryptData(_enteredMessage.value),
           'time': Timestamp.now(),
         });
 
@@ -378,20 +379,24 @@ class _ChatScreenState extends State<ChatScreen> {
                             return Column(
                               children: [
                                 if (newDate.isNotEmpty)
-                                  Row(
-                                    children: [
-                                      Expanded(child: Divider()),
-                                      SizedBox(width: 10),
-                                      Text(newDate),
-                                      SizedBox(width: 10),
-                                      Expanded(child: Divider()),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(child: Divider()),
+                                        SizedBox(width: 10),
+                                        Text(newDate),
+                                        SizedBox(width: 10),
+                                        Expanded(child: Divider()),
+                                      ],
+                                    ),
                                   ),
                                 Builder(
                                   builder: (BuildContext context) {
                                     if (docs[index]['messageType'] == "text") {
                                       return MessageBubble(
-                                        docs[index]['message'],
+                                        decryptData(docs[index]['message']),
                                         docs[index]['senderId'] == currentUser,
                                         docs[index]['senderName'],
                                         time,

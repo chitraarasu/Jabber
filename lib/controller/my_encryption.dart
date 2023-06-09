@@ -44,7 +44,7 @@ class MyEncryptionDecryption {
   static final ivSalsa20 = encrypt.IV.fromLength(8);
   static final encrypteSalsa20 = encrypt.Encrypter(encrypt.Salsa20(keySalsa20));
 
-  static encryptSalsa20(text) {
+  static encrypt.Encrypted encryptSalsa20(text) {
     final encrypted = encrypteSalsa20.encrypt(text, iv: ivSalsa20);
     // print(encrypted.bytes);
     // print(encrypted.base16);
@@ -55,4 +55,13 @@ class MyEncryptionDecryption {
   static decryptSalsa20(text) {
     return encrypteSalsa20.decrypt(text, iv: ivSalsa20);
   }
+}
+
+String encryptData(String text) {
+  return MyEncryptionDecryption.encryptSalsa20(text).base64;
+}
+
+String decryptData(String base64) {
+  return MyEncryptionDecryption.decryptSalsa20(
+      encrypt.Encrypted.fromBase64(base64));
 }

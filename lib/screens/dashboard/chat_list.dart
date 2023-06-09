@@ -355,8 +355,9 @@ class _ChatListState extends State<ChatList> {
                                                     .contains(
                                                         "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
                                                 ? 'Image'
-                                                : dataWithFilter.value[index]
-                                                    ["recentMessage"],
+                                                : decryptData(
+                                                    dataWithFilter.value[index]
+                                                        ["recentMessage"]),
                                             user["profileUrl"],
                                             time,
                                             "",
@@ -476,8 +477,8 @@ class _ChatListState extends State<ChatList> {
                                               .contains(
                                                   "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
                                           ? 'Image'
-                                          : dataWithFilter.value[index]
-                                              ["recentMessage"],
+                                          : decryptData(dataWithFilter
+                                              .value[index]["recentMessage"]),
                                       dataWithFilter.value[index]
                                           ["channelProfile"],
                                       time,
