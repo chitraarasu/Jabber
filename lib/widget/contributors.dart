@@ -7,11 +7,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../credentials.dart';
+
 class Contributors extends StatelessWidget {
   Future<List> getContributors() async {
     var response = await http.get(
-      Uri.parse(
-          'https://api.github.com/repos/chitraarasu/chatting_application_flutter/contributors'),
+      Uri.parse(githubLink),
       headers: {
         'Authorization': '',
       },

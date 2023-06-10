@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chatting_application/credentials.dart';
 import 'package:chatting_application/screens/dashboard/music.dart';
 import 'package:chatting_application/screens/dashboard/chat_list.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
@@ -136,12 +137,10 @@ class HomeController extends GetxController {
 
   sendNotification({data, tokens, name, message}) async {
     const url = 'https://fcm.googleapis.com/fcm/send';
-    const serverKey =
-        'AAAAoA33ArQ:APA91bFMBlRp7CZYp1uIrLdSmLcXqenmqDJsgEt7WHL8Wer4EuUHwfyo93FhNPjOTcXTyUTdXX7IbUSGy3XqVjjkUcbHsXsz2Ak13cWtPcvD2Cam2CBaUIcvtVaOme95aHK3emKenKny';
 
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'key=$serverKey',
+      'Authorization': 'key=$firebaseSecret',
     };
 
     final messagee = {
