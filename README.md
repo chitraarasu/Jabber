@@ -4,9 +4,13 @@
 
 <a href="https://drive.google.com/file/d/1NKk02JQcZkKCVzNKhj4ne0mrtt76Am2l/view?usp=sharing">Download APK</a>
 
-Chatting application is an flutter app. Chat refers to the process of communicating, interacting and exchanging message over the Internet.  It involves two or more individuals that communicate through a chat-enabled service or software.  Chat may be delivered through text, audio or vide communication via the Internet.
-This app runs with any platform such as Linux, windows etc.  It runs on the users android device and server applications.  Which runs on any android device on the network. 
-The chat application we are going to make will be more like a chat room, rather than a peer to peer chat.  So this means that multiple users can connect to the chat server and send their messages.  Every message is broadcasted to every connected chat user.
+Welcome to our Flutter-based Chatting Application! Our app provides a seamless platform for individuals to communicate, interact, and exchange messages over the Internet.
+
+Compatible with various platforms such as Linux, Windows, and more, our app is designed to run smoothly on any Android device. It incorporates both client and server applications, enabling users to connect to the chat server from any Android device within the network.
+
+Unlike traditional peer-to-peer chats, our chat application functions as a dynamic chat room, fostering a collaborative environment. Multiple users can join the chat server and effortlessly share their messages. Rest assured, every message is instantly broadcasted to all connected chat users, facilitating real-time communication.
+
+Experience the power of seamless communication with our Chatting Application. Stay connected, stay engaged!
 
 <p float="left">
   <img src="https://user-images.githubusercontent.com/75994428/210581236-b68b9ded-820f-4bb0-bec7-a9192ded530a.jpg" width="200" height="400" />
