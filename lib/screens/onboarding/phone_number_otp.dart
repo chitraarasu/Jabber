@@ -1,3 +1,4 @@
+import 'package:chatting_application/screens/onboarding/privacy_policy.dart';
 import 'package:chatting_application/screens/onboarding/user_profile_input_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,6 +48,42 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
   }
 
   // late OTPTextEditController controller;
+
+  getPrivacyPolicy() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            const TextSpan(
+              text: 'By logging in, you are accepting our ',
+              style: TextStyle(
+                fontSize: 12.5,
+                color: Color(0xFFb8bbc4),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextSpan(
+              text: '\nPrivacy Policy.',
+              style: const TextStyle(
+                fontSize: 12.5,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Get.to(
+                    () => PrivacyPolicyScreen(),
+                    transition: Transition.fadeIn,
+                  );
+                },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -236,13 +273,17 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       color: Color(0xFFb8bbc4),
                                       fontWeight: FontWeight.bold,
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(
-                                    height: 25,
+                                    height: 10,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0,
+                                      vertical: 4,
                                       horizontal: 20,
                                     ),
                                     child: Container(
@@ -392,8 +433,13 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                           }
                                         },
                                         child: getController.isLoading == true
-                                            ? const CircularProgressIndicator(
-                                                color: Colors.white,
+                                            ? SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child:
+                                                    const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                ),
                                               )
                                             : Row(
                                                 mainAxisAlignment:
@@ -505,31 +551,6 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                       appContext: context,
                                     ),
                                   ),
-                                  // RichText(
-                                  //   textAlign: TextAlign.center,
-                                  //   text: TextSpan(
-                                  //     children: [
-                                  //       const TextSpan(
-                                  //         text: 'If you didn\'t get a otp! ',
-                                  //         style: TextStyle(
-                                  //           fontSize: 15,
-                                  //           color: Color(0xFFb8bbc4),
-                                  //           fontWeight: FontWeight.bold,
-                                  //         ),
-                                  //       ),
-                                  //       TextSpan(
-                                  //         text: ' Resend',
-                                  //         style: const TextStyle(
-                                  //           fontSize: 15,
-                                  //           color: Colors.blue,
-                                  //           fontWeight: FontWeight.bold,
-                                  //         ),
-                                  //         recognizer: TapGestureRecognizer()
-                                  //           ..onTap = () {},
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
                                   GetBuilder<HomeController>(
                                     builder: (getController) => Padding(
                                       padding: const EdgeInsets.all(20.0),
@@ -577,8 +598,13 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                           }
                                         },
                                         child: getController.isLoading == true
-                                            ? const CircularProgressIndicator(
-                                                color: Colors.white,
+                                            ? SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child:
+                                                    const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                ),
                                               )
                                             : const Text("Verify"),
                                       ),
@@ -587,6 +613,10 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                 ],
                               ),
                       ),
+                      getPrivacyPolicy(),
+                      SizedBox(
+                        height: 10,
+                      )
                     ],
                   ),
                 ),
