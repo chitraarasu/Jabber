@@ -196,7 +196,7 @@ class ChatListCardCaller extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return Card(
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   if (isFromGroup) {
                     showModal(
                         context: context,
@@ -281,11 +281,31 @@ class ChatListCardCaller extends StatelessWidget {
                           );
                         });
                   } else {
+                    var data = await FirebaseFirestore.instance
+                        .collection("private_chats")
+                        .get();
+                    print(data.docs);
+
+                    var docs = data.docs.map((e) => e.data()).toList();
+
+                    var channelId =
+                        "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}";
+
+                    for (var element in docs) {
+                      List channelMembers = element["chat_members"];
+                      if (channelMembers.contains(
+                              FirebaseAuth.instance.currentUser?.uid) &&
+                          channelMembers
+                              .contains(contactProfiles[index]['uid'])) {
+                        channelId = element["chat_id"];
+                      }
+                    }
+
                     Get.to(
                         () => ChatScreen(
                               contactProfiles[index]['username'],
                               contactProfiles[index]['profileUrl'],
-                              "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}",
+                              channelId,
                               isForSingleChatList: true,
                               reciverData: contactProfiles[index],
                             ),
