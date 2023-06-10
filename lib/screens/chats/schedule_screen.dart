@@ -158,18 +158,18 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                           itemBuilder: (ctx, index) {
                             if (getController.message[index].type == "text") {
                               return MessageBubble(
-                                getController.message[index].message,
-                                true,
-                                '',
-                                '',
-                              );
+                                  getController.message[index].message,
+                                  true,
+                                  '',
+                                  '',
+                                  false);
                             } else {
                               return ImageBubble(
-                                getController.message[index].message,
-                                true,
-                                '',
-                                '',
-                              );
+                                  getController.message[index].message,
+                                  true,
+                                  '',
+                                  '',
+                                  false);
                             }
                           },
                         ),
@@ -316,31 +316,34 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                     Obx(
                       () => Offstage(
                         offstage: !isEmojiVisible.value,
-                        child: EmojiPicker(
-                          onEmojiSelected: (category, emoji) {
-                            _enteredMessage.value =
-                                _controller.text + emoji.emoji;
-                            _controller.text = _controller.text + emoji.emoji;
-                          },
-                          onBackspacePressed: () {},
-                          config: const Config(
-                              columns: 7,
-                              verticalSpacing: 0,
-                              horizontalSpacing: 0,
-                              initCategory: Category.SMILEYS,
-                              bgColor: Color(0xFFF2F2F2),
-                              indicatorColor: Colors.blue,
-                              iconColor: Colors.grey,
-                              iconColorSelected: Colors.blue,
-                              // progressIndicatorColor: Colors.blue,
-                              // showRecentsTab: true,
-                              recentsLimit: 28,
-                              // noRecentsText: "No Recents",
-                              // noRecentsStyle: TextStyle(
-                              //     fontSize: 20, color: Colors.black26),
-                              tabIndicatorAnimDuration: kTabScrollDuration,
-                              categoryIcons: CategoryIcons(),
-                              buttonMode: ButtonMode.MATERIAL),
+                        child: SizedBox(
+                          height: 250,
+                          child: EmojiPicker(
+                            onEmojiSelected: (category, emoji) {
+                              _enteredMessage.value =
+                                  _controller.text + emoji.emoji;
+                              _controller.text = _controller.text + emoji.emoji;
+                            },
+                            onBackspacePressed: () {},
+                            config: const Config(
+                                columns: 7,
+                                verticalSpacing: 0,
+                                horizontalSpacing: 0,
+                                initCategory: Category.SMILEYS,
+                                bgColor: Color(0xFFF2F2F2),
+                                indicatorColor: Colors.blue,
+                                iconColor: Colors.grey,
+                                iconColorSelected: Colors.blue,
+                                // progressIndicatorColor: Colors.blue,
+                                // showRecentsTab: true,
+                                recentsLimit: 28,
+                                // noRecentsText: "No Recents",
+                                // noRecentsStyle: TextStyle(
+                                //     fontSize: 20, color: Colors.black26),
+                                tabIndicatorAnimDuration: kTabScrollDuration,
+                                categoryIcons: CategoryIcons(),
+                                buttonMode: ButtonMode.MATERIAL),
+                          ),
                         ),
                       ),
                     ),

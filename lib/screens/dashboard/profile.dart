@@ -68,35 +68,51 @@ class Profile extends StatelessWidget {
         homeController.setScreen(0);
         return false;
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            "Profile",
-            style: TextStyle(
-              color: Colors.black,
-              letterSpacing: 1,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("users")
-              .doc(_auth.currentUser?.uid)
-              .snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SpinKitFadingCircle(
-                color: Color(0xFF006aff),
-                size: 45.0,
-                duration: Duration(milliseconds: 1000),
-              );
-            } else {
-              var docs = snapshot.data;
-              return SingleChildScrollView(
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .doc(_auth.currentUser?.uid)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(
+                child: SpinKitFadingCircle(
+                  color: Color(0xFF006aff),
+                  size: 45.0,
+                  duration: Duration(milliseconds: 1000),
+                ),
+              ),
+            );
+          } else {
+            var docs = snapshot.data;
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                title: const Text(
+                  "Profile",
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Get.to(() => EditProfile(docs),
+                          transition: Transition.fadeIn);
+                    },
+                  ),
+                ],
+              ),
+              body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 30.0, vertical: 10),
@@ -149,13 +165,6 @@ class Profile extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              Get.to(() => EditProfile(docs),
-                                  transition: Transition.fadeIn);
-                            },
                           ),
                         ],
                       ),
@@ -263,10 +272,10 @@ class Profile extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
-            }
-          },
-        ),
+              ),
+            );
+          }
+        },
       ),
     );
   }

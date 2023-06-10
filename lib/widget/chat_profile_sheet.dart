@@ -17,9 +17,10 @@ class ChatProfileSheet extends StatelessWidget {
   final image;
   final channelId;
   final isForSingleChatList;
+  final reciverData;
 
-  ChatProfileSheet(
-      this.name, this.image, this.channelId, this.isForSingleChatList);
+  ChatProfileSheet(this.name, this.image, this.channelId,
+      this.isForSingleChatList, this.reciverData);
   @override
   Widget build(BuildContext context) {
     _displayDialog(BuildContext context) async {
@@ -99,6 +100,7 @@ class ChatProfileSheet extends StatelessWidget {
                   SizedBox(
                     height: 15,
                   ),
+                  if (isForSingleChatList) Text(reciverData["phoneNumber"]),
                   if (!isForSingleChatList)
                     Column(
                       children: [

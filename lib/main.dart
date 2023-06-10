@@ -27,13 +27,22 @@ void callbackDispatcher() {
           .collection('users')
           .doc(inputData!['currentUserId'])
           .get();
+
       // HomeController homeController = Get.find();
       for (var item = 0; item < inputData['messages'].length; item++) {
+        var randomDoc = FirebaseFirestore.instance
+            .collection("messages")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('channelChat')
+            .doc();
+
         FirebaseFirestore.instance
             .collection('messages')
             .doc(inputData['cid'])
             .collection("channelChat")
-            .add({
+            .doc(randomDoc.id)
+            .set({
+          'messageId': randomDoc.id,
           'message': inputData['messages'][item],
           'messageType': inputData['type'][item],
           'createdTime': Timestamp.now(),

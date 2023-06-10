@@ -51,12 +51,21 @@ class _CustomImageViewState extends State<CustomImageView> {
                 .collection('users')
                 .doc(user.uid)
                 .get();
+            var randomDoc = FirebaseFirestore.instance
+                .collection(
+                    widget.isForSingleChatList ? "private_chats" : 'messages')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('channelChat')
+                .doc();
+
             FirebaseFirestore.instance
                 .collection(
                     widget.isForSingleChatList ? "private_chats" : 'messages')
                 .doc(widget.channelId)
                 .collection("channelChat")
-                .add({
+                .doc(randomDoc.id)
+                .set({
+              'messageId': randomDoc.id,
               'message': url,
               'messageType': "image",
               'createdTime': Timestamp.now(),

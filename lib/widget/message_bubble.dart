@@ -10,23 +10,25 @@ class MessageBubble extends StatelessWidget {
   final isMe;
   final username;
   final time;
-  MessageBubble(this.message, this.isMe, this.username, this.time);
+  final isInSelectMode;
+  MessageBubble(
+      this.message, this.isMe, this.username, this.time, this.isInSelectMode);
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 0.70;
     return GestureDetector(
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: message));
-        Fluttertoast.showToast(
-          msg: "Message copied!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      },
+      // onLongPress: () {
+      //   Clipboard.setData(ClipboardData(text: message));
+      //   Fluttertoast.showToast(
+      //     msg: "Message copied!",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     backgroundColor: Colors.black,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0,
+      //   );
+      // },
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -52,7 +54,7 @@ class MessageBubble extends StatelessWidget {
                 horizontal: 16,
               ),
               margin: const EdgeInsets.symmetric(
-                vertical: 14,
+                vertical: 4,
                 horizontal: 8,
               ),
               child: Column(
@@ -86,7 +88,7 @@ class MessageBubble extends StatelessWidget {
                                 color: isMe
                                     ? const Color(0xFF3587ff)
                                     : Colors.grey[700],
-                                fontSize: 16.5,
+                                fontSize: 16,
                               ),
                             ),
                           ],
@@ -119,15 +121,19 @@ class ImageBubble extends StatelessWidget {
   final isMe;
   final username;
   final time;
-  ImageBubble(this.url, this.isMe, this.username, this.time);
+  final isInSelectMode;
+  ImageBubble(
+      this.url, this.isMe, this.username, this.time, this.isInSelectMode);
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 0.65;
     return GestureDetector(
-      onTap: () {
-        Get.to(() => OpenImage(url), transition: Transition.noTransition);
-      },
+      onTap: isInSelectMode
+          ? null
+          : () {
+              Get.to(() => OpenImage(url), transition: Transition.noTransition);
+            },
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -153,7 +159,7 @@ class ImageBubble extends StatelessWidget {
                 horizontal: 16,
               ),
               margin: const EdgeInsets.symmetric(
-                vertical: 14,
+                vertical: 4,
                 horizontal: 8,
               ),
               child: Column(

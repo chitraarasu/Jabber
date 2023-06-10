@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -43,6 +44,15 @@ class _ChatScreenState extends State<ChatScreen> {
   var _enteredMessage = ''.obs;
   TextEditingController _controller = TextEditingController();
 
+  RxList selectedMessages = RxList();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedMessages.value = [];
+  }
+
   @override
   Widget build(BuildContext context) {
     void _sendMessage() async {
@@ -57,11 +67,19 @@ class _ChatScreenState extends State<ChatScreen> {
             .get();
 
         if (widget.isForSingleChatList) {
+          var randomDoc = FirebaseFirestore.instance
+              .collection("private_chats")
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('channelChat')
+              .doc();
+
           FirebaseFirestore.instance
               .collection('private_chats')
               .doc(widget.channelId)
               .collection("channelChat")
-              .add({
+              .doc(randomDoc.id)
+              .set({
+            'messageId': randomDoc.id,
             'message': encryptData(_enteredMessage.value),
             'messageType': "text",
             'createdTime': Timestamp.now(),
@@ -88,11 +106,19 @@ class _ChatScreenState extends State<ChatScreen> {
             message: _enteredMessage.value,
           );
         } else {
+          var randomDoc = FirebaseFirestore.instance
+              .collection("messages")
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('channelChat')
+              .doc();
+
           FirebaseFirestore.instance
               .collection('messages')
               .doc(widget.channelId)
               .collection("channelChat")
-              .add({
+              .doc(randomDoc.id)
+              .set({
+            'messageId': randomDoc.id,
             'message': encryptData(_enteredMessage.value),
             'messageType': "text",
             'createdTime': Timestamp.now(),
@@ -228,8 +254,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 builder: (context) {
                   return FractionallySizedBox(
                     heightFactor: widget.isForSingleChatList ? 0.5 : 0.70,
-                    child: ChatProfileSheet(widget.name, widget.image,
-                        widget.channelId, widget.isForSingleChatList),
+                    child: ChatProfileSheet(
+                        widget.name,
+                        widget.image,
+                        widget.channelId,
+                        widget.isForSingleChatList,
+                        widget.reciverData),
                   );
                 },
               );
@@ -263,6 +293,61 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           actions: [
+            Obx(
+              () => selectedMessages.isEmpty
+                  ? Container()
+                  : Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            for (var element in selectedMessages) {
+                              print(element["messageId"]);
+                              FirebaseFirestore.instance
+                                  .collection(widget.isForSingleChatList
+                                      ? "private_chats"
+                                      : "messages")
+                                  .doc(widget.channelId)
+                                  .collection("channelChat")
+                                  .doc(element["messageId"])
+                                  .delete();
+                            }
+                            selectedMessages.value = [];
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.black,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            var message = '';
+                            for (var element in selectedMessages) {
+                              if (element["messageType"] == "text") {
+                                message +=
+                                    "${decryptData(element["message"])}\n\n";
+                              }
+                            }
+                            if (message.isNotEmpty) {
+                              Clipboard.setData(ClipboardData(text: message));
+                              Fluttertoast.showToast(
+                                msg: "Message copied!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                            }
+                            selectedMessages.value = [];
+                          },
+                          icon: Icon(
+                            Icons.copy,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
             // IconButton(
             //   onPressed: () {},
             //   icon: Container(
@@ -275,21 +360,25 @@ class _ChatScreenState extends State<ChatScreen> {
             //   ),
             // ),
             if (!widget.isForSingleChatList)
-              PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.adaptive.more,
-                  color: Colors.black,
-                ),
-                onSelected: handleClick,
-                itemBuilder: (BuildContext context) {
-                  return {'Schedule message', 'Clear schedule'}
-                      .map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
+              Obx(
+                () => selectedMessages.isNotEmpty
+                    ? Container()
+                    : PopupMenuButton<String>(
+                        icon: Icon(
+                          Icons.adaptive.more,
+                          color: Colors.black,
+                        ),
+                        onSelected: handleClick,
+                        itemBuilder: (BuildContext context) {
+                          return {'Schedule message', 'Clear schedule'}
+                              .map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        },
+                      ),
               ),
             const SizedBox(
               width: 10,
@@ -400,24 +489,63 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ],
                                     ),
                                   ),
-                                Builder(
-                                  builder: (BuildContext context) {
-                                    if (docs[index]['messageType'] == "text") {
-                                      return MessageBubble(
-                                        decryptData(docs[index]['message']),
-                                        docs[index]['senderId'] == currentUser,
-                                        docs[index]['senderName'],
-                                        time,
-                                      );
-                                    } else {
-                                      return ImageBubble(
-                                        docs[index]['message'],
-                                        docs[index]['senderId'] == currentUser,
-                                        docs[index]['senderName'],
-                                        time,
-                                      );
-                                    }
-                                  },
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 2.0),
+                                  child: Obx(
+                                    () => GestureDetector(
+                                      onTap: () {
+                                        if (selectedMessages.isNotEmpty) {
+                                          if (selectedMessages
+                                              .contains(docs[index])) {
+                                            selectedMessages
+                                                .remove(docs[index]);
+                                          } else {
+                                            selectedMessages.add(docs[index]);
+                                          }
+                                        }
+                                      },
+                                      onLongPress: () {
+                                        if (selectedMessages
+                                            .contains(docs[index])) {
+                                          selectedMessages.remove(docs[index]);
+                                        } else {
+                                          selectedMessages.add(docs[index]);
+                                        }
+                                      },
+                                      child: Container(
+                                        color: selectedMessages
+                                                .contains(docs[index])
+                                            ? Color(0x6ec4cede)
+                                            : null,
+                                        child: Builder(
+                                          builder: (BuildContext context) {
+                                            if (docs[index]['messageType'] ==
+                                                "text") {
+                                              return MessageBubble(
+                                                decryptData(
+                                                    docs[index]['message']),
+                                                docs[index]['senderId'] ==
+                                                    currentUser,
+                                                docs[index]['senderName'],
+                                                time,
+                                                selectedMessages.isNotEmpty,
+                                              );
+                                            } else {
+                                              return ImageBubble(
+                                                docs[index]['message'],
+                                                docs[index]['senderId'] ==
+                                                    currentUser,
+                                                docs[index]['senderName'],
+                                                time,
+                                                selectedMessages.isNotEmpty,
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 )
                               ],
                             );
@@ -526,6 +654,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                         // allowMultiple: true,
                                         type: FileType.image);
                                 if (result != null) {
+                                  print(result.files);
+                                  if (result.files.isEmpty) return;
                                   Get.to(
                                       () => CustomImageView(
                                           result.files.first,
