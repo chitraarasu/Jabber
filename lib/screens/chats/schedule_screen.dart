@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../widget/image_view.dart';
 import '../../widget/message_bubble.dart';
 
 class ScheduleMessage extends StatefulWidget {
@@ -178,6 +179,7 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                     Container(
                       color: Colors.white,
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
                             child: Padding(
@@ -194,111 +196,117 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                                     Radius.circular(25.0),
                                   ),
                                 ),
-                                child: SizedBox(
-                                  height: 45.0,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      FloatingActionButton.small(
-                                        heroTag: const Text("btn1"),
-                                        elevation: 0,
-                                        disabledElevation: 0,
-                                        hoverElevation: 0,
-                                        highlightElevation: 0,
-                                        focusElevation: 0,
-                                        onPressed: () {
-                                          isEmojiVisible.value =
-                                              !isEmojiVisible.value;
-                                          focusNode.unfocus();
-                                          focusNode.canRequestFocus = true;
-                                        },
-                                        backgroundColor: Colors.transparent,
-                                        child: const Icon(
-                                          Icons.insert_emoticon,
-                                          color: Colors.grey,
-                                        ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    FloatingActionButton.small(
+                                      heroTag: const Text("btn1"),
+                                      elevation: 0,
+                                      disabledElevation: 0,
+                                      hoverElevation: 0,
+                                      highlightElevation: 0,
+                                      focusElevation: 0,
+                                      onPressed: () {
+                                        isEmojiVisible.value =
+                                            !isEmojiVisible.value;
+                                        focusNode.unfocus();
+                                        // focusNode.canRequestFocus = true;
+                                      },
+                                      backgroundColor: Colors.transparent,
+                                      child: const Icon(
+                                        Icons.insert_emoticon,
+                                        color: Colors.grey,
                                       ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          textCapitalization:
-                                              TextCapitalization.sentences,
-                                          controller: _controller,
-                                          focusNode: focusNode,
-                                          minLines: 1,
-                                          maxLines: 5,
-                                          keyboardType: TextInputType.multiline,
-                                          textInputAction:
-                                              TextInputAction.newline,
-                                          onChanged: (value) {
-                                            _enteredMessage.value = value;
-                                          },
-                                          decoration: const InputDecoration(
-                                            hintText: "Schedule message",
-                                            hintStyle:
-                                                TextStyle(color: Colors.grey),
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                      FloatingActionButton.small(
-                                        heroTag: const Text("btn2"),
-                                        elevation: 0,
-                                        disabledElevation: 0,
-                                        hoverElevation: 0,
-                                        highlightElevation: 0,
-                                        focusElevation: 0,
-                                        onPressed: () async {
-                                          FilePickerResult? result =
-                                              await FilePicker.platform
-                                                  .pickFiles(
-                                                      // allowMultiple: true,
-                                                      type: FileType.image);
-                                          if (result != null) {
-                                            // Get.to(
-                                            //         () => CustomImageView(
-                                            //         result.files.first,
-                                            //         widget.channelId),
-                                            //     transition: Transition.zoom);
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: TextField(
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                        controller: _controller,
+                                        // focusNode: focusNode,
+                                        minLines: 1,
+                                        scrollPhysics: BouncingScrollPhysics(),
+                                        maxLines: 5,
+                                        keyboardType: TextInputType.multiline,
+                                        textInputAction:
+                                            TextInputAction.newline,
+                                        onTap: () {
+                                          if (isEmojiVisible.value) {
+                                            isEmojiVisible.value = false;
                                           }
                                         },
-                                        backgroundColor: Colors.transparent,
-                                        child: const Icon(
-                                          Icons.link_outlined,
-                                          color: Colors.grey,
+                                        onChanged: (value) {
+                                          _enteredMessage.value = value;
+                                        },
+                                        decoration: const InputDecoration(
+                                          hintText: "Schedule message",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
+                                          border: InputBorder.none,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    // FloatingActionButton.small(
+                                    //   heroTag: const Text("btn2"),
+                                    //   elevation: 0,
+                                    //   disabledElevation: 0,
+                                    //   hoverElevation: 0,
+                                    //   highlightElevation: 0,
+                                    //   focusElevation: 0,
+                                    //   onPressed: () async {
+                                    //     FilePickerResult? result =
+                                    //         await FilePicker.platform.pickFiles(
+                                    //             // allowMultiple: true,
+                                    //             type: FileType.image);
+                                    //     if (result != null) {
+                                    //       Get.to(
+                                    //           () => CustomImageView(
+                                    //               result.files.first,
+                                    //               widget.channelId,
+                                    //               false,
+                                    //               null),
+                                    //           transition: Transition.zoom);
+                                    //     }
+                                    //   },
+                                    //   backgroundColor: Colors.transparent,
+                                    //   child: const Icon(
+                                    //     Icons.link_outlined,
+                                    //     color: Colors.grey,
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
                           Obx(
-                            () => FloatingActionButton.small(
-                              heroTag: const Text("btn3"),
-                              elevation: 0,
-                              disabledElevation: 0,
-                              hoverElevation: 0,
-                              highlightElevation: 0,
-                              focusElevation: 0,
-                              onPressed: _enteredMessage.trim().isEmpty
-                                  ? null
-                                  : () {
-                                      Get.find<SMController>().addMessage(
-                                          _enteredMessage.value, "text");
-                                      _controller.clear();
-                                      _enteredMessage.value = '';
-                                      FocusScope.of(context).unfocus();
-                                    },
-                              backgroundColor: Colors.deepOrange,
-                              child: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
-                                size: 20,
+                            () => Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: FloatingActionButton.small(
+                                heroTag: const Text("btn3"),
+                                elevation: 0,
+                                disabledElevation: 0,
+                                hoverElevation: 0,
+                                highlightElevation: 0,
+                                focusElevation: 0,
+                                onPressed: _enteredMessage.trim().isEmpty
+                                    ? null
+                                    : () {
+                                        Get.find<SMController>().addMessage(
+                                            _enteredMessage.value, "text");
+                                        _controller.clear();
+                                        _enteredMessage.value = '';
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                backgroundColor: Colors.deepOrange,
+                                child: const Icon(
+                                  Icons.send_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                               ),
                             ),
                           ),
@@ -308,34 +316,31 @@ class _ScheduleMessageState extends State<ScheduleMessage> {
                     Obx(
                       () => Offstage(
                         offstage: !isEmojiVisible.value,
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * .2,
-                          child: EmojiPicker(
-                            onEmojiSelected: (category, emoji) {
-                              _controller.text = _controller.text + emoji.emoji;
-                              _enteredMessage.value =
-                                  _controller.text + emoji.emoji;
-                            },
-                            onBackspacePressed: () {},
-                            config: const Config(
-                                columns: 7,
-                                verticalSpacing: 0,
-                                horizontalSpacing: 0,
-                                initCategory: Category.SMILEYS,
-                                bgColor: Color(0xFFF2F2F2),
-                                indicatorColor: Colors.blue,
-                                iconColor: Colors.grey,
-                                iconColorSelected: Colors.blue,
-                                // progressIndicatorColor: Colors.blue,
-                                // showRecentsTab: true,
-                                recentsLimit: 28,
-                                // noRecentsText: "No Recents",
-                                // noRecentsStyle: TextStyle(
-                                //     fontSize: 20, color: Colors.black26),
-                                tabIndicatorAnimDuration: kTabScrollDuration,
-                                categoryIcons: CategoryIcons(),
-                                buttonMode: ButtonMode.MATERIAL),
-                          ),
+                        child: EmojiPicker(
+                          onEmojiSelected: (category, emoji) {
+                            _enteredMessage.value =
+                                _controller.text + emoji.emoji;
+                            _controller.text = _controller.text + emoji.emoji;
+                          },
+                          onBackspacePressed: () {},
+                          config: const Config(
+                              columns: 7,
+                              verticalSpacing: 0,
+                              horizontalSpacing: 0,
+                              initCategory: Category.SMILEYS,
+                              bgColor: Color(0xFFF2F2F2),
+                              indicatorColor: Colors.blue,
+                              iconColor: Colors.grey,
+                              iconColorSelected: Colors.blue,
+                              // progressIndicatorColor: Colors.blue,
+                              // showRecentsTab: true,
+                              recentsLimit: 28,
+                              // noRecentsText: "No Recents",
+                              // noRecentsStyle: TextStyle(
+                              //     fontSize: 20, color: Colors.black26),
+                              tabIndicatorAnimDuration: kTabScrollDuration,
+                              categoryIcons: CategoryIcons(),
+                              buttonMode: ButtonMode.MATERIAL),
                         ),
                       ),
                     ),

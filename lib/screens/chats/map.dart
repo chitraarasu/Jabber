@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -94,7 +95,11 @@ class _MapState extends State<Map> {
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: SpinKitFadingCircle(
+                    color: Color(0xFF006aff),
+                    size: 45.0,
+                    duration: Duration(milliseconds: 900),
+                  ),
                 );
               } else {
                 return GoogleMap(

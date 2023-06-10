@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 class ChannelUserList extends StatelessWidget {
@@ -18,7 +19,11 @@ class ChannelUserList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Color(0xFF006aff),
+                size: 45.0,
+                duration: Duration(milliseconds: 900),
+              ),
             ),
           );
         } else if (snapshot.hasData) {

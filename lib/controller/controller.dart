@@ -112,7 +112,8 @@ class HomeController extends GetxController {
     if (_contactPhoneNumbers.isNotEmpty) {
       return _contactPhoneNumbers;
     }
-    if (await Permission.contacts.request().isGranted) {
+    PermissionStatus status = await Permission.contacts.request();
+    if (status.isGranted) {
       List<Contact> contact = await ContactsService.getContacts();
       _contactPhoneNumbers = [];
       for (Contact item in contact) {

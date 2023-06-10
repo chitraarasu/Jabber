@@ -37,7 +37,7 @@ class OpenImage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(
-                          Icons.close_rounded,
+                          Icons.arrow_back,
                           size: 35,
                           color: Colors.white,
                         ),

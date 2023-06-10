@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +38,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FocusNode focusNode = FocusNode();
   var isEmojiVisible = false.obs;
-  final RxDouble _textFieldHeight = RxDouble(50);
   HomeController homeController = Get.find();
 
   var _enteredMessage = ''.obs;
@@ -46,106 +46,110 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     void _sendMessage() async {
-      _controller.clear();
+      if (_controller.text.trim().isNotEmpty) {
+        _controller.clear();
 
-      final user = FirebaseAuth.instance.currentUser!;
+        final user = FirebaseAuth.instance.currentUser!;
 
-      final userData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (widget.isForSingleChatList) {
-        FirebaseFirestore.instance
-            .collection('private_chats')
-            .doc(widget.channelId)
-            .collection("channelChat")
-            .add({
-          'message': encryptData(_enteredMessage.value),
-          'messageType': "text",
-          'createdTime': Timestamp.now(),
-          'senderId': user.uid,
-          'senderName': userData['username'],
-        });
-
-        FirebaseFirestore.instance
-            .collection('private_chats')
-            .doc(widget.channelId)
-            .set({
-          'chat_id': widget.channelId,
-          'messageType': "text",
-          'createdTime': Timestamp.now(),
-          'chat_members': [user.uid, widget.reciverData["uid"]],
-          'senderName': userData['username'],
-          'recentMessage': encryptData(_enteredMessage.value),
-        });
-
-        homeController.sendNotification(
-          data: {},
-          tokens: [widget.reciverData["token"]],
-          name: userData['username'],
-          message: _enteredMessage.value,
-        );
-      } else {
-        FirebaseFirestore.instance
-            .collection('messages')
-            .doc(widget.channelId)
-            .collection("channelChat")
-            .add({
-          'message': encryptData(_enteredMessage.value),
-          'messageType': "text",
-          'createdTime': Timestamp.now(),
-          'senderId': user.uid,
-          'senderName': userData['username'],
-        });
-
-        FirebaseFirestore.instance
-            .collection('messages')
-            .doc(widget.channelId)
-            .update({
-          'recentMessage': encryptData(_enteredMessage.value),
-          'time': Timestamp.now(),
-        });
-
-        FirebaseFirestore.instance
+        final userData = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
-            .collection("userChannels")
-            .doc(widget.channelId)
-            .update({
-          'recentMessage': encryptData(_enteredMessage.value),
-          'time': Timestamp.now(),
-        });
+            .get();
 
-        // Notification
-        FirebaseFirestore.instance
-            .collection('messages')
-            .doc(widget.channelId)
-            .collection("channelMembers")
-            .get()
-            .then((value) {
-          var channelMembers = [];
-          for (var item in value.docs) {
-            channelMembers.add(item.data()["userId"]);
-          }
+        if (widget.isForSingleChatList) {
+          FirebaseFirestore.instance
+              .collection('private_chats')
+              .doc(widget.channelId)
+              .collection("channelChat")
+              .add({
+            'message': encryptData(_enteredMessage.value),
+            'messageType': "text",
+            'createdTime': Timestamp.now(),
+            'senderId': user.uid,
+            'senderName': userData['username'],
+          });
+
+          FirebaseFirestore.instance
+              .collection('private_chats')
+              .doc(widget.channelId)
+              .set({
+            'chat_id': widget.channelId,
+            'messageType': "text",
+            'createdTime': Timestamp.now(),
+            'chat_members': [user.uid, widget.reciverData["uid"]],
+            'senderName': userData['username'],
+            'recentMessage': encryptData(_enteredMessage.value),
+          });
+
+          homeController.sendNotification(
+            data: {},
+            tokens: [widget.reciverData["token"]],
+            name: userData['username'],
+            message: _enteredMessage.value,
+          );
+        } else {
+          FirebaseFirestore.instance
+              .collection('messages')
+              .doc(widget.channelId)
+              .collection("channelChat")
+              .add({
+            'message': encryptData(_enteredMessage.value),
+            'messageType': "text",
+            'createdTime': Timestamp.now(),
+            'senderId': user.uid,
+            'senderName': userData['username'],
+          });
+
+          FirebaseFirestore.instance
+              .collection('messages')
+              .doc(widget.channelId)
+              .update({
+            'recentMessage': encryptData(_enteredMessage.value),
+            'time': Timestamp.now(),
+          });
+
           FirebaseFirestore.instance
               .collection('users')
-              .get()
-              .then((usersData) {
-            var userTokens = [];
-            for (var item in usersData.docs) {
-              if (channelMembers.contains(item.data()["uid"])) {
-                userTokens.add(item.data()["token"]);
-              }
-            }
-            homeController.sendNotification(
-              data: {},
-              tokens: userTokens,
-              name: userData['username'],
-              message: _enteredMessage.value,
-            );
+              .doc(user.uid)
+              .collection("userChannels")
+              .doc(widget.channelId)
+              .update({
+            'recentMessage': encryptData(_enteredMessage.value),
+            'time': Timestamp.now(),
           });
-        });
+
+          // Notification
+          FirebaseFirestore.instance
+              .collection('messages')
+              .doc(widget.channelId)
+              .collection("channelMembers")
+              .get()
+              .then((value) {
+            var channelMembers = [];
+            for (var item in value.docs) {
+              channelMembers.add(item.data()["userId"]);
+            }
+            FirebaseFirestore.instance
+                .collection('users')
+                .get()
+                .then((usersData) {
+              var userTokens = [];
+              for (var item in usersData.docs) {
+                if (channelMembers.contains(item.data()["uid"])) {
+                  userTokens.add(item.data()["token"]);
+                }
+              }
+              homeController.sendNotification(
+                data: {},
+                tokens: userTokens,
+                name: userData['username'],
+                message: _enteredMessage.value,
+              );
+            });
+          });
+        }
+
+        _enteredMessage.value = '';
       }
     }
 
@@ -215,7 +219,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           title: GestureDetector(
             onTap: () {
-              FocusScope.of(context).unfocus();
+              focusNode.unfocus();
 
               showModalBottomSheet(
                 context: context,
@@ -316,7 +320,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: SpinKitFadingCircle(
+                        color: Color(0xFF006aff),
+                        size: 45.0,
+                        duration: Duration(milliseconds: 900),
+                      ),
                     );
                   } else {
                     List docs = snapshot.data.docs;
@@ -430,115 +438,110 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: 8.0, left: 8.0, bottom: 8.0),
-                      child: Obx(
-                        () => Container(
-                          height: _textFieldHeight.value,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFf7f7f7),
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.grey,
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(25.0),
-                            ),
+                      child: Container(
+                        // height: _textFieldHeight.value,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFf7f7f7),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey,
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              FloatingActionButton.small(
-                                heroTag: const Text("btn1"),
-                                elevation: 0,
-                                disabledElevation: 0,
-                                hoverElevation: 0,
-                                highlightElevation: 0,
-                                focusElevation: 0,
-                                onPressed: () {
-                                  isEmojiVisible.value = !isEmojiVisible.value;
-                                  focusNode.unfocus();
-                                  // focusNode.canRequestFocus = true;
-                                },
-                                backgroundColor: Colors.transparent,
-                                child: const Icon(
-                                  Icons.insert_emoticon,
-                                  color: Colors.grey,
-                                ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(25.0),
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            FloatingActionButton.small(
+                              heroTag: const Text("btn1"),
+                              elevation: 0,
+                              disabledElevation: 0,
+                              hoverElevation: 0,
+                              highlightElevation: 0,
+                              focusElevation: 0,
+                              onPressed: () {
+                                isEmojiVisible.value = !isEmojiVisible.value;
+                                focusNode.unfocus();
+                                // focusNode.canRequestFocus = true;
+                              },
+                              backgroundColor: Colors.transparent,
+                              child: const Icon(
+                                Icons.insert_emoticon,
+                                color: Colors.grey,
                               ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Expanded(
-                                child: TextField(
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  controller: _controller,
-                                  scrollPhysics: BouncingScrollPhysics(),
-                                  focusNode: focusNode,
-                                  minLines: 1,
-                                  onTap: () {
-                                    if (isEmojiVisible.value) {
-                                      isEmojiVisible.value = false;
-                                    }
-                                  },
-                                  maxLines: 5,
-                                  keyboardType: TextInputType.multiline, //
-                                  onTapOutside: (point) {
-                                    _textFieldHeight.value = 50.0;
-                                  },
-                                  textInputAction: TextInputAction.newline,
-                                  onChanged: (value) {
-                                    _enteredMessage.value = value;
-
-                                    _textFieldHeight.value =
-                                        _enteredMessage.value.isEmpty
-                                            ? 50.0
-                                            : _enteredMessage.value
-                                                        .split('\n')
-                                                        .length *
-                                                    20.0 +
-                                                30.0;
-                                    if (_textFieldHeight.value > 100) {
-                                      _textFieldHeight.value = 100;
-                                    }
-                                    print(_enteredMessage.value.length);
-                                  },
-                                  decoration: const InputDecoration(
-                                    hintText: "Type your message here",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                              FloatingActionButton.small(
-                                heroTag: const Text("btn2"),
-                                elevation: 0,
-                                disabledElevation: 0,
-                                hoverElevation: 0,
-                                highlightElevation: 0,
-                                focusElevation: 0,
-                                onPressed: () async {
-                                  FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles(
-                                          // allowMultiple: true,
-                                          type: FileType.image);
-                                  if (result != null) {
-                                    Get.to(
-                                        () => CustomImageView(
-                                            result.files.first,
-                                            widget.channelId,
-                                            widget.isForSingleChatList,
-                                            widget.reciverData),
-                                        transition: Transition.zoom);
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: TextField(
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                controller: _controller,
+                                scrollPhysics: BouncingScrollPhysics(),
+                                focusNode: focusNode,
+                                minLines: 1,
+                                onTap: () {
+                                  if (isEmojiVisible.value) {
+                                    isEmojiVisible.value = false;
                                   }
                                 },
-                                backgroundColor: Colors.transparent,
-                                child: const Icon(
-                                  Icons.link_outlined,
-                                  color: Colors.grey,
+                                maxLines: 5,
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
+                                onChanged: (value) {
+                                  _enteredMessage.value = value;
+
+                                  // _textFieldHeight.value =
+                                  //     _enteredMessage.value.isEmpty
+                                  //         ? 50.0
+                                  //         : _enteredMessage.value
+                                  //                     .split('\n')
+                                  //                     .length *
+                                  //                 20.0 +
+                                  //             30.0;
+                                  // if (_textFieldHeight.value > 100) {
+                                  //   _textFieldHeight.value = 100;
+                                  // }
+                                  // print(_enteredMessage.value.length);
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: "Type your message here",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            FloatingActionButton.small(
+                              heroTag: const Text("btn2"),
+                              elevation: 0,
+                              disabledElevation: 0,
+                              hoverElevation: 0,
+                              highlightElevation: 0,
+                              focusElevation: 0,
+                              onPressed: () async {
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                        // allowMultiple: true,
+                                        type: FileType.image);
+                                if (result != null) {
+                                  Get.to(
+                                      () => CustomImageView(
+                                          result.files.first,
+                                          widget.channelId,
+                                          widget.isForSingleChatList,
+                                          widget.reciverData),
+                                      transition: Transition.zoom);
+                                }
+                              },
+                              backgroundColor: Colors.transparent,
+                              child: const Icon(
+                                Icons.link_outlined,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -577,8 +580,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   height: 250,
                   child: EmojiPicker(
                     onEmojiSelected: (category, emoji) {
-                      _controller.text = _controller.text + emoji.emoji;
                       _enteredMessage.value = _controller.text + emoji.emoji;
+                      _controller.text = _controller.text + emoji.emoji;
                     },
                     onBackspacePressed: () {},
                     config: const Config(

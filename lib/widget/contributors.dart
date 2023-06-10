@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -44,7 +45,11 @@ class Contributors extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: const Color(0xFF006aff),
+                size: 45.0,
+                duration: Duration(milliseconds: 900),
+              ),
             );
           } else if (snapshot.hasData) {
             print(snapshot.data);

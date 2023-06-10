@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chatting_application/controller/my_encryption.dart';
 import 'package:chatting_application/model/schedule_mesage_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +12,7 @@ import 'package:workmanager/workmanager.dart';
 import '../model/notification.dart';
 
 class SMController extends GetxController {
-  final _messages = [];
+  var _messages = [];
 
   get message {
     return _messages.reversed.toList();
@@ -27,7 +28,11 @@ class SMController extends GetxController {
     var data = {
       'currentUserId': user.uid,
       'cid': channelId,
-      'messages': _messages.map((item) => "${item.message}").toList(),
+      'messages': _messages
+          .map((item) => item.type == "image"
+              ? "${item.message}"
+              : encryptData("${item.message}"))
+          .toList(),
       'type': _messages.map((item) => "${item.type}").toList()
     };
     final scheduleTime =
@@ -40,6 +45,7 @@ class SMController extends GetxController {
         inputData: data,
         initialDelay: Duration(seconds: difference),
         constraints: Constraints(networkType: NetworkType.connected));
+    _messages = [];
     Get.back();
   }
 }

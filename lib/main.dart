@@ -27,15 +27,15 @@ void callbackDispatcher() {
           .collection('users')
           .doc(inputData!['currentUserId'])
           .get();
-      HomeController homeController = Get.find();
-      for (var a = 0; a < inputData['messages'].length; a++) {
+      // HomeController homeController = Get.find();
+      for (var item = 0; item < inputData['messages'].length; item++) {
         FirebaseFirestore.instance
             .collection('messages')
             .doc(inputData['cid'])
             .collection("channelChat")
             .add({
-          'message': encryptData(inputData['messages'][a]),
-          'messageType': inputData['type'][a],
+          'message': inputData['messages'][item],
+          'messageType': inputData['type'][item],
           'createdTime': Timestamp.now(),
           'senderId': inputData['currentUserId'],
           'senderName': userData['username'],
@@ -44,7 +44,7 @@ void callbackDispatcher() {
             .collection('messages')
             .doc(inputData['cid'])
             .update({
-          'recentMessage': encryptData(inputData['messages'][a]),
+          'recentMessage': inputData['messages'][item],
           'time': Timestamp.now(),
         });
         FirebaseFirestore.instance
@@ -53,7 +53,7 @@ void callbackDispatcher() {
             .collection("userChannels")
             .doc(inputData['cid'])
             .update({
-          'recentMessage': encryptData(inputData['messages'][a]),
+          'recentMessage': inputData['messages'][item],
           'time': Timestamp.now(),
         });
 
@@ -78,12 +78,12 @@ void callbackDispatcher() {
                 userTokens.add(item.data()["token"]);
               }
             }
-            homeController.sendNotification(
-              data: {},
-              tokens: userTokens,
-              name: userData['username'],
-              message: inputData['messages'][a],
-            );
+            // homeController.sendNotification(
+            //   data: {},
+            //   tokens: userTokens,
+            //   name: userData['username'],
+            //   message: inputData['messages'][item],
+            // );
           });
         });
       }

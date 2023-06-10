@@ -288,11 +288,11 @@ class _ChatListState extends State<ChatList> {
                             if (chatData.isEmpty) {
                               return const EmptyScreen();
                             } else {
-                              return FutureBuilder(
-                                future: FirebaseFirestore.instance
+                              return StreamBuilder(
+                                stream: FirebaseFirestore.instance
                                     .collection("users")
                                     .where('uid', whereIn: receivers)
-                                    .get(),
+                                    .snapshots(),
 
                                 /// whereIn has on restriction. Only 10 item can pass on array
 

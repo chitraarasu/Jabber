@@ -14,7 +14,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width * 0.65;
+    double screenWidth = MediaQuery.of(context).size.width * 0.70;
     return GestureDetector(
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: message));
@@ -86,7 +86,7 @@ class MessageBubble extends StatelessWidget {
                                 color: isMe
                                     ? const Color(0xFF3587ff)
                                     : Colors.grey[700],
-                                fontSize: 18.5,
+                                fontSize: 16.5,
                               ),
                             ),
                           ],

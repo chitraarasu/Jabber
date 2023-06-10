@@ -133,8 +133,37 @@ class _ContactsState extends State<Contacts> {
             );
           } else {
             return Center(
-              child:
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
                   Text(snapshot.error?.toString() ?? "Something Went Wrong!"),
+                  if (snapshot.error!
+                      .toString()
+                      .contains("Please provide cont"))
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF006aff),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: InkWell(
+                          onTap: () async {
+                            await openAppSettings();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Proceed",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              ),
             );
           }
         },

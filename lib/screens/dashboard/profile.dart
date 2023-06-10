@@ -109,44 +109,46 @@ class Profile extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Color(0xFFf4f5f7),
-                                radius: 40,
-                                backgroundImage: docs.get('profileUrl') == null
-                                    ? null
-                                    : NetworkImage(docs.get('profileUrl')),
-                              ),
-                              SizedBox(
-                                width: 25,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .3,
-                                    child: Text(
-                                      docs.get('username'),
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Color(0xFFf4f5f7),
+                                  radius: 40,
+                                  backgroundImage: docs.get('profileUrl') ==
+                                          null
+                                      ? null
+                                      : NetworkImage(docs.get('profileUrl')),
+                                ),
+                                SizedBox(
+                                  width: 25,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        docs.get('username'),
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                      Text(
+                                        docs.get('phoneNumber'),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    docs.get('phoneNumber'),
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                           IconButton(
                             icon: Icon(Icons.edit),
