@@ -1,4 +1,4 @@
-package com.jabber
+package com.csp.jabber
 
 import io.flutter.embedding.android.FlutterActivity
 
