@@ -30,7 +30,5 @@ Experience the power of seamless communication with our Chatting Application. St
 
   <img src="https://user-images.githubusercontent.com/75994428/210581226-254000e3-3f4e-4da2-95f4-2cfcc1d11183.jpg" width="200" height="400" /> 
   <img src="https://github.com/chitraarasu/Jabber/assets/75994428/648765e7-746b-41fe-aded-42810cb3d328" width="200" height="400" /> 
-    <img src="https://github.com/chitraarasu/Jabber/assets/75994428/879452a1-a333-4fd5-84db-23d07b6a1de4" width="200" height="400" /> 
-
 
 </p>
