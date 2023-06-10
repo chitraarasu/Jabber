@@ -21,6 +21,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  HomeController homeController = Get.find();
+
   final _fabDimension = 56.0;
   @override
   void initState() {
@@ -40,9 +42,8 @@ class _HomeState extends State<Home> {
     });
     super.initState();
     requestNotificationPermissions();
+    homeController.checkVersion(context);
   }
-
-  HomeController homeController = Get.find();
 
   Future<void> requestNotificationPermissions() async {
     final PermissionStatus status = await Permission.notification.request();

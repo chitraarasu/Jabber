@@ -1,4 +1,4 @@
-package com.csp.chat.chatting_application
+package com.jabber
 
 import io.flutter.embedding.android.FlutterActivity
 

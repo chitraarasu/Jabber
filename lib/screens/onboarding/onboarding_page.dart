@@ -1,3 +1,4 @@
+import 'package:chatting_application/controller/controller.dart';
 import 'package:chatting_application/screens/onboarding/phone_number_otp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,22 @@ import 'package:lottie/lottie.dart';
 
 import '../../widget/button_widget.dart';
 
-class OnBoardingPage extends StatelessWidget {
+class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
+
+  @override
+  State<OnBoardingPage> createState() => _OnBoardingPageState();
+}
+
+class _OnBoardingPageState extends State<OnBoardingPage> {
+  HomeController homeController = Get.find();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    homeController.checkVersion(context);
+  }
 
   @override
   Widget build(BuildContext context) {

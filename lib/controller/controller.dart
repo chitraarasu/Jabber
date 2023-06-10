@@ -8,8 +8,11 @@ import 'package:chatting_application/screens/dashboard/profile.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/chats/chat_bot.dart';
 import '../screens/dashboard/news.dart';
@@ -164,5 +167,44 @@ class HomeController extends GetxController {
     } else {
       print('Failed to send notification. Error: ${response.body}');
     }
+  }
+
+  void checkVersion(context) async {
+    final newVersion = NewVersionPlus(
+      iOSId: 'com.jabber',
+      androidId: "com.jabber",
+    );
+
+    final VersionStatus? versionStatus = await newVersion.getVersionStatus();
+    if (versionStatus != null && versionStatus.canUpdate) {
+      showCustomDialog(versionStatus, context);
+    }
+  }
+
+  showCustomDialog(VersionStatus versionStatus, context) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Update Available"),
+        content: Text(
+          'You can now update this app from ${versionStatus.localVersion} to ${versionStatus.storeVersion}',
+        ),
+        actions: <Widget>[
+          for (int i = 1; i <= 2; i++)
+            TextButton(
+              child: Text(
+                i == 2 ? 'Maybe Later' : 'Update',
+              ),
+              onPressed: () {
+                if (i == 2) {
+                  Navigator.pop(context);
+                } else {
+                  launchUrl(Uri.parse(versionStatus.appStoreLink));
+                }
+              },
+            ),
+        ],
+      ),
+    );
   }
 }
