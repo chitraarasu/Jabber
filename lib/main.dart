@@ -48,6 +48,7 @@ void callbackDispatcher() {
           'createdTime': Timestamp.now(),
           'senderId': inputData['currentUserId'],
           'senderName': userData['username'],
+          'taggedMessageId': '',
         });
         FirebaseFirestore.instance
             .collection('messages')

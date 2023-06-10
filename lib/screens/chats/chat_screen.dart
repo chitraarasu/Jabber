@@ -85,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
             'createdTime': Timestamp.now(),
             'senderId': user.uid,
             'senderName': userData['username'],
+            'taggedMessageId': '',
           });
 
           FirebaseFirestore.instance
@@ -124,6 +125,7 @@ class _ChatScreenState extends State<ChatScreen> {
             'createdTime': Timestamp.now(),
             'senderId': user.uid,
             'senderName': userData['username'],
+            'taggedMessageId': '',
           });
 
           FirebaseFirestore.instance
