@@ -38,6 +38,7 @@ android/app/google-services.json
 ios/firebase_app_id_file.json
 ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
+lib/credentials.dart
 
 # Symbolication related
 app.*.symbols
@@ -51,4 +52,3 @@ android/app/profile
 android/app/release
 android/key.properties
 android/upload-keystore.jks
-lib/credentials.dart
