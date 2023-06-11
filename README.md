@@ -2,7 +2,7 @@
 
 <a href="https://www.figma.com/proto/FdZiXa1y3BM0SOGxSC1D5D/Jabber?node-id=0%3A1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=167%3A46&show-proto-sidebar=1">Figma design</a>
 
-<a href="https://drive.google.com/file/d/1NKk02JQcZkKCVzNKhj4ne0mrtt76Am2l/view?usp=sharing">Download APK</a>
+<a href="https://play.google.com/store/apps/details?id=com.csp.jabber">Download APK</a>
 
 Welcome to our Flutter-based Chatting Application! Our app provides a seamless platform for individuals to communicate, interact, and exchange messages over the Internet.
 
