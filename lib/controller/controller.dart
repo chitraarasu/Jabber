@@ -170,8 +170,8 @@ class HomeController extends GetxController {
 
   void checkVersion(context) async {
     final newVersion = NewVersionPlus(
-      iOSId: 'com.jabber',
-      androidId: "com.jabber",
+      iOSId: 'com.csp.jabber',
+      androidId: "com.csp.jabber",
     );
 
     final VersionStatus? versionStatus = await newVersion.getVersionStatus();
