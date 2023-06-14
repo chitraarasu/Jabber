@@ -1,9 +1,10 @@
 # Jabber (Chatting application)<a href="https://github.com/chitraarasu/Jabber/blob/master/LICENSE" alt="GitHub license"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" ></a>
 
-<a href="https://www.figma.com/proto/FdZiXa1y3BM0SOGxSC1D5D/Jabber?node-id=0%3A1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=167%3A46&show-proto-sidebar=1">Figma design</a>
+<a href="https://www.figma.com/proto/FdZiXa1y3BM0SOGxSC1D5D/Jabber?node-id=0%3A1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=167%3A46&show-proto-sidebar=1" target="_blank">Figma design</a>
 
 ### Download from Google Play
-<a href="https://play.google.com/store/apps/details?id=com.csp.jabber"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="50px"/></a>
+
+<a href="https://play.google.com/store/apps/details?id=com.csp.jabber" target="_blank"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60px"/></a>
 
 Welcome to our Flutter-based Chatting Application! Our app provides a seamless platform for individuals to communicate, interact, and exchange messages over the Internet.
 
@@ -12,6 +13,14 @@ Compatible with various platforms such as Linux, Windows, and more, our app is d
 Unlike traditional peer-to-peer chats, our chat application functions as a dynamic chat room, fostering a collaborative environment. Multiple users can join the chat server and effortlessly share their messages. Rest assured, every message is instantly broadcasted to all connected chat users, facilitating real-time communication.
 
 Experience the power of seamless communication with our Chatting Application. Stay connected, stay engaged!!!
+
+
+### Donation
+You can support by buying a coffee ☕️ here :)
+
+<a href="https://www.buymeacoffee.com/ckncreation" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee"  height="60px"/></a>
+
+### Screenshots
 
 <p float="left">
   <img src="https://user-images.githubusercontent.com/75994428/210581236-b68b9ded-820f-4bb0-bec7-a9192ded530a.jpg" width="200" height="400" />
