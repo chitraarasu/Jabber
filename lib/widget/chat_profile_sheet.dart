@@ -41,14 +41,21 @@ class ChatProfileSheet extends StatelessWidget {
                     'Yes',
                     style: TextStyle(color: Colors.red),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser!;
-                    FirebaseFirestore.instance
+
+                    await FirebaseFirestore.instance
                         .collection('users')
                         .doc(user.uid)
-                        .collection("userChannels")
-                        .doc(channelId)
-                        .delete();
+                        .get()
+                        .then((data) async {
+                      List userChannels = data["userChannels"] ?? [];
+                      userChannels.remove(channelId);
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(user.uid)
+                          .update({"userChannels": userChannels});
+                    });
                     FirebaseFirestore.instance
                         .collection('messages')
                         .doc(channelId)

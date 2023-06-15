@@ -61,23 +61,19 @@ class _JoinChannelState extends State<JoinChannel> {
       if (channelId == item["channelId"]) {
         isValid = true;
         await FirebaseFirestore.instance
-            .collection("users")
-            .doc(widget._auth.currentUser?.uid)
-            .collection("userChannels")
-            .doc(item["channelId"])
-            .set({
-          'channelId': item["channelId"],
-          'channelName': item["channelName"],
-          'channelOwnerId': item["channelOwnerId"],
-          'channelProfile': item["channelProfile"],
-          "recentMessage": item["recentMessage"],
-          "time": item["time"],
-        });
-        await FirebaseFirestore.instance
             .collection('users')
             .doc(widget._auth.currentUser?.uid)
             .get()
             .then((data) async {
+          List userChannels = data["userChannels"] ?? [];
+
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(widget._auth.currentUser?.uid)
+              .update({
+            "userChannels": [item["channelId"], ...userChannels]
+          });
+
           await FirebaseFirestore.instance
               .collection("messages")
               .doc(channelId)

@@ -136,15 +136,15 @@ class _ChatScreenState extends State<ChatScreen> {
             'time': Timestamp.now(),
           });
 
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .collection("userChannels")
-              .doc(widget.channelId)
-              .update({
-            'recentMessage': encryptData(_enteredMessage.value),
-            'time': Timestamp.now(),
-          });
+          // FirebaseFirestore.instance
+          //     .collection('users')
+          //     .doc(user.uid)
+          //     .collection("userChannels")
+          //     .doc(widget.channelId)
+          //     .update({
+          //   'recentMessage': encryptData(_enteredMessage.value),
+          //   'time': Timestamp.now(),
+          // });
 
           // Notification
           FirebaseFirestore.instance

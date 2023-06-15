@@ -57,15 +57,15 @@ void callbackDispatcher() {
           'recentMessage': inputData['messages'][item],
           'time': Timestamp.now(),
         });
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(inputData['currentUserId'])
-            .collection("userChannels")
-            .doc(inputData['cid'])
-            .update({
-          'recentMessage': inputData['messages'][item],
-          'time': Timestamp.now(),
-        });
+        // FirebaseFirestore.instance
+        //     .collection('users')
+        //     .doc(inputData['currentUserId'])
+        //     .collection("userChannels")
+        //     .doc(inputData['cid'])
+        //     .update({
+        //   'recentMessage': inputData['messages'][item],
+        //   'time': Timestamp.now(),
+        // });
 
         // Notification
         FirebaseFirestore.instance

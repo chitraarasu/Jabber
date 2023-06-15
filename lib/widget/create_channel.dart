@@ -305,13 +305,17 @@ class _CreateChannelState extends State<CreateChannel> {
                           'userName': data['username'],
                           'userPhoneNumber': data['phoneNumber'],
                         });
+
+                        List userChannels = data["userChannels"] ?? [];
+
+                        await FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(widget._auth.currentUser?.uid)
+                            .update({
+                          "userChannels": [randomId, ...userChannels]
+                        });
                       });
-                      await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(widget._auth.currentUser?.uid)
-                          .collection("userChannels")
-                          .doc(randomId)
-                          .set(channelData);
+
                       isLoading.value = false;
                       Get.back();
                     }

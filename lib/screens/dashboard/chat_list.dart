@@ -403,11 +403,6 @@ class _ChatListState extends State<ChatList> {
                         stream: FirebaseFirestore.instance
                             .collection("users")
                             .doc(_auth.currentUser?.uid)
-                            .collection("userChannels")
-                            .orderBy(
-                              'time',
-                              descending: true,
-                            )
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<dynamic> snapshot) {
@@ -418,107 +413,166 @@ class _ChatListState extends State<ChatList> {
                               size: 45.0,
                               duration: Duration(milliseconds: 900),
                             );
-                          } else if (!snapshot.hasData || snapshot.hasError) {
-                            return const EmptyScreen();
-                          } else {
-                            List docs = snapshot.data.docs
-                                .map((item) => item.data())
-                                .toList();
+                          } else if (snapshot.hasData) {
+                            var loggedInUserData = snapshot.data.data();
+                            List userChannels =
+                                loggedInUserData["userChannels"] ?? [];
+                            return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("messages")
+                                  .orderBy(
+                                    'time',
+                                    descending: true,
+                                  )
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<dynamic> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const SpinKitFadingCircle(
+                                    color: Color(0xFF006aff),
+                                    size: 45.0,
+                                    duration: Duration(milliseconds: 900),
+                                  );
+                                } else if (!snapshot.hasData ||
+                                    snapshot.hasError) {
+                                  return const EmptyScreen();
+                                } else {
+                                  List docs = snapshot.data.docs
+                                      .map((item) => item.data())
+                                      .toList();
 
-                            dataWithOutFilter.value = docs;
-                            dataWithFilter.value = docs;
+                                  var currentUserGroups = [];
 
-                            FirebaseFirestore.instance
-                                .collection('messages')
-                                .get()
-                                .then((items) {
-                              groups = [];
-                              for (var item in items.docs) {
-                                groups.add(item['channelId']);
-                              }
-                              for (var element in docs) {
-                                if (!groups.contains(element["channelId"])) {
+                                  for (var userChannelItem in userChannels) {
+                                    for (var item in docs) {
+                                      if (item['channelId'] ==
+                                          userChannelItem) {
+                                        currentUserGroups.add(item);
+                                      }
+                                    }
+                                  }
+
+                                  docs = currentUserGroups;
+
+                                  dataWithOutFilter.value = docs;
+                                  dataWithFilter.value = docs;
+
                                   FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(FirebaseAuth
-                                          .instance.currentUser!.uid)
-                                      .collection("userChannels")
-                                      .doc(element["channelId"])
-                                      .delete();
-                                }
-                              }
-                            });
+                                      .collection('messages')
+                                      .get()
+                                      .then((items) async {
+                                    groups = [];
+                                    for (var item in items.docs) {
+                                      groups.add(item['channelId']);
+                                    }
+                                    for (var element in docs) {
+                                      if (!groups
+                                          .contains(element["channelId"])) {
+                                        userChannels
+                                            .remove(element["channelId"]);
+                                        await FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                            .update(
+                                                {"userChannels": userChannels});
+                                      }
+                                    }
+                                  });
 
-                            if (dataWithFilter.value.isEmpty) {
-                              return const EmptyScreen();
-                            } else {
-                              return Obx(
-                                () => ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: dataWithFilter.value.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    var time = DateFormat('hh:mm a').format(
-                                      Timestamp(
-                                              dataWithFilter
-                                                  .value[index]["time"].seconds,
-                                              dataWithFilter
-                                                  .value[index]["time"]
-                                                  .nanoseconds)
-                                          .toDate(),
-                                    );
-                                    return ChatBar(
-                                      dataWithFilter.value[index]["channelId"],
-                                      dataWithFilter.value[index]
-                                          ["channelName"],
-                                      dataWithFilter.value[index]
-                                                  ["recentMessage"]
-                                              .toString()
-                                              .contains(
-                                                  "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
-                                          ? 'Image'
-                                          : decryptData(dataWithFilter
-                                              .value[index]["recentMessage"]),
-                                      dataWithFilter.value[index]
-                                          ["channelProfile"],
-                                      time,
-                                      "3",
-                                      () {
-                                        Get.to(
-                                          () => ChatScreen(
+                                  if (dataWithFilter.value.isEmpty) {
+                                    return const EmptyScreen();
+                                  } else {
+                                    return Obx(
+                                      () => ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount: dataWithFilter.value.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          var time =
+                                              DateFormat('hh:mm a').format(
+                                            Timestamp(
+                                                    dataWithFilter
+                                                        .value[index]["time"]
+                                                        .seconds,
+                                                    dataWithFilter
+                                                        .value[index]["time"]
+                                                        .nanoseconds)
+                                                .toDate(),
+                                          );
+                                          return ChatBar(
+                                            dataWithFilter.value[index]
+                                                ["channelId"],
                                             dataWithFilter.value[index]
                                                 ["channelName"],
                                             dataWithFilter.value[index]
-                                                ["channelProfile"],
+                                                        ["recentMessage"]
+                                                    .toString()
+                                                    .contains(
+                                                        "https://firebasestorage.googleapis.com/v0/b/csp-chatting-app.appspot.com/o/user_data")
+                                                ? 'Image'
+                                                : decryptData(
+                                                    dataWithFilter.value[index]
+                                                        ["recentMessage"]),
                                             dataWithFilter.value[index]
-                                                ['channelId'],
-                                          ),
-                                          transition: Transition.fadeIn,
-                                        );
-                                      },
-                                      () {
-                                        final user =
-                                            FirebaseAuth.instance.currentUser!;
-                                        FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(user.uid)
-                                            .collection("userChannels")
-                                            .doc(dataWithFilter.value[index]
-                                                ['channelId'])
-                                            .delete();
-                                        FirebaseFirestore.instance
-                                            .collection('messages')
-                                            .doc(dataWithFilter.value[index]
-                                                ['channelId'])
-                                            .collection("channelMembers")
-                                            .doc(user.uid)
-                                            .delete();
-                                      },
+                                                ["channelProfile"],
+                                            time,
+                                            "3",
+                                            () {
+                                              Get.to(
+                                                () => ChatScreen(
+                                                  dataWithFilter.value[index]
+                                                      ["channelName"],
+                                                  dataWithFilter.value[index]
+                                                      ["channelProfile"],
+                                                  dataWithFilter.value[index]
+                                                      ['channelId'],
+                                                ),
+                                                transition: Transition.fadeIn,
+                                              );
+                                            },
+                                            () async {
+                                              final user = FirebaseAuth
+                                                  .instance.currentUser!;
+
+                                              FirebaseFirestore.instance
+                                                  .collection('messages')
+                                                  .doc(dataWithFilter
+                                                          .value[index]
+                                                      ['channelId'])
+                                                  .collection("channelMembers")
+                                                  .doc(user.uid)
+                                                  .delete();
+
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(user.uid)
+                                                  .get()
+                                                  .then((data) async {
+                                                List userChannels =
+                                                    data["userChannels"] ?? [];
+                                                userChannels.remove(
+                                                    dataWithFilter.value[index]
+                                                        ['channelId']);
+                                                await FirebaseFirestore.instance
+                                                    .collection("users")
+                                                    .doc(user.uid)
+                                                    .update({
+                                                  "userChannels": userChannels
+                                                });
+                                              });
+                                            },
+                                          );
+                                        },
+                                      ),
                                     );
-                                  },
-                                ),
-                              );
-                            }
+                                  }
+                                }
+                              },
+                            );
+                          } else {
+                            return const EmptyScreen();
                           }
                         },
                       ),

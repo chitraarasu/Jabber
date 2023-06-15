@@ -224,57 +224,48 @@ class ChatListCardCaller extends StatelessWidget {
                                       .doc(user.uid)
                                       .get();
 
-                                  FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(contactProfiles[index]['uid'])
-                                      .collection("userChannels")
-                                      .where(
-                                        "channelId",
-                                        isEqualTo: channelData,
-                                      )
-                                      .get()
-                                      .then((value) {
-                                    if (value.docs.isEmpty) {
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(contactProfiles[index]['uid'])
-                                          .collection("invites")
-                                          .doc(channelData)
-                                          .set({
-                                        'channelId': channelData,
-                                        'invitedBy': userData["username"],
-                                        'createdTime': Timestamp.now(),
-                                      });
+                                  List userChannels = contactProfiles[index]
+                                          ["userChannels"] ??
+                                      [];
 
-                                      homeController.sendNotification(
-                                        data: {},
-                                        tokens: [
-                                          contactProfiles[index]['token']
-                                        ],
-                                        name: "Invite to join group",
-                                        message:
-                                            "You have received an invite from ${userData['username']}",
-                                      );
+                                  if (!userChannels.contains(channelData)) {
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(contactProfiles[index]['uid'])
+                                        .collection("invites")
+                                        .doc(channelData)
+                                        .set({
+                                      'channelId': channelData,
+                                      'invitedBy': userData["username"],
+                                      'createdTime': Timestamp.now(),
+                                    });
 
-                                      Fluttertoast.showToast(
-                                        msg: "Invite has been sent!",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0,
-                                      );
-                                    } else {
-                                      Fluttertoast.showToast(
-                                        msg: "Already a member of this group!",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0,
-                                      );
-                                    }
-                                  });
+                                    homeController.sendNotification(
+                                      data: {},
+                                      tokens: [contactProfiles[index]['token']],
+                                      name: "Invite to join group",
+                                      message:
+                                          "You have received an invite from ${userData['username']}",
+                                    );
+
+                                    Fluttertoast.showToast(
+                                      msg: "Invite has been sent!",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0,
+                                    );
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: "Already a member of this group!",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0,
+                                    );
+                                  }
                                 },
                               )
                             ],

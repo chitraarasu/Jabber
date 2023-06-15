@@ -92,15 +92,15 @@ class _CustomImageViewState extends State<CustomImageView> {
                 'recentMessage': url,
                 'time': Timestamp.now(),
               });
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .collection("userChannels")
-                  .doc(widget.channelId)
-                  .update({
-                'recentMessage': url,
-                'time': Timestamp.now(),
-              });
+              // FirebaseFirestore.instance
+              //     .collection('users')
+              //     .doc(user.uid)
+              //     .collection("userChannels")
+              //     .doc(widget.channelId)
+              //     .update({
+              //   'recentMessage': url,
+              //   'time': Timestamp.now(),
+              // });
             }
 
             setState(() {

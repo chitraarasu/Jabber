@@ -294,6 +294,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                           .isNotEmpty) {
                                         isLoading.value = true;
                                         var url;
+                                        var channelList = [];
                                         var preProfileData;
                                         await FirebaseFirestore.instance
                                             .collection('users')
@@ -304,6 +305,9 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                         });
                                         if (preProfileData != null) {
                                           url = preProfileData['profileUrl'];
+                                          channelList =
+                                              preProfileData['channelList'] ??
+                                                  [];
                                         }
                                         if (homeController.userProfileImage !=
                                             null) {
@@ -334,6 +338,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                           'countryCode': widget.code,
                                           'isOnline': true,
                                           'profileUrl': url,
+                                          'userChannels': channelList,
                                           "uid": _auth.currentUser?.uid,
                                         });
                                         isLoading.value = false;
