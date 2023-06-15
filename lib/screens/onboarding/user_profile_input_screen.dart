@@ -306,7 +306,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                         if (preProfileData != null) {
                                           url = preProfileData['profileUrl'];
                                           channelList =
-                                              preProfileData['channelList'] ??
+                                              preProfileData['userChannels'] ??
                                                   [];
                                         }
                                         if (homeController.userProfileImage !=

@@ -275,20 +275,22 @@ class ChatListCardCaller extends StatelessWidget {
                     var data = await FirebaseFirestore.instance
                         .collection("private_chats")
                         .get();
-                    print(data.docs);
 
                     var docs = data.docs.map((e) => e.data()).toList();
 
-                    var channelId =
-                        "${FirebaseAuth.instance.currentUser?.uid}__${contactProfiles[index]['uid']}";
+                    var uid = FirebaseAuth.instance.currentUser?.uid;
+
+                    var channelId = "${uid}__${contactProfiles[index]['uid']}";
 
                     for (var element in docs) {
                       List channelMembers = element["chat_members"];
-                      if (channelMembers.contains(
-                              FirebaseAuth.instance.currentUser?.uid) &&
-                          channelMembers
-                              .contains(contactProfiles[index]['uid'])) {
-                        channelId = element["chat_id"];
+
+                      if (channelMembers.contains(uid)) {
+                        channelMembers.remove(uid);
+                        if (channelMembers
+                            .contains(contactProfiles[index]['uid'])) {
+                          channelId = element["chat_id"];
+                        }
                       }
                     }
 
