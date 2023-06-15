@@ -26,39 +26,47 @@ class _MapState extends State<Map> {
 
   Future _getCurrentUserLocation() async {
     locData = await Location().getLocation();
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .get()
-        .then((value) async {
-      var data = value.data();
-      await FirebaseFirestore.instance
-          .collection("messages")
-          .doc(widget.channelId)
-          .collection('channelMembers')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        'userName': data!['username'],
-        'lat': locData.latitude,
-        'lon': locData.longitude,
-      });
-    });
 
     await FirebaseFirestore.instance
         .collection("messages")
         .doc(widget.channelId)
         .collection('channelMembers')
-        .get()
-        .then((items) {
-      for (var item in items.docs) {
-        addMarker({
-          'lat': item['lat'],
-          'lon': item['lon'],
-          'name': "${item['userName']} (${item['userPhoneNumber']})",
-          'uid': item['userId'],
-        });
-      }
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .set({
+      'userId': FirebaseAuth.instance.currentUser?.uid,
+      'lat': locData.latitude,
+      'lon': locData.longitude,
     });
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((value) async {
+      List allUsersData = value.docs.map((e) => e.data()).toList();
+
+      await FirebaseFirestore.instance
+          .collection("messages")
+          .doc(widget.channelId)
+          .collection('channelMembers')
+          .get()
+          .then((value) {
+        List channelUsersData = value.docs.map((e) => e.data()).toList();
+
+        for (var user in allUsersData) {
+          for (var channelUser in channelUsersData) {
+            if (user["uid"] == channelUser["userId"]) {
+              addMarker({
+                'lat': channelUser['lat'],
+                'lon': channelUser['lon'],
+                'name': "${user['username']} (${user['phoneNumber']})",
+                'uid': channelUser['userId'],
+              });
+            }
+          }
+        }
+      });
+    });
+
     return true;
   }
 

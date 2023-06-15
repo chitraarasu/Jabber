@@ -183,25 +183,21 @@ class HomeController extends GetxController {
   showCustomDialog(VersionStatus versionStatus, context) {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         title: const Text("Update Available"),
         content: Text(
           'You can now update this app from ${versionStatus.localVersion} to ${versionStatus.storeVersion}',
         ),
         actions: <Widget>[
-          for (int i = 1; i <= 2; i++)
-            TextButton(
-              child: Text(
-                i == 2 ? 'Maybe Later' : 'Update',
-              ),
-              onPressed: () {
-                if (i == 2) {
-                  Navigator.pop(context);
-                } else {
-                  launchUrl(Uri.parse(versionStatus.appStoreLink));
-                }
-              },
+          TextButton(
+            child: Text(
+              'Update',
             ),
+            onPressed: () {
+              launch(versionStatus.appStoreLink);
+            },
+          ),
         ],
       ),
     );

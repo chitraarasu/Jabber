@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rive/rive.dart';
 
+import '../screens/chats/edit_channel.dart';
 import '../screens/chats/user_list_screen.dart';
 import '../screens/contacts.dart';
 
@@ -18,9 +19,10 @@ class ChatProfileSheet extends StatelessWidget {
   final channelId;
   final isForSingleChatList;
   final reciverData;
+  final isChannelAdmin;
 
   ChatProfileSheet(this.name, this.image, this.channelId,
-      this.isForSingleChatList, this.reciverData);
+      this.isForSingleChatList, this.reciverData, this.isChannelAdmin);
   @override
   Widget build(BuildContext context) {
     _displayDialog(BuildContext context) async {
@@ -155,6 +157,18 @@ class ChatProfileSheet extends StatelessWidget {
                                     transition: Transition.noTransition);
                               },
                             ),
+                            if (isChannelAdmin)
+                              CustomCircleButton(
+                                Icons.edit,
+                                Colors.green,
+                                const Color(0xFFE3FFE4),
+                                () {
+                                  Get.back();
+                                  Get.to(
+                                      () => EditChannel(name, image, channelId),
+                                      transition: Transition.noTransition);
+                                },
+                              ),
                             CustomCircleButton(
                               Icons.exit_to_app,
                               Colors.orange,

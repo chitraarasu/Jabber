@@ -81,8 +81,6 @@ class _JoinChannelState extends State<JoinChannel> {
               .doc(widget._auth.currentUser?.uid)
               .set({
             'userId': widget._auth.currentUser?.uid,
-            'userName': data['username'],
-            'userPhoneNumber': data['phoneNumber'],
           });
         });
       }

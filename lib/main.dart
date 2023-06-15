@@ -67,35 +67,35 @@ void callbackDispatcher() {
         //   'time': Timestamp.now(),
         // });
 
-        // Notification
-        FirebaseFirestore.instance
-            .collection('messages')
-            .doc(inputData['cid'])
-            .collection("channelMembers")
-            .get()
-            .then((value) {
-          var channelMembers = [];
-          for (var item in value.docs) {
-            channelMembers.add(item.data()["userId"]);
-          }
-          FirebaseFirestore.instance
-              .collection('users')
-              .get()
-              .then((usersData) {
-            var userTokens = [];
-            for (var item in usersData.docs) {
-              if (channelMembers.contains(item.data()["uid"])) {
-                userTokens.add(item.data()["token"]);
-              }
-            }
-            // homeController.sendNotification(
-            //   data: {},
-            //   tokens: userTokens,
-            //   name: userData['username'],
-            //   message: inputData['messages'][item],
-            // );
-          });
-        });
+        // // Notification
+        // FirebaseFirestore.instance
+        //     .collection('messages')
+        //     .doc(inputData['cid'])
+        //     .collection("channelMembers")
+        //     .get()
+        //     .then((value) {
+        //   var channelMembers = [];
+        //   for (var item in value.docs) {
+        //     channelMembers.add(item.data()["userId"]);
+        //   }
+        //   FirebaseFirestore.instance
+        //       .collection('users')
+        //       .get()
+        //       .then((usersData) {
+        //     var userTokens = [];
+        //     for (var item in usersData.docs) {
+        //       if (channelMembers.contains(item.data()["uid"])) {
+        //         userTokens.add(item.data()["token"]);
+        //       }
+        //     }
+        //     // homeController.sendNotification(
+        //     //   data: {},
+        //     //   tokens: userTokens,
+        //     //   name: userData['username'],
+        //     //   message: inputData['messages'][item],
+        //     // );
+        //   });
+        // });
       }
       return Future.value(true);
     }

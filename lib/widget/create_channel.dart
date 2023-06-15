@@ -272,8 +272,7 @@ class _CreateChannelState extends State<CreateChannel> {
                         final ref = FirebaseStorage.instance
                             .ref()
                             .child('channel_image')
-                            .child(
-                                "$randomId-${channelNameController.text}.jpg");
+                            .child("$randomId.jpg");
                         await ref
                             .putFile(widget.getController.channelProfileImage);
                         url = await ref.getDownloadURL();
@@ -302,8 +301,6 @@ class _CreateChannelState extends State<CreateChannel> {
                             .doc(widget._auth.currentUser?.uid)
                             .set({
                           'userId': widget._auth.currentUser?.uid,
-                          'userName': data['username'],
-                          'userPhoneNumber': data['phoneNumber'],
                         });
 
                         List userChannels = data["userChannels"] ?? [];

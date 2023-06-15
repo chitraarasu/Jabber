@@ -68,8 +68,6 @@ class ChannelRequest extends StatelessWidget {
               .doc(_auth.currentUser?.uid)
               .set({
             'userId': _auth.currentUser?.uid,
-            'userName': data['username'],
-            'userPhoneNumber': data['phoneNumber'],
           });
         });
       }

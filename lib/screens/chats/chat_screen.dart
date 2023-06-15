@@ -29,8 +29,11 @@ class ChatScreen extends StatefulWidget {
   final channelId;
   final isForSingleChatList;
   final reciverData;
+  final isChannelAdmin;
   ChatScreen(this.name, this.image, this.channelId,
-      {this.isForSingleChatList = false, this.reciverData});
+      {this.isForSingleChatList = false,
+      this.reciverData,
+      this.isChannelAdmin = false});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -257,11 +260,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   return FractionallySizedBox(
                     heightFactor: widget.isForSingleChatList ? 0.5 : 0.70,
                     child: ChatProfileSheet(
-                        widget.name,
-                        widget.image,
-                        widget.channelId,
-                        widget.isForSingleChatList,
-                        widget.reciverData),
+                      widget.name,
+                      widget.image,
+                      widget.channelId,
+                      widget.isForSingleChatList,
+                      widget.reciverData,
+                      widget.isChannelAdmin,
+                    ),
                   );
                 },
               );

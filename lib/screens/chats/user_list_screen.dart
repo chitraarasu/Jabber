@@ -27,6 +27,9 @@ class ChannelUserList extends StatelessWidget {
             ),
           );
         } else if (snapshot.hasData) {
+          List channelUsers =
+              snapshot.data.docs.map((e) => e.data()["userId"]).toList();
+
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -45,21 +48,52 @@ class ChannelUserList extends StatelessWidget {
                 },
               ),
             ),
-            body: ListView.builder(
-              itemCount: snapshot.data.docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(snapshot.data.docs[index]['userName']),
-                      subtitle:
-                          Text(snapshot.data.docs[index]['userPhoneNumber']),
+            body: FutureBuilder(
+              future: FirebaseFirestore.instance.collection("users").get(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snp) {
+                if (snp.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: SpinKitFadingCircle(
+                      color: Color(0xFF006aff),
+                      size: 45.0,
+                      duration: Duration(milliseconds: 900),
                     ),
-                  ),
-                );
+                  );
+                } else if (snp.hasData) {
+                  List userList =
+                      snp.data.docs.map((item) => item.data()).toList();
+
+                  userList.removeWhere(
+                      (element) => !channelUsers.contains(element["uid"]));
+
+                  return ListView.builder(
+                    itemCount: userList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        child: Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              backgroundImage: userList[index]['profileUrl'] ==
+                                      null
+                                  ? null
+                                  : NetworkImage(userList[index]['profileUrl']),
+                            ),
+                            title: Text(userList[index]['username']),
+                            subtitle: Text(userList[index]['phoneNumber']),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: Text("Check your internet connection."),
+                  );
+                }
               },
             ),
           );

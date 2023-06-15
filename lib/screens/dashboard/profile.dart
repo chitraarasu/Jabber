@@ -12,9 +12,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../controller/controller.dart';
+import '../../widget/open_image.dart';
 import '../chats/my_groups.dart';
 import '../onboarding/onboarding_page.dart';
 
@@ -128,13 +130,23 @@ class Profile extends StatelessWidget {
                           Expanded(
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  backgroundColor: Color(0xFFf4f5f7),
-                                  radius: 40,
-                                  backgroundImage: docs.get('profileUrl') ==
-                                          null
-                                      ? null
-                                      : NetworkImage(docs.get('profileUrl')),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (docs.get('profileUrl') != null) {
+                                      Get.to(
+                                          () =>
+                                              OpenImage(docs.get('profileUrl')),
+                                          transition: Transition.fadeIn);
+                                    }
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Color(0xFFf4f5f7),
+                                    radius: 40,
+                                    backgroundImage: docs.get('profileUrl') ==
+                                            null
+                                        ? null
+                                        : NetworkImage(docs.get('profileUrl')),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 25,
@@ -243,6 +255,7 @@ class Profile extends StatelessWidget {
                           );
                         },
                       ),
+                      SizedBox(height: 10),
 
                       // Row(
                       //   children: [
@@ -258,6 +271,17 @@ class Profile extends StatelessWidget {
                       // ),
                       Row(
                         children: [
+                          InkWell(
+                            onTap: () {
+                              launchUrl(Uri.parse(
+                                  "https://www.buymeacoffee.com/ckncreation"));
+                            },
+                            child: Image(
+                              image: AssetImage("assets/images/bmac.png"),
+                              height: 45,
+                            ),
+                          ),
+                          Spacer(),
                           TextButton(
                             onPressed: () {
                               _displayDialog(context);
@@ -323,11 +347,12 @@ class CustomTile extends StatelessWidget {
               ],
             ),
             if (topic != "Clear schedules")
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 25,
-                color: Colors.black,
-              )
+              if (topic != "Donate")
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 25,
+                  color: Colors.black,
+                )
           ],
         ),
       ),

@@ -345,7 +345,7 @@ class _ChatListState extends State<ChatList> {
                                           );
                                           var user = dataWithFilter.value[index]
                                               ["userData"];
-                                          return ChatBarWithoutDismiss(
+                                          return ChatBar(
                                             dataWithFilter.value[index]
                                                 ["chat_id"],
                                             user["username"],
@@ -375,14 +375,11 @@ class _ChatListState extends State<ChatList> {
                                               );
                                             },
                                             () {
-                                              // final user =
-                                              //     FirebaseAuth.instance.currentUser!;
-                                              // FirebaseFirestore.instance
-                                              //     .collection('users')
-                                              //     .doc(user.uid)
-                                              //     .collection("userChannels")
-                                              //     .doc(docs[index]['channelId'])
-                                              //     .delete();
+                                              FirebaseFirestore.instance
+                                                  .collection('private_chats')
+                                                  .doc(dataWithFilter
+                                                      .value[index]["chat_id"])
+                                                  .delete();
                                             },
                                           );
                                         },
@@ -528,6 +525,11 @@ class _ChatListState extends State<ChatList> {
                                                       ["channelProfile"],
                                                   dataWithFilter.value[index]
                                                       ['channelId'],
+                                                  isChannelAdmin: dataWithFilter
+                                                              .value[index]
+                                                          ["channelOwnerId"] ==
+                                                      FirebaseAuth.instance
+                                                          .currentUser?.uid,
                                                 ),
                                                 transition: Transition.fadeIn,
                                               );
