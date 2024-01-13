@@ -1,12 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
+
+import '../../controller/controller.dart';
 
 class ChannelRequest extends StatelessWidget {
   getCircleIcon(icon, color, onTap) {
@@ -87,253 +86,279 @@ class ChannelRequest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authUser = FirebaseAuth.instance.currentUser!;
+    HomeController homeController = Get.find();
 
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Get.back();
-            },
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.black,
           ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Text(
-            "Invites",
-            style: TextStyle(
-              color: Colors.black,
-              letterSpacing: 1,
-              fontWeight: FontWeight.bold,
-            ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          "Invites",
+          style: TextStyle(
+            color: Colors.black,
+            letterSpacing: 1,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        body: Stack(
-          children: [
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(authUser.uid)
-                  .collection('invites')
-                  .orderBy(
-                    'createdTime',
-                    descending: true,
-                  )
-                  .snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Text("Loading..."),
-                  );
-                } else {
-                  List docs =
-                      snapshot.data.docs.map((item) => item.data()).toList();
-                  if (docs.isEmpty) {
-                    return Container(
-                      child: Center(
-                        child: Text("No invites found !"),
-                      ),
-                    );
-                  }
-                  print(docs);
-                  // var channelIds = [];
-                  // if (snapshot.data != null) {
-                  //   for (var item in docs) {
-                  //     channelIds.add(item["channelId"]);
-                  //   }
-                  // }
-
-                  return FutureBuilder(
-                    future:
-                        FirebaseFirestore.instance.collection("messages").get(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SpinKitFadingCircle(
-                          color: Color(0xFF006aff),
-                          size: 45.0,
-                          duration: Duration(milliseconds: 900),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(authUser.uid)
+                      .collection('invites')
+                      .orderBy(
+                        'createdTime',
+                        descending: true,
+                      )
+                      .snapshots(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Text("Loading..."),
+                      );
+                    } else {
+                      List docs = snapshot.data.docs
+                          .map((item) => item.data())
+                          .toList();
+                      if (docs.isEmpty) {
+                        return Container(
+                          child: Center(
+                            child: Text("No invites found !"),
+                          ),
                         );
-                      } else {
-                        List channelData =
-                            snapshot.data.docs.map((e) => e.data()).toList();
-                        for (var item in channelData) {
-                          for (var e in docs) {
-                            if (item["channelId"] == e["channelId"]) {
-                              e["channelData"] = item;
-                            }
-                          }
-                        }
-                        print(docs);
+                      }
+                      print(docs);
+                      // var channelIds = [];
+                      // if (snapshot.data != null) {
+                      //   for (var item in docs) {
+                      //     channelIds.add(item["channelId"]);
+                      //   }
+                      // }
 
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                              itemCount: docs.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                      return FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection("messages")
+                            .get(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<dynamic> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SpinKitFadingCircle(
+                              color: Color(0xFF006aff),
+                              size: 45.0,
+                              duration: Duration(milliseconds: 900),
+                            );
+                          } else {
+                            List channelData = snapshot.data.docs
+                                .map((e) => e.data())
+                                .toList();
+                            for (var item in channelData) {
+                              for (var e in docs) {
+                                if (item["channelId"] == e["channelId"]) {
+                                  e["channelData"] = item;
+                                }
+                              }
+                            }
+                            print(docs);
+
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView.builder(
+                                  itemCount: docs.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 8),
+                                        child: Column(
                                           children: [
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 25,
-                                                    backgroundColor:
-                                                        const Color(0xFFd6e2ea),
-                                                    backgroundImage: docs[index]
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 25,
+                                                        backgroundColor:
+                                                            const Color(
+                                                                0xFFd6e2ea),
+                                                        backgroundImage: docs[
+                                                                            index]
+                                                                        [
+                                                                        "channelData"]
                                                                     [
+                                                                    'channelProfile'] ==
+                                                                null
+                                                            ? null
+                                                            : NetworkImage(docs[
+                                                                        index][
                                                                     "channelData"]
                                                                 [
-                                                                'channelProfile'] ==
-                                                            null
-                                                        ? null
-                                                        : NetworkImage(docs[
-                                                                    index]
-                                                                ["channelData"]
-                                                            ['channelProfile']),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          docs[index][
-                                                                  "channelData"]
-                                                              ['channelName'],
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        Text(
-                                                          "Invited by ${docs[index]["invitedBy"]}",
-                                                          maxLines: 1,
-                                                          style:
-                                                              const TextStyle(
-                                                            color: Colors.grey,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 4),
-                                                  getCircleIcon(
-                                                      Icons.cancel, Colors.red,
-                                                      () {
-                                                    showModal(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            title: const Text(
-                                                                'Are you sure? Do you want to remove this invite?'),
-                                                            actions: <Widget>[
-                                                              TextButton(
-                                                                child:
-                                                                    const Text(
-                                                                        'No'),
-                                                                onPressed: () {
-                                                                  Get.back();
-                                                                },
+                                                                'channelProfile']),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              docs[index][
+                                                                      "channelData"]
+                                                                  [
+                                                                  'channelName'],
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
-                                                              TextButton(
-                                                                child:
-                                                                    const Text(
-                                                                  'Yes',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .red),
-                                                                ),
-                                                                onPressed: () {
-                                                                  Get.back();
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              "Invited by ${docs[index]["invitedBy"]}",
+                                                              maxLines: 1,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      getCircleIcon(
+                                                          Icons.cancel,
+                                                          Colors.red, () {
+                                                        showModal(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: const Text(
+                                                                    'Are you sure? Do you want to remove this invite?'),
+                                                                actions: <Widget>[
+                                                                  TextButton(
+                                                                    child:
+                                                                        const Text(
+                                                                            'No'),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Get.back();
+                                                                    },
+                                                                  ),
+                                                                  TextButton(
+                                                                    child:
+                                                                        const Text(
+                                                                      'Yes',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.red),
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Get.back();
 
-                                                                  isLoading
-                                                                          .value =
-                                                                      true;
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          "users")
-                                                                      .doc(authUser
-                                                                          .uid)
-                                                                      .collection(
-                                                                          'invites')
-                                                                      .doc(docs[
-                                                                              index]
-                                                                          [
-                                                                          "channelId"])
-                                                                      .delete();
-                                                                  isLoading
-                                                                          .value =
-                                                                      false;
-                                                                },
-                                                              )
-                                                            ],
-                                                          );
-                                                        });
-                                                  }),
-                                                  SizedBox(width: 10),
-                                                  getCircleIcon(
-                                                      Icons.check_circle,
-                                                      Colors.green, () {
-                                                    joinChannel(docs[index]
-                                                        ["channelId"]);
-                                                  }),
-                                                  SizedBox(width: 4),
-                                                ],
-                                              ),
+                                                                      isLoading
+                                                                              .value =
+                                                                          true;
+                                                                      FirebaseFirestore
+                                                                          .instance
+                                                                          .collection(
+                                                                              "users")
+                                                                          .doc(authUser
+                                                                              .uid)
+                                                                          .collection(
+                                                                              'invites')
+                                                                          .doc(docs[index]
+                                                                              [
+                                                                              "channelId"])
+                                                                          .delete();
+                                                                      isLoading
+                                                                              .value =
+                                                                          false;
+                                                                    },
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }),
+                                                      SizedBox(width: 10),
+                                                      getCircleIcon(
+                                                          Icons.check_circle,
+                                                          Colors.green, () {
+                                                        joinChannel(docs[index]
+                                                            ["channelId"]);
+                                                      }),
+                                                      SizedBox(width: 4),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                        );
-                      }
-                    },
-                  );
-                }
-              },
+                                      ),
+                                    );
+                                  }),
+                            );
+                          }
+                        },
+                      );
+                    }
+                  },
+                ),
+                Obx(
+                  () => isLoading.value
+                      ? Container(
+                          color: Colors.white.withOpacity(.5),
+                          child: SpinKitFadingCircle(
+                            color: Color(0xFF006aff),
+                            size: 45.0,
+                            duration: Duration(milliseconds: 900),
+                          ),
+                        )
+                      : Container(),
+                ),
+              ],
             ),
-            Obx(
-              () => isLoading.value
-                  ? Container(
-                      color: Colors.white.withOpacity(.5),
-                      child: SpinKitFadingCircle(
-                        color: Color(0xFF006aff),
-                        size: 45.0,
-                        duration: Duration(milliseconds: 900),
-                      ),
-                    )
-                  : Container(),
-            ),
-          ],
-        ));
+          ),
+          homeController.getAdsWidget(),
+          homeController.getAdsWidget(),
+        ],
+      ),
+    );
   }
 }

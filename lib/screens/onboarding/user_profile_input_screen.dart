@@ -94,6 +94,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
               "Profile info",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             leading: IconButton(
@@ -102,6 +103,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
               },
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
+                color: Colors.white,
               ),
             ),
           ),
@@ -285,6 +287,7 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(0),
+                                  backgroundColor: MaterialStateProperty.all(Colors.blue),
                                 ),
                                 onPressed: () async {
                                   try {
@@ -359,7 +362,9 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                         ? const CircularProgressIndicator(
                                             color: Colors.white,
                                           )
-                                        : const Text("Next"),
+                                        : const Text("Next",style: TextStyle(
+                                      color: Colors.white,
+                                    ),),
                                   ),
                                 ),
                               ),

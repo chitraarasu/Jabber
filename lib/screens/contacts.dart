@@ -1,15 +1,15 @@
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../ad_state.dart';
 import '../controller/controller.dart';
-import '../widget/chat_bar.dart';
 import 'chats/chat_screen.dart';
 
 class Contacts extends StatefulWidget {
@@ -36,6 +36,26 @@ class _ContactsState extends State<Contacts> {
     super.initState();
     getContactFunction = homeController.getContacts();
     isFromGroup = widget.from == "group";
+    InterstitialAd.load(
+      adUnitId: AdState.to.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  InterstitialAd? _interstitialAd;
+
+  @override
+  void dispose() {
+    _interstitialAd?.show();
+    super.dispose();
   }
 
   @override
@@ -76,97 +96,107 @@ class _ContactsState extends State<Contacts> {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: getContactFunction,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: const SpinKitFadingCircle(
-                color: Color(0xFF006aff),
-                size: 45.0,
-                duration: Duration(milliseconds: 1000),
-              ),
-            );
-          } else if (snapshot.hasData) {
-            List contact = snapshot.data;
-            if (contact.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: Text(
-                    "Hey, it seems like your contact members haven't started using this app yet. Why not ask them to give Jabber a try? Once they join, you'll be able to chat with them effortlessly.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              );
-            }
-            return StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection("users").snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> userSnp) {
-                if (userSnp.data != null) {
-                  userData = [];
-                  List docs = userSnp.data.docs;
-                  for (var contactItem in contact) {
-                    for (var userItem in docs) {
-                      if (contactItem.contains(
-                          userItem.data()["phoneNumber"].toString())) {
-                        userData.add(userItem.data());
-                      }
-                    }
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder(
+              future: getContactFunction,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: const SpinKitFadingCircle(
+                      color: Color(0xFF006aff),
+                      size: 45.0,
+                      duration: Duration(milliseconds: 1000),
+                    ),
+                  );
+                } else if (snapshot.hasData) {
+                  List contact = snapshot.data;
+                  if (contact.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          "Hey, it seems like your contact members haven't started using this app yet. Why not ask them to give Jabber a try? Once they join, you'll be able to chat with them effortlessly.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    );
                   }
-                }
+                  return StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("users")
+                        .snapshots(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<dynamic> userSnp) {
+                      if (userSnp.data != null) {
+                        userData = [];
+                        List docs = userSnp.data.docs;
+                        for (var contactItem in contact) {
+                          for (var userItem in docs) {
+                            if (contactItem.contains(
+                                userItem.data()["phoneNumber"].toString())) {
+                              userData.add(userItem.data());
+                            }
+                          }
+                        }
+                      }
 
-                if (userSnp.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Text("Loading..."),
+                      if (userSnp.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: Text("Loading..."),
+                        );
+                      } else {
+                        return ChatListCardCaller(
+                          contactProfiles: userData,
+                          isFromGroup: isFromGroup,
+                          channelData: widget.channelData,
+                        );
+                      }
+                    },
                   );
                 } else {
-                  return ChatListCardCaller(
-                    contactProfiles: userData,
-                    isFromGroup: isFromGroup,
-                    channelData: widget.channelData,
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(snapshot.error?.toString() ??
+                            "Something Went Wrong!"),
+                        if (snapshot.error!
+                            .toString()
+                            .contains("Please provide cont"))
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF006aff),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: InkWell(
+                                onTap: () async {
+                                  await openAppSettings();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Proceed",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
                   );
                 }
               },
-            );
-          } else {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(snapshot.error?.toString() ?? "Something Went Wrong!"),
-                  if (snapshot.error!
-                      .toString()
-                      .contains("Please provide cont"))
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF006aff),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: InkWell(
-                          onTap: () async {
-                            await openAppSettings();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Proceed",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                ],
-              ),
-            );
-          }
-        },
+            ),
+          ),
+          homeController.getAdsWidget(),
+        ],
       ),
     );
   }
@@ -415,6 +445,7 @@ class MySearchDelegate extends SearchDelegate {
   List resultContact;
   bool isFromGroup;
   final channelData;
+
   MySearchDelegate(this.resultContact, this.isFromGroup, this.channelData);
 
   @override

@@ -197,6 +197,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
               : "Verification",
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         leading: IconButton(
@@ -205,6 +206,7 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
           ),
         ),
       ),
@@ -450,9 +452,11 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                     "Send code",
                                                     style: TextStyle(
                                                       fontSize: 22,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
-                                                  Icon(Icons.send_rounded),
+                                                  Icon(Icons.send_rounded,
+                                                    color: Colors.white,),
                                                 ],
                                               ),
                                       ),
@@ -606,7 +610,9 @@ class _PhoneNumberAndOtpState extends State<PhoneNumberAndOtp> {
                                                   color: Colors.white,
                                                 ),
                                               )
-                                            : const Text("Verify"),
+                                            : const Text("Verify", style: TextStyle(
+                                          color: Colors.white,
+                                        ),),
                                       ),
                                     ),
                                   ),

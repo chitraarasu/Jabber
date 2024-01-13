@@ -2,22 +2,22 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chatting_application/credentials.dart';
-import 'package:chatting_application/screens/dashboard/music.dart';
 import 'package:chatting_application/screens/dashboard/chat_list.dart';
-import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
+import 'package:chatting_application/screens/dashboard/music.dart';
 import 'package:chatting_application/screens/dashboard/profile.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../screens/chats/chat_bot.dart';
+import '../ad_state.dart';
 import '../screens/dashboard/news.dart';
-import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   var _index = 0;
@@ -129,6 +129,7 @@ class HomeController extends GetxController {
           );
         }
       }
+
       return _contactPhoneNumbers;
     } else {
       throw "Please provide contact permission!";
@@ -199,6 +200,20 @@ class HomeController extends GetxController {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget getAdsWidget() {
+    return Container(
+      height: 50,
+      child: AdWidget(
+        ad: BannerAd(
+          adUnitId: AdState.to.bannerAdUnitId,
+          size: AdSize.banner,
+          request: AdRequest(),
+          listener: BannerAdListener(),
+        )..load(),
       ),
     );
   }

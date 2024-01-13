@@ -1,38 +1,80 @@
+import 'package:chatting_application/controller/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class PrivacyPolicyScreen extends StatelessWidget {
+import '../../ad_state.dart';
+
+class PrivacyPolicyScreen extends StatefulWidget {
   final isFromInsideApp;
+
   PrivacyPolicyScreen({this.isFromInsideApp = false});
 
   @override
+  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState();
+}
+
+class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
+  InterstitialAd? _interstitialAd;
+
+  @override
+  void initState() {
+    super.initState();
+    InterstitialAd.load(
+      adUnitId: AdState.to.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.show();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.find();
+
     return Scaffold(
-      backgroundColor: isFromInsideApp ? null : Colors.deepOrange,
+      backgroundColor: widget.isFromInsideApp ? null : Colors.deepOrange,
       appBar: AppBar(
         title: Text(
           'Privacy Policy',
-          style:
-              TextStyle(color: isFromInsideApp ? Colors.black : Colors.white),
+          style: TextStyle(
+              color: widget.isFromInsideApp ? Colors.black : Colors.white),
         ),
         elevation: 0,
-        backgroundColor: isFromInsideApp ? Colors.white : Colors.transparent,
+        backgroundColor:
+            widget.isFromInsideApp ? Colors.white : Colors.transparent,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: isFromInsideApp ? Colors.black : Colors.white,
+            color: widget.isFromInsideApp ? Colors.black : Colors.white,
           ),
           onPressed: () {
             Get.back();
           },
         ),
       ),
-      body: Container(
-        color: isFromInsideApp ? null : Colors.white.withOpacity(0.9),
-        child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
-            child: Html(data: """<div style="background:#eee;">
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              color:
+                  widget.isFromInsideApp ? null : Colors.white.withOpacity(0.9),
+              child: SingleChildScrollView(
+                  padding: EdgeInsets.all(16.0),
+                  child: Html(data: """<div style="background:#eee;">
               <div class="container">
                   <div class="main-container">
                       <h2 style="margin-top:0;">Jabber Privacy Policy</h2>
@@ -43,12 +85,16 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
               </div>
           </div>""", style: {
-              // "h2": Style(color: Colors.deepOrange),
-              // "strong": Style(color: Colors.deepOrange),
-              "div": Style(color: Colors.black),
-              "hr": Style(color: Colors.black),
-              "a": Style(color: Colors.blue),
-            })),
+                    // "h2": Style(color: Colors.deepOrange),
+                    // "strong": Style(color: Colors.deepOrange),
+                    "div": Style(color: Colors.black),
+                    "hr": Style(color: Colors.black),
+                    "a": Style(color: Colors.blue),
+                  })),
+            ),
+          ),
+          homeController.getAdsWidget(),
+        ],
       ),
     );
   }

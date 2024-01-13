@@ -75,6 +75,7 @@ dependencies:
   firebase_messaging: ^14.6.2
   new_version_plus: ^0.0.2
   flutter_html: ^3.0.0-beta.2
+  google_mobile_ads: ^4.0.0
 
 
 

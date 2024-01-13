@@ -1,24 +1,18 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
+import 'package:chatting_application/controller/controller.dart';
 import 'package:chatting_application/controller/my_encryption.dart';
 import 'package:chatting_application/widget/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:encrypt/encrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../widget/chat_bar.dart';
 import '../../widget/empty_screen.dart';
-import '../chats/bot.dart';
 import '../chats/channel_request.dart';
 import '../chats/chat_screen.dart';
-import '../contacts.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -30,6 +24,7 @@ class _ChatListState extends State<ChatList> {
   final box = GetStorage();
   var groups = [];
 
+  HomeController homeController = Get.find();
   TextEditingController search = TextEditingController();
 
   RxString selectedListType = RxString("private-chat");
@@ -250,6 +245,13 @@ class _ChatListState extends State<ChatList> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 5,
+            ),
+            Obx(() {
+              print(selectedListType.value);
+              return homeController.getAdsWidget();
+            }),
             const SizedBox(
               height: 5,
             ),

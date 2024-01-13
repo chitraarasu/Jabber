@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:chatting_application/controller/controller.dart';
 import 'package:chatting_application/screens/chats/map.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:rive/rive.dart';
 
 import '../screens/chats/edit_channel.dart';
 import '../screens/chats/user_list_screen.dart';
@@ -23,8 +23,11 @@ class ChatProfileSheet extends StatelessWidget {
 
   ChatProfileSheet(this.name, this.image, this.channelId,
       this.isForSingleChatList, this.reciverData, this.isChannelAdmin);
+
   @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.find();
+
     _displayDialog(BuildContext context) async {
       return showModal(
           context: context,
@@ -92,172 +95,184 @@ class ChatProfileSheet extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 75 / 2 + 40,
-                  ),
-                  Text(
-                    name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  if (isForSingleChatList) Text(reciverData["phoneNumber"]),
-                  if (!isForSingleChatList)
-                    Column(
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            CustomCircleButton(
-                              Icons.list_alt_rounded,
-                              Colors.blue,
-                              const Color(0xFFebf4ff),
-                              () {
-                                Get.back();
-
-                                Get.to(
-                                  () => ChannelUserList(
-                                    channelId: channelId,
-                                  ),
-                                  transition: Transition.noTransition,
-                                );
-                              },
-                            ),
-                            CustomCircleButton(
-                              Icons.location_on,
-                              Colors.pinkAccent,
-                              const Color(0xFFf9edff),
-                              () {
-                                Get.back();
-                                Get.to(
-                                  () => Map(channelId),
-                                  transition: Transition.noTransition,
-                                );
-                              },
-                            ),
-                            CustomCircleButton(
-                              Icons.add_box_rounded,
-                              Colors.purple,
-                              const Color(0xFFffebf8),
-                              () {
-                                Get.back();
-                                Get.to(
-                                    () => Contacts(
-                                          "group",
-                                          channelData: channelId,
-                                        ),
-                                    transition: Transition.noTransition);
-                              },
-                            ),
-                            if (isChannelAdmin)
-                              CustomCircleButton(
-                                Icons.edit,
-                                Colors.green,
-                                const Color(0xFFE3FFE4),
-                                () {
-                                  Get.back();
-                                  Get.to(
-                                      () => EditChannel(name, image, channelId),
-                                      transition: Transition.noTransition);
-                                },
-                              ),
-                            CustomCircleButton(
-                              Icons.exit_to_app,
-                              Colors.orange,
-                              const Color(0xFFfff1eb),
-                              () {
-                                _displayDialog(context);
-                              },
-                            ),
-                          ],
-                        ),
                         const SizedBox(
+                          height: 75 / 2 + 40,
+                        ),
+                        Text(
+                          name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(
                           height: 15,
                         ),
-                        const Text(
-                          "Invite id",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Clipboard.setData(
-                                    ClipboardData(text: channelId));
-                                Fluttertoast.showToast(
-                                  msg: "Text copied!",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(width: 10),
-                                      Text(channelId),
-                                      // SelectableText(
-                                      //   channelId,
-                                      //   cursorColor: const Color(0xFF006aff),
-                                      //   showCursor: true,
-                                      //   toolbarOptions: const ToolbarOptions(
-                                      //     copy: true,
-                                      //     selectAll: true,
-                                      //     cut: false,
-                                      //     paste: false,
-                                      //   ),
-                                      // ),
-                                      SizedBox(width: 10),
-                                      const Icon(
-                                        Icons.copy,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 10),
-                                    ],
+                        if (isForSingleChatList)
+                          Text(reciverData["phoneNumber"]),
+                        if (!isForSingleChatList)
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  CustomCircleButton(
+                                    Icons.list_alt_rounded,
+                                    Colors.blue,
+                                    const Color(0xFFebf4ff),
+                                    () {
+                                      Get.back();
+
+                                      Get.to(
+                                        () => ChannelUserList(
+                                          channelId: channelId,
+                                        ),
+                                        transition: Transition.noTransition,
+                                      );
+                                    },
                                   ),
+                                  CustomCircleButton(
+                                    Icons.location_on,
+                                    Colors.pinkAccent,
+                                    const Color(0xFFf9edff),
+                                    () {
+                                      Get.back();
+                                      Get.to(
+                                        () => Map(channelId),
+                                        transition: Transition.noTransition,
+                                      );
+                                    },
+                                  ),
+                                  CustomCircleButton(
+                                    Icons.add_box_rounded,
+                                    Colors.purple,
+                                    const Color(0xFFffebf8),
+                                    () {
+                                      Get.back();
+                                      Get.to(
+                                          () => Contacts(
+                                                "group",
+                                                channelData: channelId,
+                                              ),
+                                          transition: Transition.noTransition);
+                                    },
+                                  ),
+                                  if (isChannelAdmin)
+                                    CustomCircleButton(
+                                      Icons.edit,
+                                      Colors.green,
+                                      const Color(0xFFE3FFE4),
+                                      () {
+                                        Get.back();
+                                        Get.to(
+                                            () => EditChannel(
+                                                name, image, channelId),
+                                            transition:
+                                                Transition.noTransition);
+                                      },
+                                    ),
+                                  CustomCircleButton(
+                                    Icons.exit_to_app,
+                                    Colors.orange,
+                                    const Color(0xFFfff1eb),
+                                    () {
+                                      _displayDialog(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const Text(
+                                "Invite id",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 4),
-                            borderRadius: BorderRadius.circular(10),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: channelId));
+                                      Fluttertoast.showToast(
+                                        msg: "Text copied!",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0,
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(width: 10),
+                                            Text(channelId),
+                                            // SelectableText(
+                                            //   channelId,
+                                            //   cursorColor: const Color(0xFF006aff),
+                                            //   showCursor: true,
+                                            //   toolbarOptions: const ToolbarOptions(
+                                            //     copy: true,
+                                            //     selectAll: true,
+                                            //     cut: false,
+                                            //     paste: false,
+                                            //   ),
+                                            // ),
+                                            SizedBox(width: 10),
+                                            const Icon(
+                                              Icons.copy,
+                                              size: 20,
+                                            ),
+                                            SizedBox(width: 10),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 4),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: QrImageView(
+                                  data: channelId,
+                                  version: QrVersions.auto,
+                                  size: 150.0,
+                                ),
+                              ),
+                            ],
                           ),
-                          child: QrImageView(
-                            data: channelId,
-                            version: QrVersions.auto,
-                            size: 150.0,
-                          ),
-                        ),
                       ],
-                    )
+                    ),
+                  ),
+                  homeController.getAdsWidget(),
                 ],
               ),
             ),

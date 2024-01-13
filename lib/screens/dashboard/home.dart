@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0xFFfcfcfc),
+      // backgroundColor: const Color(0xFFfcfcfc),
       // body: GetBuilder<Controller>(
       //   builder: (controller) => controller.body,
       // ),
@@ -257,31 +257,32 @@ class _HomeState extends State<Home> {
     var mediaData = MediaQuery.of(context).size;
     return GetBuilder<HomeController>(
       builder: (controller) => BottomAppBar(
+        padding: EdgeInsets.zero,
+        height: 60,
         clipBehavior: Clip.hardEdge,
+        elevation: 0,
+        color: Colors.white,
         shape: const CircularNotchedRectangle(),
         notchMargin: 7.5,
-        child: SizedBox(
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomMaterialButton(() {
-                controller.setScreen(0);
-              }, controller.index == 0, Icons.messenger, "Chats"),
-              // CustomMaterialButton(() {
-              //   controller.setScreen(1);
-              // }, controller.index == 1, Icons.music_note_rounded, "Music"),
-              // SizedBox(
-              //   width: mediaData.width * .05,
-              // ),
-              // CustomMaterialButton(() {
-              //   controller.setScreen(2);
-              // }, controller.index == 2, Icons.newspaper_rounded, "News"),
-              CustomMaterialButton(() {
-                controller.setScreen(3);
-              }, controller.index == 3, Icons.account_box_rounded, "Profile"),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomMaterialButton(() {
+              controller.setScreen(0);
+            }, controller.index == 0, Icons.messenger, "Chats"),
+            // CustomMaterialButton(() {
+            //   controller.setScreen(1);
+            // }, controller.index == 1, Icons.music_note_rounded, "Music"),
+            // SizedBox(
+            //   width: mediaData.width * .05,
+            // ),
+            // CustomMaterialButton(() {
+            //   controller.setScreen(2);
+            // }, controller.index == 2, Icons.newspaper_rounded, "News"),
+            CustomMaterialButton(() {
+              controller.setScreen(3);
+            }, controller.index == 3, Icons.account_box_rounded, "Profile"),
+          ],
         ),
       ),
     );
