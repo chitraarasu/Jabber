@@ -5,9 +5,10 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:otp_autofill/otp_autofill.dart';
 
+import '../../ad_state.dart';
 import '../../controller/controller.dart';
 
 class EditChannel extends StatefulWidget {
@@ -28,6 +29,26 @@ class _EditChannelState extends State<EditChannel> {
   void initState() {
     super.initState();
     channelNameController.text = widget.channelName;
+    InterstitialAd.load(
+      adUnitId: AdState.to.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  InterstitialAd? _interstitialAd;
+
+  @override
+  void dispose() {
+    _interstitialAd?.show();
+    super.dispose();
   }
 
   @override
@@ -196,6 +217,10 @@ class _EditChannelState extends State<EditChannel> {
                   ),
                 ),
               ),
+            ),
+            homeController.getAdsWidget(),
+            SizedBox(
+              height: 10,
             ),
             InkWell(
               onTap: () async {

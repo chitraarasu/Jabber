@@ -1,15 +1,18 @@
-import 'dart:math';
-
+import 'package:chatting_application/controller/controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:location/location.dart';
+
+import '../../ad_state.dart';
 
 class Map extends StatefulWidget {
   final channelId;
+
   Map(this.channelId);
 
   @override
@@ -17,8 +20,30 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> {
+  HomeController homeController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    InterstitialAd.load(
+      adUnitId: AdState.to.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  InterstitialAd? _interstitialAd;
+
   @override
   void dispose() {
+    _interstitialAd?.show();
     super.dispose();
   }
 
@@ -71,6 +96,7 @@ class _MapState extends State<Map> {
   }
 
   List<Marker> markerss = [];
+
   addMarker(mapData) {
     if (mapData == null) {
       return;
@@ -96,61 +122,72 @@ class _MapState extends State<Map> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          FutureBuilder(
-            future: _getCurrentUserLocation(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: SpinKitFadingCircle(
-                    color: Color(0xFF006aff),
-                    size: 45.0,
-                    duration: Duration(milliseconds: 900),
-                  ),
-                );
-              } else {
-                return GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(locData.latitude, locData.longitude),
-                    zoom: 6,
-                  ),
-                  mapToolbarEnabled: false,
-                  compassEnabled: false,
-                  tiltGesturesEnabled: false,
-                  myLocationButtonEnabled: false,
-                  markers: markerss.map((e) => e).toSet(),
-                );
-              }
-            },
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Color(0xC9000000),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.close_rounded,
-                          size: 35,
-                          color: Colors.white,
+          Expanded(
+            child: Stack(
+              children: [
+                FutureBuilder(
+                  future: _getCurrentUserLocation(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: SpinKitFadingCircle(
+                          color: Color(0xFF006aff),
+                          size: 45.0,
+                          duration: Duration(milliseconds: 900),
                         ),
-                      ),
+                      );
+                    } else {
+                      return GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(locData.latitude, locData.longitude),
+                          zoom: 6,
+                        ),
+                        mapToolbarEnabled: false,
+                        compassEnabled: false,
+                        tiltGesturesEnabled: false,
+                        myLocationButtonEnabled: false,
+                        markers: markerss.map((e) => e).toSet(),
+                      );
+                    }
+                  },
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Color(0xC9000000),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.close_rounded,
+                                size: 35,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
+          homeController.getAdsWidget(),
+          SizedBox(
+            height: 10,
           ),
         ],
       ),

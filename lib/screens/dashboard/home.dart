@@ -53,10 +53,10 @@ Future<void> showCallkitIncoming(String uuid, CallModel data) async {
       isCustomNotification: true,
       isShowLogo: false,
       ringtonePath: 'system_ringtone_default',
-      backgroundColor: '#0955fa',
+      backgroundColor: '#ffffff',
       backgroundUrl: 'assets/app-icon.png',
       actionColor: '#4CAF50',
-      textColor: '#ffffff',
+      textColor: '#000000',
     ),
     // ios: const IOSParams(
     //   iconName: 'CallKitLogo',
@@ -118,6 +118,7 @@ class _HomeState extends State<Home> {
       print(
           'Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
       CallModel data = CallModel.fromJson(message.data);
+
       if (data.type == "call") {
         _currentUuid = _uuid.v4();
         showCallkitIncoming(_currentUuid!, CallModel.fromJson(message.data));
