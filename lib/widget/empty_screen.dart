@@ -8,14 +8,16 @@ class EmptyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Lottie.asset(
-          "assets/animations/empty.json",
-        ),
-        const Text("Start chat with your friends and family"),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            "assets/animations/empty.json",
+          ),
+          const Text("Start chat with your friends and family"),
+        ],
+      ),
     );
   }
 }

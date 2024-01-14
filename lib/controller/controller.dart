@@ -207,6 +207,11 @@ class HomeController extends GetxController {
   Widget getAdsWidget() {
     return Container(
       height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFFebebec),
+      ),
+      clipBehavior: Clip.hardEdge,
       child: AdWidget(
         ad: BannerAd(
           adUnitId: AdState.to.bannerAdUnitId,

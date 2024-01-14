@@ -57,5 +57,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+    <string>The app needs access to your camera for meetings.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>The app needs access to your microphone for meetings.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>voip</string>
+        <string>remote-notification</string>
+        <string>processing</string> //you can add this if needed
+    </array>
 </dict>
 </plist>

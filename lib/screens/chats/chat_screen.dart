@@ -1,13 +1,10 @@
 import 'package:chatting_application/controller/controller.dart';
-import 'package:chatting_application/model/notification.dart';
+import 'package:chatting_application/model/caller_model.dart';
 import 'package:chatting_application/screens/chats/schedule_screen.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,11 +14,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:workmanager/workmanager.dart';
+
 import '../../controller/my_encryption.dart';
 import '../../widget/chat_profile_sheet.dart';
 import '../../widget/image_view.dart';
 import '../../widget/message_bubble.dart';
-import 'dart:ui' as ui;
+
+enum CallType {
+  video,
+  audio,
+}
 
 class ChatScreen extends StatefulWidget {
   final name;
@@ -30,6 +32,7 @@ class ChatScreen extends StatefulWidget {
   final isForSingleChatList;
   final reciverData;
   final isChannelAdmin;
+
   ChatScreen(this.name, this.image, this.channelId,
       {this.isForSingleChatList = false,
       this.reciverData,
@@ -49,11 +52,50 @@ class _ChatScreenState extends State<ChatScreen> {
 
   RxList selectedMessages = RxList();
 
+  var user = FirebaseAuth.instance.currentUser!;
+
+  var userData;
+  List? channelMemberUserTokens;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     selectedMessages.value = [];
+
+    loadCurrentUserData();
+    loadChannelMemberUserData();
+  }
+
+  loadCurrentUserData() async {
+    userData ??= await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+  }
+
+  loadChannelMemberUserData() async {
+    if (channelMemberUserTokens == null) {
+      await FirebaseFirestore.instance
+          .collection('messages')
+          .doc(widget.channelId)
+          .collection("channelMembers")
+          .get()
+          .then((value) {
+        var channelMembers = [];
+        for (var item in value.docs) {
+          channelMembers.add(item.data()["userId"]);
+        }
+        FirebaseFirestore.instance.collection('users').get().then((usersData) {
+          channelMemberUserTokens = [];
+          for (var item in usersData.docs) {
+            if (channelMembers.contains(item.data()["uid"])) {
+              channelMemberUserTokens?.add(item.data()["token"]);
+            }
+          }
+        });
+      });
+    }
   }
 
   @override
@@ -61,13 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
     void _sendMessage() async {
       if (_controller.text.trim().isNotEmpty) {
         _controller.clear();
-
-        final user = FirebaseAuth.instance.currentUser!;
-
-        final userData = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
+        loadCurrentUserData();
 
         if (widget.isForSingleChatList) {
           var randomDoc = FirebaseFirestore.instance
@@ -150,37 +186,52 @@ class _ChatScreenState extends State<ChatScreen> {
           // });
 
           // Notification
-          FirebaseFirestore.instance
-              .collection('messages')
-              .doc(widget.channelId)
-              .collection("channelMembers")
-              .get()
-              .then((value) {
-            var channelMembers = [];
-            for (var item in value.docs) {
-              channelMembers.add(item.data()["userId"]);
-            }
-            FirebaseFirestore.instance
-                .collection('users')
-                .get()
-                .then((usersData) {
-              var userTokens = [];
-              for (var item in usersData.docs) {
-                if (channelMembers.contains(item.data()["uid"])) {
-                  userTokens.add(item.data()["token"]);
-                }
-              }
-              homeController.sendNotification(
-                data: {},
-                tokens: userTokens,
-                name: userData['username'],
-                message: _enteredMessage.value,
-              );
-            });
-          });
+          await loadChannelMemberUserData();
+          homeController.sendNotification(
+            data: {},
+            tokens: channelMemberUserTokens,
+            name: userData['username'],
+            message: _enteredMessage.value,
+          );
         }
 
         _enteredMessage.value = '';
+      }
+    }
+
+    sendCallRequest(callType) async {
+      if (widget.isForSingleChatList) {
+        homeController.sendNotification(
+          data: CallModel(
+            type: "call",
+            nameCaller:
+                "${callType == CallType.video ? "🎥" : "📞"} ${userData['username']}",
+            avatar: userData['profileUrl'],
+            number: userData['phoneNumber'],
+          ).toJson(),
+          tokens: [widget.reciverData["token"]],
+          name: callType == CallType.video ? "Video Call" : "Audio Call",
+          message:
+              "${callType == CallType.video ? "Video Call" : "Audio Call"} from ${userData['username']}",
+        );
+      } else {
+        await loadChannelMemberUserData();
+        await loadCurrentUserData();
+        channelMemberUserTokens?.remove(userData['token']);
+
+        homeController.sendNotification(
+          data: CallModel(
+            type: "call",
+            nameCaller:
+                "${callType == CallType.video ? "🎥" : "📞"} ${widget.name}",
+            avatar: widget.image,
+            number: "${userData['username']} (${userData['phoneNumber']})",
+          ).toJson(),
+          tokens: channelMemberUserTokens,
+          name: widget.name,
+          message:
+              "${callType == CallType.video ? "Video Call" : "Audio Call"} started on ${widget.name}",
+        );
       }
     }
 
@@ -302,7 +353,28 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: [
             Obx(
               () => selectedMessages.isEmpty
-                  ? Container()
+                  ? Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            sendCallRequest(CallType.audio);
+                          },
+                          icon: Icon(
+                            Icons.call_rounded,
+                            color: Colors.black,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            sendCallRequest(CallType.video);
+                          },
+                          icon: Icon(
+                            Icons.video_call,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    )
                   : Row(
                       children: [
                         IconButton(

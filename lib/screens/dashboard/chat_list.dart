@@ -249,8 +249,9 @@ class _ChatListState extends State<ChatList> {
               height: 5,
             ),
             Obx(() {
-              print(selectedListType.value);
-              return homeController.getAdsWidget();
+              return selectedListType.value == "private-chat"
+                  ? homeController.getAdsWidget()
+                  : homeController.getAdsWidget();
             }),
             const SizedBox(
               height: 5,
