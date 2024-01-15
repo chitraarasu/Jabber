@@ -1,8 +1,8 @@
-import 'package:chatting_application/controller/my_encryption.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +11,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:workmanager/workmanager.dart';
+
 import 'controller/binder.dart';
-import 'controller/controller.dart';
 import 'firebase_options.dart';
 import 'screens/dashboard/home.dart';
 import 'screens/onboarding/onboarding_page.dart';
@@ -110,6 +110,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
