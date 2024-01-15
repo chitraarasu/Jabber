@@ -353,28 +353,29 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: [
             Obx(
               () => selectedMessages.isEmpty
-                  ? Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            sendCallRequest(CallType.audio);
-                          },
-                          icon: Icon(
-                            Icons.call_rounded,
-                            color: Colors.black,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            sendCallRequest(CallType.video);
-                          },
-                          icon: Icon(
-                            Icons.video_call,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
+                  ? Container()
+                  // Row(
+                  //         children: [
+                  //           IconButton(
+                  //             onPressed: () {
+                  //               sendCallRequest(CallType.audio);
+                  //             },
+                  //             icon: Icon(
+                  //               Icons.call_rounded,
+                  //               color: Colors.black,
+                  //             ),
+                  //           ),
+                  //           IconButton(
+                  //             onPressed: () {
+                  //               sendCallRequest(CallType.video);
+                  //             },
+                  //             icon: Icon(
+                  //               Icons.video_call,
+                  //               color: Colors.black,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       )
                   : Row(
                       children: [
                         IconButton(

@@ -1,6 +1,6 @@
 import 'package:animations/animations.dart';
+import 'package:chatting_application/controller/call_controller.dart';
 import 'package:chatting_application/model/caller_model.dart';
-import 'package:chatting_application/screens/calls/calling_page.dart';
 import 'package:chatting_application/screens/contacts.dart';
 import 'package:chatting_application/screens/create_new_channel_or_join_channel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -87,6 +87,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   HomeController homeController = Get.find();
+  CallController callController = Get.find();
   String? _currentUuid;
   late final Uuid _uuid;
 
@@ -150,7 +151,7 @@ class _HomeState extends State<Home> {
     var currentCall = await getCurrentCall();
     print(currentCall);
     if (currentCall != null) {
-      Get.to(() => CallingPage(currentCall));
+      // callController.join(currentCall!.id!); // todo
     }
   }
 
@@ -463,7 +464,10 @@ class _HomeState extends State<Home> {
           case Event.actionCallAccept:
             // TODO: accepted an incoming call
             // TODO: show screen calling in Flutter
-            Get.to(() => CallingPage(event.body));
+            // Get.to(() => Jitsi(event.body));
+            print("sdkcmlks");
+            print(event.body);
+            callController.join(event.body!["id"]);
             break;
           case Event.actionCallDecline:
             // TODO: declined an incoming call

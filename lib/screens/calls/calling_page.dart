@@ -1,127 +1,78 @@
-import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/entities/entities.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart';
 
-class CallingPage extends StatefulWidget {
-  final currentCall;
-
-  CallingPage(this.currentCall);
-
-  @override
-  State<StatefulWidget> createState() {
-    return CallingPageState();
-  }
-}
-
-class CallingPageState extends State<CallingPage> {
-  late CallKitParams? calling;
-
-  Timer? _timer;
-  int _start = 0;
-
-  void startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        setState(() {
-          _start++;
-        });
-      },
-    );
-  }
-
-  String intToTimeLeft(int value) {
-    int h, m, s;
-    h = value ~/ 3600;
-    m = ((value - h * 3600)) ~/ 60;
-    s = value - (h * 3600) - (m * 60);
-    String hourLeft = h.toString().length < 2 ? '0$h' : h.toString();
-    String minuteLeft = m.toString().length < 2 ? '0$m' : m.toString();
-    String secondsLeft = s.toString().length < 2 ? '0$s' : s.toString();
-    String result = "$hourLeft:$minuteLeft:$secondsLeft";
-    return result;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final params =
-        jsonDecode(jsonEncode(widget.currentCall as Map<dynamic, dynamic>));
-    print(ModalRoute.of(context)!.settings.arguments);
-    calling = CallKitParams.fromJson(params);
-
-    var timeDisplay = intToTimeLeft(_start);
-
-    return Scaffold(
-      backgroundColor: Color(0xFF006aff),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: double.infinity,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(timeDisplay),
-              const Text('Calling...'),
-              TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-                onPressed: () async {
-                  if (calling != null) {
-                    await makeFakeConnectedCall(calling!.id!);
-                    startTimer();
-                  }
-                },
-                child: const Text('Fake Connected Call'),
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-                onPressed: () async {
-                  if (calling != null) {
-                    await makeEndCall(calling!.id!);
-                    calling = null;
-                  }
-                  Get.back();
-                  await requestHttp('END_CALL');
-                },
-                child: const Text('End Call'),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> makeFakeConnectedCall(id) async {
-    await FlutterCallkitIncoming.setCallConnected(id);
-  }
-
-  Future<void> makeEndCall(id) async {
-    await FlutterCallkitIncoming.endCall(id);
-  }
-
-  //check with https://webhook.site/#!/2748bc41-8599-4093-b8ad-93fd328f1cd2
-  Future<void> requestHttp(content) async {
-    get(Uri.parse(
-        'https://webhook.site/2748bc41-8599-4093-b8ad-93fd328f1cd2?data=$content'));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
-    if (calling != null) FlutterCallkitIncoming.endCall(calling!.id!);
-  }
-}
+// class Jitsi extends StatefulWidget {
+//   final currentCall;
+//
+//   Jitsi(this.currentCall);
+//
+//   @override
+//   State<Jitsi> createState() => _JitsiState();
+// }
+//
+// class _JitsiState extends State<Jitsi> {
+//   bool audioMuted = true;
+//   bool videoMuted = true;
+//   bool screenShareOn = false;
+//
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     if (widget.currentCall != null)
+//       FlutterCallkitIncoming.endCall(widget.currentCall!.id!);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//           appBar: AppBar(
+//             title: const Text('Plugin example app'),
+//           ),
+//           body: Center(
+//             child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: <Widget>[
+//                   // TextButton(
+//                   //   onPressed: join,
+//                   //   child: const Text("Join"),
+//                   // ),
+//                   TextButton(onPressed: hangUp, child: const Text("Hang Up")),
+//                   Row(children: [
+//                     const Text("Set Audio Muted"),
+//                     Checkbox(
+//                       value: audioMuted,
+//                       onChanged: setAudioMuted,
+//                     ),
+//                   ]),
+//                   Row(children: [
+//                     const Text("Set Video Muted"),
+//                     Checkbox(
+//                       value: videoMuted,
+//                       onChanged: setVideoMuted,
+//                     ),
+//                   ]),
+//                   TextButton(
+//                       onPressed: sendEndpointTextMessage,
+//                       child: const Text("Send Hey Endpoint Message To All")),
+//                   Row(children: [
+//                     const Text("Toggle Screen Share"),
+//                     Checkbox(
+//                       value: screenShareOn,
+//                       onChanged: toggleScreenShare,
+//                     ),
+//                   ]),
+//                   TextButton(
+//                       onPressed: openC hat, child: const Text("Open Chat")),
+//                   TextButton(
+//                       onPressed: sendChatMessage,
+//                       child: const Text("Send Chat Message to All")),
+//                   TextButton(
+//                       onPressed: closeChat, child: const Text("Close Chat")),
+//                   TextButton(
+//                       onPressed: retrieveParticipantsInfo,
+//                       child: const Text("Retrieve Participants Info")),
+//                 ]),
+//           )),
+//     );
+//   }
+// }
