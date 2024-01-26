@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import '../../ad_state.dart';
+import '../../ads/ad_state.dart';
 
 class MyGroups extends StatefulWidget {
   @override

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../ad_state.dart';
+import '../ads/ad_state.dart';
 import '../controller/controller.dart';
 import 'chats/chat_screen.dart';
 

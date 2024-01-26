@@ -13,6 +13,7 @@ import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/notification_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:gdpr_dialog/gdpr_dialog.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -95,6 +96,11 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    GdprDialog.instance.showDialog().then((value) {});
+    GdprDialog.instance
+        .getConsentStatus()
+        .then((value) => print('consent status == $value'));
+
     Future.delayed(Duration.zero, () async {
       _uuid = const Uuid();
       var preProfileData;

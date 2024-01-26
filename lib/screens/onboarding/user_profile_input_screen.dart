@@ -15,6 +15,7 @@ import '../dashboard/home.dart';
 class UserProfileInputScreen extends StatefulWidget {
   final number;
   final code;
+
   UserProfileInputScreen(this.number, this.code);
 
   @override
@@ -287,7 +288,8 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(0),
-                                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue),
                                 ),
                                 onPressed: () async {
                                   try {
@@ -362,9 +364,12 @@ class _UserProfileInputScreenState extends State<UserProfileInputScreen> {
                                         ? const CircularProgressIndicator(
                                             color: Colors.white,
                                           )
-                                        : const Text("Next",style: TextStyle(
-                                      color: Colors.white,
-                                    ),),
+                                        : const Text(
+                                            "Next",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ),

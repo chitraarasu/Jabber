@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chatting_application/ad_state.dart';
 import 'package:chatting_application/controller/controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +9,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../ads/ad_state.dart';
 
 class EditProfile extends StatefulWidget {
   final data;

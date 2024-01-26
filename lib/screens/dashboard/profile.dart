@@ -1,14 +1,10 @@
-import 'dart:ui';
-
 import 'package:animations/animations.dart';
 import 'package:chatting_application/screens/profile/edit_profile.dart';
 import 'package:chatting_application/screens/profile/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -293,6 +289,29 @@ class Profile extends StatelessWidget {
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Ads",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: homeController.getAdsWidget(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: homeController.getAdsWidget(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: homeController.getAdsWidget(),
+                      ),
                     ],
                   ),
                 ),
@@ -310,6 +329,7 @@ class CustomTile extends StatelessWidget {
   final color;
   final icon;
   Function onTap;
+
   CustomTile(this.topic, this.icon, this.color, this.onTap);
 
   @override

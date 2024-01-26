@@ -67,5 +67,7 @@
         <string>remote-notification</string>
         <string>processing</string> //you can add this if needed
     </array>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-8396807547617810~3221103248</string>
 </dict>
 </plist>

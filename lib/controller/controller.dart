@@ -16,7 +16,7 @@ import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../ad_state.dart';
+import '../ads/ad_state.dart';
 import '../screens/dashboard/news.dart';
 
 class HomeController extends GetxController {

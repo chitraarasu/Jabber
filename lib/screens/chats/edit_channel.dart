@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../ad_state.dart';
+import '../../ads/ad_state.dart';
 import '../../controller/controller.dart';
 
 class EditChannel extends StatefulWidget {

@@ -8,7 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:location/location.dart';
 
-import '../../ad_state.dart';
+import '../../ads/ad_state.dart';
 
 class Map extends StatefulWidget {
   final channelId;

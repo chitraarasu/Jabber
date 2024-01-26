@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../ad_state.dart';
+import '../../ads/ad_state.dart';
 import '../../widget/contributors.dart';
 
 class CustomSettings extends StatefulWidget {
